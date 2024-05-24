@@ -11,6 +11,16 @@ import {
 } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import dynamic from "next/dynamic";
+
+// Since client components get prerenderd on server as well hence importing the excalidraw stuff dynamically
+// with ssr false
+const Excalidraw = dynamic(
+  async () => (await import("@/components/wrappers/excalidraw-wrapper")).default,
+  {
+    ssr: false,
+  },
+);
 
 export default function page() {
   return (
@@ -28,7 +38,7 @@ export default function page() {
         <Tabs defaultValue="overview" className="space-y-4">
           <TabsList>
             <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="analytics" disabled>
+            <TabsTrigger value="analytics">
               Analytics
             </TabsTrigger>
           </TabsList>
@@ -159,6 +169,10 @@ export default function page() {
             </div>
           </TabsContent>
         </Tabs>
+      </div>
+      
+      <div className="grid gap-4 md:grid-cols-1 lg:grid-cols-1 h-96">
+        <Excalidraw></Excalidraw>
       </div>
     </ScrollArea>
   );
