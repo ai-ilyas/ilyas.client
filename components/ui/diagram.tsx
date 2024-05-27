@@ -10,8 +10,8 @@ const Excalidraw = dynamic(
   },
 );
 
-function Diagram (){
+function Canvas (){
   return <Excalidraw></Excalidraw>;
 }
 
-export { Diagram };
+export { Canvas };
