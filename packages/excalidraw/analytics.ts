@@ -12,7 +12,7 @@ export const trackEvent = (
     // prettier-ignore
     if (
       typeof window === "undefined"
-      || import.meta.env.VITE_WORKER_ID
+      || process.env.VITE_WORKER_ID
       // comment out to debug locally
       || process.env.NODE_ENV === 'production'
     ) {
@@ -23,7 +23,7 @@ export const trackEvent = (
       return;
     }
 
-    if (!process.env.NODE_ENV === 'production') {
+    if (process.env.NODE_ENV !== 'production') {
       console.info("trackEvent", { category, action, label, value });
     }
 

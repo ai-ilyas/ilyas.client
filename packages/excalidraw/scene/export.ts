@@ -335,11 +335,11 @@ export const exportToSvg = async (
 
   let assetPath = "https://excalidraw.com/";
   // Asset path needs to be determined only when using package
-  if (import.meta.env.VITE_IS_EXCALIDRAW_NPM_PACKAGE) {
+  if (process.env.VITE_IS_EXCALIDRAW_NPM_PACKAGE) {
     assetPath =
       window.EXCALIDRAW_ASSET_PATH ||
-      `https://unpkg.com/${import.meta.env.VITE_PKG_NAME}@${
-        import.meta.env.VITE_PKG_VERSION
+      `https://unpkg.com/${process.env.VITE_PKG_NAME}@${
+        process.env.VITE_PKG_VERSION
       }`;
 
     if (assetPath?.startsWith("/")) {

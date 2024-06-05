@@ -591,7 +591,7 @@ const drawElementFromCanvas = (
     );
 
     if (
-      import.meta.env.VITE_APP_DEBUG_ENABLE_TEXT_CONTAINER_BOUNDING_BOX ===
+      process.env.VITE_APP_DEBUG_ENABLE_TEXT_CONTAINER_BOUNDING_BOX ===
         "true" &&
       hasBoundTextElement(element)
     ) {
