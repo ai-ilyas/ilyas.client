@@ -5,6 +5,14 @@ import { Message, continueConversation } from './actions';
 import { readStreamableValue } from 'ai/rsc';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
+import { Badge } from '@/components/ui/badge';
+
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "@/components/ui/alert"
+
 
 export default function Chat() {
   const [conversation, setConversation] = useState<Message[]>([]);
@@ -14,9 +22,9 @@ export default function Chat() {
     <div>
       <div>
         {conversation.map((message, index) => (
-          <div key={index}>
-            {message.role}: {message.content}
-          </div>
+          <Alert key={index} >
+            <div className="flex flex-row" ><Badge ><AlertTitle>{message.role}:</AlertTitle></Badge><AlertDescription className="basis-auto">{message.content}</AlertDescription></div>
+          </Alert>
         ))}
       </div>
 
