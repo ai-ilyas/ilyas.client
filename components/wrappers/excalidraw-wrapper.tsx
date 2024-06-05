@@ -1,5 +1,5 @@
 "use client";
-import { Excalidraw } from "@excalidraw/excalidraw";
+import { Excalidraw } from "../../packages/excalidraw";
 
 const ExcalidrawWrapper: React.FC = () => {
   return (
