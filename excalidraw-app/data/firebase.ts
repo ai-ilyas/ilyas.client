@@ -31,7 +31,7 @@ import type { RemoteExcalidrawElement } from "../../packages/excalidraw/data/rec
 
 let FIREBASE_CONFIG: Record<string, any>;
 try {
-  FIREBASE_CONFIG = JSON.parse(process.env.VITE_APP_FIREBASE_CONFIG);
+  FIREBASE_CONFIG = JSON.parse(process.env.NEXT_PUBLIC_VITE_APP_FIREBASE_CONFIG!);
 } catch (error: any) {
   console.warn(
     `Error JSON parsing firebase config. Supplied value: ${

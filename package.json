@@ -1,5 +1,5 @@
 {
-  "name": "nextshcdndashboardstarter",
+  "name": "ilyas",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -46,12 +46,13 @@
     "@uploadthing/react": "^5.7.0",
     "ai": "^3.1.14",
     "autoprefixer": "10.4.15",
+    "browser-fs-access": "^0.29.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "date-fns": "^2.30.0",
     "eslint": "8.48.0",
     "eslint-config-next": "^14.0.1",
-    "firebase": "^10.12.2",
+    "firebase": "^8.3.3",
     "idb-keyval": "^6.2.1",
     "lucide-react": "^0.291.0",
     "next": "^14.2.3",

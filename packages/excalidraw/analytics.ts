@@ -23,7 +23,7 @@ export const trackEvent = (
       return;
     }
 
-    if (process.env.NODE_ENV !== 'production') {
+    if (process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'development') {
       console.info("trackEvent", { category, action, label, value });
     }
 

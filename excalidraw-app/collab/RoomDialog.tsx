@@ -20,7 +20,7 @@ import {
 import { TextField } from "../../packages/excalidraw/components/TextField";
 import { FilledButton } from "../../packages/excalidraw/components/FilledButton";
 
-import { ReactComponent as CollabImage } from "../../packages/excalidraw/assets/lock.svg";
+// import { ReactComponent as CollabImage } from "../../packages/excalidraw/assets/lock.svg";
 import "./RoomDialog.scss";
 
 const getShareIcon = () => {
@@ -179,7 +179,7 @@ export const RoomModal = ({
   return (
     <>
       <div className="RoomDialog__inactive__illustration">
-        <CollabImage />
+        {/* <CollabImage /> */} IMAGE MANQUANTE
       </div>
       <div className="RoomDialog__inactive__header">
         {t("labels.liveCollaboration")}
