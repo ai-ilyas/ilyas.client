@@ -39,15 +39,15 @@ export default function AuthenticationPage() {
           </svg>
           Ilyas
         </div>
+        <Image className="m-auto z-21 relative" src="/bg1.png" width={500}  height={500}  alt="Ilyas.ai" />
         <div className="relative z-20 mt-auto">
           <blockquote className="space-y-2">
-            <Image className="m-auto" src="/bg1.png" width={500}  height={500}  alt="Ilyas.ai" />
             <p className="text-lg">
-              &ldquo;This library has saved me countless hours of work and
+              &ldquo;This app has saved me countless hours of work and
               helped me deliver stunning designs to my clients faster than ever
               before.&rdquo;
             </p>
-            <footer className="text-sm">Sofia Davis</footer>
+            <footer className="text-sm">Yanis G.</footer>
           </blockquote>
         </div>
       </div>
