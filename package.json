@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "next lint",
     "format": "prettier . --write",
-    "postinstall": "patch-package"
+    "postinstall": "patch-package",
+    "migrate_dev": "dotenv -e .env.local -- npx prisma migrate dev",
+    "migrate_deploy": "dotenv -e .env.local -- npx prisma migrate deploy"
   },
   "workspaces": [
     "packages/excalidraw",
