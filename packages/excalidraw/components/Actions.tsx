@@ -46,6 +46,7 @@ import {
   laserPointerToolIcon,
   OpenAIIcon,
   MagicIcon,
+  brainIcon,
 } from "./icons";
 import { KEYS } from "../keys";
 import { useTunnels } from "../context/tunnels";
@@ -388,6 +389,16 @@ export const ShapesSwitcher = ({
             Generate
           </div>
           {app.props.aiEnabled !== false && <TTDDialogTriggerTunnel.Out />}
+          <DropdownMenu.Item
+            onSelect={() =>  app.setOpenDialog({
+              name: "ttd",
+              tab: "text-to-diagram",
+            })}
+            icon={brainIcon}
+            data-testid="toolbar-embeddable"
+          >
+            {t("toolBar.textToDiagram")}
+          </DropdownMenu.Item>
           <DropdownMenu.Item
             onSelect={() => app.setOpenDialog({ name: "ttd", tab: "mermaid" })}
             icon={mermaidLogoIcon}

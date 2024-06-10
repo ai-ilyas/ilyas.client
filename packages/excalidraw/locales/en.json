@@ -268,7 +268,8 @@
     "hand": "Hand (panning tool)",
     "extraTools": "More tools",
     "mermaidToExcalidraw": "Mermaid to Ilyas",
-    "magicSettings": "AI settings"
+    "magicSettings": "AI settings",
+    "textToDiagram": "Text to diagram"
   },
   "headings": {
     "canvasActions": "Canvas actions",
@@ -536,6 +537,13 @@
     "button": "Insert",
     "description": "Currently only <flowchartLink>Flowchart</flowchartLink>,<sequenceLink> Sequence, </sequenceLink> and <classLink>Class </classLink>Diagrams are supported. The other types will be rendered as image in Ilyas.",
     "syntax": "Mermaid Syntax",
+    "preview": "Preview"
+  },
+  "textToDiagram": {
+    "title": "Text to Diagram",
+    "button": "Insert",
+    "description": "Order to ilyas what architecture you want.",
+    "syntax": "Instructions",
     "preview": "Preview"
   },
   "userList": {

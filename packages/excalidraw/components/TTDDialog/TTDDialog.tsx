@@ -30,6 +30,7 @@ import { atom, useAtom } from "jotai";
 import { trackEvent } from "../../analytics";
 import { InlineIcon } from "../InlineIcon";
 import { TTDDialogSubmitShortcut } from "./TTDDialogSubmitShortcut";
+import TextToDiagram from "./TextToDiagram";
 
 const MIN_PROMPT_LENGTH = 3;
 const MAX_PROMPT_LENGTH = 1000;
@@ -238,33 +239,35 @@ export const TTDDialogBase = withInternalFallback(
         autofocus={false}
       >
         <TTDDialogTabs dialog="ttd" tab={tab}>
-          {"__fallback" in rest && rest.__fallback ? (
-            <p className="dialog-mermaid-title">{t("mermaid.title")}</p>
-          ) : (
-            <TTDDialogTabTriggers>
-              <TTDDialogTabTrigger tab="text-to-diagram">
-                <div style={{ display: "flex", alignItems: "center" }}>
-                  {t("labels.textToDiagram")}
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      padding: "1px 6px",
-                      marginLeft: "10px",
-                      fontSize: 10,
-                      borderRadius: "12px",
-                      background: "var(--color-promo)",
-                      color: "var(--color-surface-lowest)",
-                    }}
-                  >
-                    AI Beta
-                  </div>
+          <TTDDialogTabTriggers>
+            <TTDDialogTabTrigger tab="text-to-diagram">
+              <div style={{ display: "flex", alignItems: "center" }}>
+                {t("labels.textToDiagram")}
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    padding: "1px 6px",
+                    marginLeft: "10px",
+                    fontSize: 10,
+                    borderRadius: "12px",
+                    background: "var(--color-promo)",
+                    color: "var(--color-surface-lowest)",
+                  }}
+                >
+                  AI Beta
                 </div>
-              </TTDDialogTabTrigger>
-              <TTDDialogTabTrigger tab="mermaid">Mermaid</TTDDialogTabTrigger>
-            </TTDDialogTabTriggers>
-          )}
+              </div>
+            </TTDDialogTabTrigger>
+            <TTDDialogTabTrigger tab="mermaid">Mermaid</TTDDialogTabTrigger>
+          </TTDDialogTabTriggers>
+
+          <TTDDialogTab className="ttd-dialog-content" tab="text-to-diagram">
+            <TextToDiagram
+              mermaidToExcalidrawLib={mermaidToExcalidrawLib}
+            />
+          </TTDDialogTab>
 
           <TTDDialogTab className="ttd-dialog-content" tab="mermaid">
             <MermaidToExcalidraw
