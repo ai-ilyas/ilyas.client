@@ -1,9 +1,15 @@
+import { PrismaAdapter } from '@auth/prisma-adapter';
+import { PrismaClient } from '@prisma/client';
 import { NextAuthConfig } from 'next-auth';
 import GithubProvider from 'next-auth/providers/github';
 import GoogleProvider from "next-auth/providers/google";
 import AzureAD from "next-auth/providers/microsoft-entra-id";
 
+const prisma = new PrismaClient()
+
 const authConfig = {
+  adapter: PrismaAdapter(prisma),  
+  session: { strategy: "jwt" },
   providers: [
     GithubProvider({
       clientId: process.env.GITHUB_ID ?? '',
