@@ -14,7 +14,8 @@
   },
   "workspaces": [
     "packages/excalidraw",
-    "packages/utils"
+    "packages/utils",
+    "packages/ilyas.ai"
   ],
   "dependencies": {
     "@ai-sdk/mistral": "^0.0.12",
