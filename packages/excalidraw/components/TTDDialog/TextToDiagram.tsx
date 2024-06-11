@@ -20,16 +20,21 @@ import { EditorLocalStorage } from "../../data/EditorLocalStorage";
 import { EDITOR_LS_KEYS } from "../../constants";
 import { debounce, isDevEnv } from "../../utils";
 import { TTDDialogSubmitShortcut } from "./TTDDialogSubmitShortcut";
+import { IlyasAiLibProps } from "./ilyas.common";
 
 const debouncedSaveMermaidDefinition = debounce(saveMermaidDataToStorage, 300);
 
 const TextToDiagram = ({
-  mermaidToExcalidrawLib,
+  ilyasAiLib,
+  mermaidToExcalidrawLib
 }: {
+  ilyasAiLib: IlyasAiLibProps;
   mermaidToExcalidrawLib: MermaidToExcalidrawLibProps;
 }) => {
   const [text, setText] = useState("");
+  const [aiMermaidText, setAiMermaidText] = useState("");
   const deferredText = useDeferredValue(text.trim());
+  const aiMermaidDeferredText = useDeferredValue(aiMermaidText.trim());
   const [error, setError] = useState<Error | null>(null);
 
   const canvasRef = useRef<HTMLDivElement>(null);
@@ -46,15 +51,15 @@ const TextToDiagram = ({
       data,
       mermaidToExcalidrawLib,
       setError,
-      mermaidDefinition: deferredText, // We will have to change this in the future. First Generate Mermaid with AI, 2nd covert to mermaid
+      mermaidDefinition: aiMermaidDeferredText,
     }).catch((err) => {
       if (isDevEnv()) {
         console.error("Failed to parse instructions definition", err);
       }
     });
 
-    debouncedSaveMermaidDefinition(deferredText);
-  }, [deferredText, mermaidToExcalidrawLib]);
+    debouncedSaveMermaidDefinition(aiMermaidDeferredText);
+  }, [aiMermaidDeferredText, mermaidToExcalidrawLib]);
 
   useEffect(
     () => () => {

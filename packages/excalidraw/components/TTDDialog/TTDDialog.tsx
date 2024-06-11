@@ -31,6 +31,7 @@ import { trackEvent } from "../../analytics";
 import { InlineIcon } from "../InlineIcon";
 import { TTDDialogSubmitShortcut } from "./TTDDialogSubmitShortcut";
 import TextToDiagram from "./TextToDiagram";
+import { IlyasAiLibProps } from "./ilyas.common";
 
 const MIN_PROMPT_LENGTH = 3;
 const MAX_PROMPT_LENGTH = 1000;
@@ -220,6 +221,20 @@ export const TTDDialogBase = withInternalFallback(
       fn();
     }, [mermaidToExcalidrawLib.api]);
 
+    const [ilyasAiLib, setIlyasAiLib] =
+    useState<IlyasAiLibProps>({
+      loaded: false,
+      api: import("ilyas.ai"),
+    });
+
+    useEffect(() => {
+      const fn = async () => {
+        await ilyasAiLib.api;
+        setIlyasAiLib((prev) => ({ ...prev, loaded: true }));
+      };
+      fn();
+    }, [ilyasAiLib.api]);
+
     const data = useRef<{
       elements: readonly NonDeletedExcalidrawElement[];
       files: BinaryFiles | null;
@@ -265,6 +280,7 @@ export const TTDDialogBase = withInternalFallback(
 
           <TTDDialogTab className="ttd-dialog-content" tab="text-to-diagram">
             <TextToDiagram
+              ilyasAiLib={ilyasAiLib}
               mermaidToExcalidrawLib={mermaidToExcalidrawLib}
             />
           </TTDDialogTab>
