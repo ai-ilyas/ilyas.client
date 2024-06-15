@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Message, continueConversation } from './actions';
+import { Message, continueConversation, continueConversationWithStreamedObject } from './actions';
 import { readStreamableValue } from 'ai/rsc';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -17,6 +17,8 @@ import {
 export default function Chat() {
   const [conversation, setConversation] = useState<Message[]>([]);
   const [input, setInput] = useState<string>('');
+
+
 
   return (
     <div>
@@ -38,20 +40,26 @@ export default function Chat() {
         <Button
           onClick={async () => {
             setInput('');
-            const { messages, newMessage } = await continueConversation([
-              ...conversation,
-              { role: 'user', content: input },
-            ]);
+            const { messages, newMessage } = await continueConversationWithStreamedObject
+            (conversation, input);
 
             let textContent = '';
 
-            for await (const delta of readStreamableValue(newMessage)) {
-              textContent = `${textContent}${delta}`;
+            for await (const delta of readStreamableValue(newMessage)){
+              console.log(delta)
 
-              setConversation([
-                ...messages,
-                { role: 'assistant', content: textContent },
-              ]);
+              if(typeof delta == "object"){
+                setConversation([
+                  ...messages,
+                  { role: 'assistant', content: JSON.stringify(delta.notifications, null, 2)},
+                ]);
+              }else{
+                textContent = `${textContent}${delta}`;
+                setConversation([
+                  ...messages,
+                  { role: 'assistant', content: textContent },
+                ]);
+              }
             }
           }}
         >
