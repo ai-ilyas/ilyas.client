@@ -120,9 +120,7 @@ export const TTDDialogBase = withInternalFallback(
           }),
           headers: { 'Content-type': 'application/json; charset=UTF-8' }
         });
-      const data = await response.json();
-      console.log(data);
-      return data;
+      return response.text();
     }
 
     const onGenerate = async () => {
