@@ -1,7 +1,7 @@
 export const buildMermaidDiagramPrompt = (input: string): string => {
 
   const JSON_SCHEMAS = `{
-    "Generate a Mermaid diagram": { "mermaidgraph" : string }
+    "GenerateMermaidDiagram": { "mermaidGraph" : string }
   }`;
 
   return `

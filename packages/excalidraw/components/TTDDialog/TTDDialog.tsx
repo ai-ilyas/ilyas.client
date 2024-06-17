@@ -116,11 +116,11 @@ export const TTDDialogBase = withInternalFallback(
         { 
           method: 'POST',
           body: JSON.stringify({
-            prompt: "architecture web AWS"
+            prompt: text
           }),
           headers: { 'Content-type': 'application/json; charset=UTF-8' }
         });
-      return response.text();
+      return response.json();
     }
 
     const onGenerate = async () => {
