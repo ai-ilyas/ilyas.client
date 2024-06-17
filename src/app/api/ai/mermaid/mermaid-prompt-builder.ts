@@ -1,11 +1,16 @@
 export const buildMermaidDiagramPrompt = (input: string): string => {
+
+  const JSON_SCHEMAS = `{
+    "Generate a Mermaid diagram": { "mermaidgraph" : string }
+  }`;
+
   return `
     You are an IT & Cloud architecture assistant. Your task is to generate an architecture diagram based on the following demand in <<<>>> represented in mermaid's syntax:
     When presented with the demand, come up with all the services and components necessary, list their respectives interactions.
     Afterward, combine all the information and generate a mermaid text-based diagram. Follow the step below
 
-    <<<# Demand: {input}>>>
-    Considering the demand above, follow the steps below to generate the required JSON output.
+    <<<# Demand: ${input}>>>
+    Considering the demand above, follow the steps below to generate the required JSON output, The JSON schema should include: ${JSON_SCHEMAS}.
 
     # Instructions:
     ## List components:

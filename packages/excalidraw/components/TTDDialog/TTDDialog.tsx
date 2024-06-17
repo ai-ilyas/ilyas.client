@@ -30,8 +30,6 @@ import { atom, useAtom } from "jotai";
 import { trackEvent } from "../../analytics";
 import { InlineIcon } from "../InlineIcon";
 import { TTDDialogSubmitShortcut } from "./TTDDialogSubmitShortcut";
-import TextToDiagram from "./TextToDiagram";
-import { IlyasAiLibProps } from "./ilyas.common";
 
 const MIN_PROMPT_LENGTH = 3;
 const MAX_PROMPT_LENGTH = 1000;
@@ -113,14 +111,26 @@ export const TTDDialogBase = withInternalFallback(
     const [onTextSubmitInProgess, setOnTextSubmitInProgess] = useState(false);
     const [rateLimits, setRateLimits] = useAtom(rateLimitsAtom);
 
+    async function fetchMermaid(): Promise<string> {
+      const response = await fetch('/api/ai/mermaid', 
+        { 
+          method: 'POST',
+          body: JSON.stringify({
+            prompt: "architecture web AWS"
+          }),
+          headers: { 'Content-type': 'application/json; charset=UTF-8' }
+        });
+      const data = await response.json();
+      console.log(data);
+      return data;
+    }
+
     const onGenerate = async () => {
       if (
         prompt.length > MAX_PROMPT_LENGTH ||
         prompt.length < MIN_PROMPT_LENGTH ||
         onTextSubmitInProgess ||
-        rateLimits?.rateLimitRemaining === 0 ||
-        // means this is not a text-to-diagram dialog (needed for TS only)
-        "__fallback" in rest
+        rateLimits?.rateLimitRemaining === 0
       ) {
         if (prompt.length < MIN_PROMPT_LENGTH) {
           setError(
@@ -144,9 +154,7 @@ export const TTDDialogBase = withInternalFallback(
         setOnTextSubmitInProgess(true);
 
         trackEvent("ai", "generate", "ttd");
-
-        const { generatedResponse, error, rateLimit, rateLimitRemaining } =
-          await rest.onTextSubmit(prompt);
+        const generatedResponse = await fetchMermaid();
 
         if (typeof generatedResponse === "string") {
           setTtdGeneration((s) => ({
@@ -154,11 +162,7 @@ export const TTDDialogBase = withInternalFallback(
             prompt: s?.prompt ?? null,
           }));
         }
-
-        if (isFiniteNumber(rateLimit) && isFiniteNumber(rateLimitRemaining)) {
-          setRateLimits({ rateLimit, rateLimitRemaining });
-        }
-
+        
         if (error) {
           setError(error);
           return;
@@ -221,20 +225,6 @@ export const TTDDialogBase = withInternalFallback(
       fn();
     }, [mermaidToExcalidrawLib.api]);
 
-    const [ilyasAiLib, setIlyasAiLib] =
-    useState<IlyasAiLibProps>({
-      loaded: false,
-      api: import("ilyas.ai"),
-    });
-
-    useEffect(() => {
-      const fn = async () => {
-        await ilyasAiLib.api;
-        setIlyasAiLib((prev) => ({ ...prev, loaded: true }));
-      };
-      fn();
-    }, [ilyasAiLib.api]);
-
     const data = useRef<{
       elements: readonly NonDeletedExcalidrawElement[];
       files: BinaryFiles | null;
@@ -278,19 +268,12 @@ export const TTDDialogBase = withInternalFallback(
             <TTDDialogTabTrigger tab="mermaid">Mermaid</TTDDialogTabTrigger>
           </TTDDialogTabTriggers>
 
-          <TTDDialogTab className="ttd-dialog-content" tab="text-to-diagram">
-            <TextToDiagram
-              ilyasAiLib={ilyasAiLib}
-              mermaidToExcalidrawLib={mermaidToExcalidrawLib}
-            />
-          </TTDDialogTab>
-
           <TTDDialogTab className="ttd-dialog-content" tab="mermaid">
             <MermaidToExcalidraw
               mermaidToExcalidrawLib={mermaidToExcalidrawLib}
             />
           </TTDDialogTab>
-          {!("__fallback" in rest) && (
+          {("__fallback" in rest) && (
             <TTDDialogTab className="ttd-dialog-content" tab="text-to-diagram">
               <div className="ttd-dialog-desc">
                 Currently we use Mermaid as a middle step, so you'll get best
