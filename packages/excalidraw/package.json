@@ -70,7 +70,6 @@
     "cross-env": "7.0.3",
     "fractional-indexing": "3.2.0",
     "fuzzy": "0.1.3",
-    "ilyas.ai": "file:../ilyas.ai",
     "image-blob-reduce": "3.0.1",
     "jotai": "1.13.1",
     "lodash.throttle": "4.1.1",
