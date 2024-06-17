@@ -5,7 +5,17 @@ import GithubProvider from 'next-auth/providers/github';
 import GoogleProvider from "next-auth/providers/google";
 import AzureAD from "next-auth/providers/microsoft-entra-id";
 
-const prisma = new PrismaClient()
+class Prisma{
+  public static PrismaClient: PrismaClient;
+
+  public static getPrismaClient() {
+    // create a new instance of PrismaClient if one isn't already created
+    this.PrismaClient ||= new PrismaClient();
+    return this.PrismaClient;
+  }
+}
+
+const prisma = Prisma.getPrismaClient()
 
 const authConfig = {
   adapter: PrismaAdapter(prisma),  
