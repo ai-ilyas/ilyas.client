@@ -14,7 +14,7 @@ export class UnitOfWork implements IUnitOfWork {
   constructor() {
     this._mongoClient = clientPromise;
     this._session = this._mongoClient.startSession();
-    this._db = this._mongoClient.db("this.COLLECTION_NAME");
+    this._db = this._mongoClient.db(process.env.MONGODB_DB);
     this.applicationRepository = new ApplicationRepository(this._db);
   }
 

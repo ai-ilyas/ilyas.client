@@ -1,6 +1,6 @@
-import { Application } from "@/src/lib/domain/entities/application";
+import { IApplication } from "@/src/lib/domain/entities/application.interface";
 import { IApplicationRepository } from "@/src/lib/domain/repositories/application-repository.interface";
-import { Db } from "mongodb";
+import { Db, ObjectId } from "mongodb";
 import { Repository } from "./repository";
 
 export class ApplicationRepository extends Repository implements IApplicationRepository {
@@ -8,15 +8,16 @@ export class ApplicationRepository extends Repository implements IApplicationRep
         super(_db);
     }
 
-    getAll(user_id: string): Application[] {
-        return [{ id: "1234", name: "Mon App"} as Application]
+    getAll(user_id: string): IApplication[] {
+        return [{ id: "1234", name: "Mon App"} as IApplication]
     }
 
-    find(key: any, user_id: string): Application {
-        throw new Error("Method not implemented.");
+    async find(key: string, user_id: string): Promise<IApplication | null> {
+        const result = await this._db.collection<IApplication>("application").findOne(new ObjectId(key))
+        return result;
     }
 
-    save(value: Application, user_id: string): void {
+    save(value: IApplication, user_id: string): void {
         throw new Error("Method not implemented.");
     }
 }
