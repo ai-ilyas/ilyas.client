@@ -19,6 +19,12 @@ const prisma = Prisma.getPrismaClient()
 
 const authConfig = {
   adapter: PrismaAdapter(prisma),  
+  callbacks: {
+    async session({ session, token }) {
+      session.user.id = token.sub as string;
+      return session;
+    }
+  },
   session: { strategy: "jwt" },
   providers: [
     GithubProvider({

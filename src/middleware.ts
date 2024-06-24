@@ -2,10 +2,7 @@
 // https://next-auth.js.org/configuration/nextjs#middleware
 // https://nextjs.org/docs/app/building-your-application/routing/middleware
 
-import NextAuth from 'next-auth';
-import authConfig from './auth.config';
-
-const { auth } = NextAuth(authConfig);
+import { auth } from './auth';
 
 export default auth((req) => {
   if (!req.auth) {
