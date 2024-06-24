@@ -24,7 +24,7 @@
     "@dnd-kit/sortable": "^8.0.0",
     "@dnd-kit/utilities": "^3.2.2",
     "@hookform/resolvers": "^3.3.2",
-    "@prisma/client": "^5.15.0",
+    "@prisma/client": "^5.15.1",
     "@radix-ui/react-accordion": "^1.1.2",
     "@radix-ui/react-alert-dialog": "^1.0.5",
     "@radix-ui/react-avatar": "^1.0.4",
@@ -91,6 +91,6 @@
     "@typescript-eslint/eslint-plugin": "^6.11.0",
     "prettier": "3.0.3",
     "prettier-plugin-tailwindcss": "^0.5.14",
-    "prisma": "^5.15.0"
+    "prisma": "^5.15.1"
   }
 }

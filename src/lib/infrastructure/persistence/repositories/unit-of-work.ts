@@ -1,39 +1,41 @@
 // mongoUnitOfWork.ts
 import { ClientSession, Db, MongoClient } from 'mongodb';
 import { IUnitOfWork } from '@/src/lib/domain/repositories/unit-of-work.interface';
-import clientPromise from "@/src/lib/infrastructure/persistence/mongodb";
+import clientPromise from "@/src/mongodb";
 import { ApplicationRepository } from './application-repository';
 import { IApplicationRepository } from '@/src/lib/domain/repositories/application-repository.interface';
 
-export class UnitOfWork implements IUnitOfWork {
-    public applicationRepository: IApplicationRepository;
-    private _mongoClient: MongoClient;
-    private _session: ClientSession;
-    private _db: Db;
+class UnitOfWork implements IUnitOfWork {
+    public applicationRepository: IApplicationRepository | undefined;
+    private _mongoClient: MongoClient | undefined;
+    private _session: ClientSession | undefined;
+    private _db: Db | undefined;
 
-  constructor() {
-    this._mongoClient = clientPromise;
+  async setup() {
+    this._mongoClient = (await clientPromise);
     this._session = this._mongoClient.startSession();
     this._db = this._mongoClient.db(process.env.MONGODB_DB);
     this.applicationRepository = new ApplicationRepository(this._db);
   }
-
-  private DB_NAME = "application";
-
-  initializeClient(client: MongoClient){
-  }
-
+  
   async startTransaction(): Promise<void> {
-    this._session.startTransaction();
+    this._session!.startTransaction();
   }
 
   async commitTransaction(): Promise<void> {
-    await this._session.commitTransaction();
-    this._session.endSession();
+    await this._session!.commitTransaction();
+    this._session!.endSession();
   }
 
   async abortTransaction(): Promise<void> {
-    await this._session.abortTransaction();
-    this._session.endSession();
+    await this._session!.abortTransaction();
+    this._session!.endSession();
   }
+}
+
+export async function getUnitOfWork(): Promise<IUnitOfWork> 
+{
+  let uof = new UnitOfWork();
+  await uof.setup();
+  return uof as IUnitOfWork;
 }
