@@ -1,4 +1,4 @@
-import { Icons } from '@/src/components/icons';
+import { Icons } from '@/src/lib/presenter/components/icons';
 import { NavItem, SidebarNavItem } from '@/src/types';
 
 export type User = {

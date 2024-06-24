@@ -1,4 +1,4 @@
-import { Icons } from '@/src/components/icons';
+import { Icons } from '@/src/lib/presenter/components/icons';
 
 export interface NavItem {
   title: string;

@@ -1,5 +1,5 @@
-import BreadCrumb from '@/src/components/breadcrumb';
-import { UserClient } from '@/src/components/tables/user-tables/client';
+import BreadCrumb from '@/src/lib/presenter/components/breadcrumb';
+import { UserClient } from '@/src/lib/presenter/components/tables/user-tables/client';
 import { users } from '@/src/constants/data';
 
 const breadcrumbItems = [{ title: 'User', link: '/dashboard/user' }];

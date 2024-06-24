@@ -1,5 +1,5 @@
-import Providers from '@/src/components/layout/providers';
-import { Toaster } from '@/src/components/ui/toaster';
+import Providers from '@/src/lib/presenter/components/layout/providers';
+import { Toaster } from '@/src/lib/presenter/components/ui/toaster';
 import '@uploadthing/react/styles.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';

@@ -1,9 +1,9 @@
-import BreadCrumb from '@/src/components/breadcrumb';
-import { columns } from '@/src/components/tables/employee-tables/columns';
-import { EmployeeTable } from '@/src/components/tables/employee-tables/employee-table';
-import { buttonVariants } from '@/src/components/ui/button';
-import { Heading } from '@/src/components/ui/heading';
-import { Separator } from '@/src/components/ui/separator';
+import BreadCrumb from '@/src/lib/presenter/components/breadcrumb';
+import { columns } from '@/src/lib/presenter/components/tables/employee-tables/columns';
+import { EmployeeTable } from '@/src/lib/presenter/components/tables/employee-tables/employee-table';
+import { buttonVariants } from '@/src/lib/presenter/components/ui/button';
+import { Heading } from '@/src/lib/presenter/components/ui/heading';
+import { Separator } from '@/src/lib/presenter/components/ui/separator';
 import { Employee } from '@/src/constants/data';
 import { cn } from '@/src/lib/utils';
 import { Plus } from 'lucide-react';

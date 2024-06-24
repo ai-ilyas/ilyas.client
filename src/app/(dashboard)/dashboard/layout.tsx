@@ -1,5 +1,5 @@
-import Header from '@/src/components/layout/header';
-import Sidebar from '@/src/components/layout/sidebar';
+import Header from '@/src/lib/presenter/components/layout/header';
+import Sidebar from '@/src/lib/presenter/components/layout/sidebar';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {

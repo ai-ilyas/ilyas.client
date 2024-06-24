@@ -1,5 +1,5 @@
-import BreadCrumb from '@/src/components/breadcrumb';
-import { ProductForm } from '@/src/components/forms/product-form';
+import BreadCrumb from '@/src/lib/presenter/components/breadcrumb';
+import { ProductForm } from '@/src/lib/presenter/components/forms/product-form';
 import React from 'react';
 
 export default function Page() {

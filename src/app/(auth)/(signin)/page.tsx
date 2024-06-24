@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import UserAuthForm from '@/src/components/forms/user-auth-form';
-import { buttonVariants } from '@/src/components/ui/button';
+import UserAuthForm from '@/src/lib/presenter/components/forms/user-auth-form';
+import { buttonVariants } from '@/src/lib/presenter/components/ui/button';
 import { cn } from '@/src/lib/utils';
 import Image from 'next/image'
 

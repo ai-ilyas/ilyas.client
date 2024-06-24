@@ -3,8 +3,8 @@ import {
   CardContent,
   CardHeader,
   CardTitle
-} from '@/src/components/ui/card';
-import { ScrollArea } from '@/src/components/ui/scroll-area';
+} from '@/src/lib/presenter/components/ui/card';
+import { ScrollArea } from '@/src/lib/presenter/components/ui/scroll-area';
 import Link from 'next/link';
 
 export default function page() {

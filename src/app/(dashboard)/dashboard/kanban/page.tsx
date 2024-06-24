@@ -1,7 +1,7 @@
-import BreadCrumb from '@/src/components/breadcrumb';
-import { KanbanBoard } from '@/src/components/kanban/kanban-board';
-import NewTaskDialog from '@/src/components/kanban/new-task-dialog';
-import { Heading } from '@/src/components/ui/heading';
+import BreadCrumb from '@/src/lib/presenter/components/breadcrumb';
+import { KanbanBoard } from '@/src/lib/presenter/components/kanban/kanban-board';
+import NewTaskDialog from '@/src/lib/presenter/components/kanban/new-task-dialog';
+import { Heading } from '@/src/lib/presenter/components/ui/heading';
 
 const breadcrumbItems = [{ title: 'Kanban', link: '/dashboard/kanban' }];
 export default function page() {
