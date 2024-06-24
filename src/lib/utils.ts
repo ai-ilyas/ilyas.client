@@ -27,3 +27,9 @@ export function hasDraggableData<T extends Active | Over>(
 
   return false;
 }
+
+export const assert = (condition: boolean, message: string): void => {
+  if (!condition) {
+    throw new Error(message);
+  }
+};
