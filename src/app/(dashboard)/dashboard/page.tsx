@@ -1,13 +1,12 @@
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle
-} from '@/src/lib/presenter/components/ui/card';
+import { auth } from '@/src/auth';
+import { getAllApplications } from '@/src/lib/core/application/queries/get-all-applications';
 import { ScrollArea } from '@/src/lib/presenter/components/ui/scroll-area';
-import Link from 'next/link';
+import CreateApplicationForm from './(components)/create-application-form';
 
-export default function page() {
+export default async function page() {
+  const session = (await auth())!;
+  const applications = await(getAllApplications(true, session.user!.id!));
+  const apps = JSON.parse(JSON.stringify(applications))
   return (
     <ScrollArea className="h-full">
       <div className="flex-1 space-y-4 p-4 pt-6 md:p-8">
@@ -16,35 +15,8 @@ export default function page() {
             Hi, Welcome back 👋
           </h2>
         </div>
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            <Link
-              href='/dashboard/project/new'
-            >
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-2xl font-medium">
-                      New Project
-                    </CardTitle>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      className="h-10 w-10 text-muted-foreground"
-                    >
-                      <path d="M4 12H20M12 4V20" />
-                    </svg>
-                  </CardHeader>
-                  <CardContent>                  
-                    <p className="text-xs text-muted-foreground">
-                      Create an empty project
-                    </p>
-                  </CardContent>
-                </Card>
-              </Link>
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">              
+              <CreateApplicationForm {...apps}></CreateApplicationForm>
             </div>
       </div>
     </ScrollArea>

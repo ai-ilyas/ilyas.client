@@ -6,8 +6,17 @@ export abstract  class Repository<T extends Document>  {
     constructor(protected _db: Db, private _collectionName: string){
     }
 
-    getAll(partial: boolean, user_id: string): T[] {
-        throw new Error("Method not implemented.");
+    async getAll(partial: boolean, user_id: string): Promise<T[]> {
+        const result = await this._db.collection(this._collectionName).find<T>({
+            user_id: user_id
+          },
+          {
+            projection: {
+              _id: 1, // Inclure ce champ
+              name: 1, // Inclure ce champ
+            }
+          }).toArray();
+        return result;
     }
 
     async find(key: string, user_id: string): Promise<T | null> {
