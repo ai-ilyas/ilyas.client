@@ -3,7 +3,7 @@ import { IApplicationRepository } from "@/src/lib/domain/repositories/applicatio
 import { Db } from "mongodb";
 import { Repository } from "./repository";
 
-export class ApplicationRepository extends Repository<IApplication> implements IApplicationRepository {
+export class ApplicationRepository extends Repository<IApplication>implements IApplicationRepository {
     constructor(_db: Db){
         super(_db, "application");
     }
