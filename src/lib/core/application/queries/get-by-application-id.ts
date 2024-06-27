@@ -3,5 +3,5 @@ import { getUnitOfWork } from "@/src/lib/infrastructure/persistence/repositories
 
 export async function getByApplicationId(id: string , user_id: string): Promise<IApplication | null>
 {
-    return (await getUnitOfWork()).applicationRepository!.find(id, user_id);       
+    return (await getUnitOfWork()).applicationRepository!.findById(id, user_id);       
 }

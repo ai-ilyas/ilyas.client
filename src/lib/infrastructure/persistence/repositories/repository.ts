@@ -2,37 +2,57 @@ import { Db, ObjectId } from "mongodb";
 import { CommonRepositoryValidator } from "./common-repository.validator";
 import assert from "assert";
 import { IUserId } from "@/src/lib/domain/entities/user-id.interface";
+import { IRepository } from "@/src/lib/domain/repositories/repository.interface";
 
-export abstract  class Repository<T extends Document & IUserId>  {
-    constructor(protected _db: Db, private _collectionName: string){
-    }
+export abstract  class Repository<T extends IUserId> implements IRepository<T>  {
+  constructor(protected _db: Db, private _collectionName: string){    
+  }
 
-    async getAll(partial: boolean, user_id: string): Promise<T[]> {
-      const result = await this._db.collection(this._collectionName).find<T>({
-          user_id: user_id
-        },
-        {
-          projection: {
-            _id: 1, // Inclure ce champ
-            name: 1, // Inclure ce champ
-          }
-        }).toArray();
-      return result;
-    }
+  async find(filters: any, user_id: string, projection: any = null): Promise<T[]> {    
+    const _filters = { ...filters, user_id: user_id};
+    let _projection = projection;
+    if (projection != null)
+      {
+        _projection = {
+          _id: 1,
+          name: 1
+        }
+      }
 
-    async find(key: string, user_id: string): Promise<T | null> {
-      // UserId must not be empty
-      assert(CommonRepositoryValidator.checkIfUserIdIsNotEmpty(user_id), CommonRepositoryValidator.checkIfUserIdIsEmptyMessage);
-      const result = await this._db.collection(this._collectionName).findOne<T>({
-          _id: new ObjectId(key),
-          user_id: user_id
-        });
-      return result;
-    }
+    const result = await this._db.collection(this._collectionName).find<T>(
+      _filters,
+      {
+        projection: _projection
+      }).toArray();
+    return result;
+  }
 
-    async insertOne(value: T, user_id: string): Promise<string> {
-      value.user_id = user_id;
-      const result = await this._db.collection(this._collectionName).insertOne(value);
-      return result.insertedId.toString();
-    }
+  async getAll(partial: boolean, user_id: string): Promise<T[]> {
+    const result = await this._db.collection(this._collectionName).find<T>({
+        user_id: user_id
+      },
+      {
+        projection: {
+          _id: 1,
+          name: 1
+        }
+      }).toArray();
+    return result;
+  }
+
+  async findById(key: string, user_id: string): Promise<T | null> {
+    // UserId must not be empty
+    assert(CommonRepositoryValidator.checkIfUserIdIsNotEmpty(user_id), CommonRepositoryValidator.checkIfUserIdIsEmptyMessage);
+    const result = await this._db.collection(this._collectionName).findOne<T>({
+        _id: new ObjectId(key),
+        user_id: user_id
+      });
+    return result;
+  }
+
+  async insertOne(value: T, user_id: string): Promise<string> {
+    value.user_id = user_id;
+    const result = await this._db.collection(this._collectionName).insertOne(value);
+    return result.insertedId.toString();
+  }
 }
