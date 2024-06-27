@@ -17,12 +17,14 @@ const createApplicationForm: React.FC<IApplication[]> = (apps) => {
   const applicationUrl = "/dashboard/application/";
   const router = useRouter();
   const appsArray = Object.values(apps);
+  let [isNameAlreadyExists, setIsNameAlreadyExists] = useState(false);
 
   const formSchema = z.object({
     applicationName: z
       .string()
       .min(3, { message: 'Application Name must be at least 3 characters' })
-      .refine((val) => !appsArray.some((x) => x.name === val), {
+      .max(50, { message: 'Application Name must be max 50 characters' })
+      .refine((val) => !appsArray.some((x) => x.name === val) && isNameAlreadyExists === false, {
         message: "There is already an application with this name.",
       })
   });
@@ -37,14 +39,32 @@ const createApplicationForm: React.FC<IApplication[]> = (apps) => {
 
   const onSubmit = async (data: ApplicationFormValues) => {
     setLoading(true);
+    setIsNameAlreadyExists(false);
     try{
       const response = await fetch(postUrl, {
         method: 'POST',
         body: data.applicationName,
       });
-      if (response.status !== 200) throw new Error("Problem during Application creation process.");
-      const applicationId = await response.text();
-      router.push(applicationUrl + applicationId);
+      let queryResponseText = await response.text();
+      if (response.status === 500 && queryResponseText.includes("Duplicate name"))
+      {
+        setIsNameAlreadyExists(true);
+        setLoading(false);
+        await form.trigger('applicationName', { shouldFocus: true });
+        /* To remove when the previous line will display the correct error */
+        toast({
+          variant: 'destructive',
+          title: 'Oh oh! Something went wrong.',
+          description: 'Application name \'' + data.applicationName + '\' is already exists.'
+        });
+        /* */
+      } 
+      else if (response.status !== 200) {
+        throw new Error("Problem during Application creation process.");
+      }
+      else{
+        router.push(applicationUrl + queryResponseText);        
+      }
     }
     catch(error)
     {

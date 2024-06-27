@@ -6,6 +6,12 @@ export async function insertApplication(application: IApplication, user_id: stri
     let uof;
     try{
         uof = (await getUnitOfWork());
+        const duplicateApplications = uof.applicationRepository!.find({ name: application.name }, user_id);
+        if ((await duplicateApplications).length > 0)
+        {
+            throw new Error('Duplicate name: Application name already exists.');
+        }
+
         uof.startTransaction();
         const id = uof.applicationRepository!.insertOne(application, user_id);
         uof.commitTransaction();
