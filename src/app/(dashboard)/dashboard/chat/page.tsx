@@ -46,7 +46,7 @@ export default function Chat() {
             let textContent = '';
 
             for await (const delta of readStreamableValue(newMessage)){
-              console.log(delta)
+              console.log(new Date(),delta)
 
               if(typeof delta == "object"){
                 setConversation([

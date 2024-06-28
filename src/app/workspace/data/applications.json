@@ -1,0 +1,44 @@
+[
+  {
+    "id": "1",
+    "description": "Data platform to host for AI strategy",
+    "status":  "development",
+    "labels": ["SLA","Data","Realtime","Hybrid"],
+    "name": "LDP Galaxy"
+  },
+  {
+    "id": "2",
+    "description": "MRP systems for EMEA region",
+    "status": "production",
+    "labels": ["Gold","On-prem","Manufacturing"],
+    "name": "Prodify lean 360"
+  },
+  {
+    "id": "3",
+    "description": "Customer behaviour monitoring application, SQL Server platform & systems for purchasing",
+    "status": "pre-study",
+    "labels": ["Frontend","Analytics","Silver"],
+    "name": "SalesTower"
+  },
+  {
+    "id": "4",
+    "description": "Enterprise Service Bus for external partners.We need to bypass the neural TCP card",
+    "status": "design",
+    "labels": ["SLA","Data","Analytics","Silver"],
+    "name": "Brock"
+  },
+  {
+    "id": "5",
+    "description": "CRM applications for south america. SSL protocol, that should driver the API panel!",
+    "status": "pre-study",
+    "labels": ["Marketing","SaaS"],
+    "name": "CR-Visio"
+  },
+  {
+    "id": "6",
+    "description": "IaaS. Use the digital TLS panel, then you can transmit the haptic system!",
+    "status": "end of life",
+    "labels": ["Frontend","Analytics","Silver"],
+    "name": "Mainframe NA"
+  }
+]
