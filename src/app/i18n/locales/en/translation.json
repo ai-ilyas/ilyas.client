@@ -1,0 +1,17 @@
+{
+    "common_cancel": "Cancel",
+    "common_create": "Create",
+    "common_error_min": "Application Name must be at least {{length}} characters",
+    "common_error_max": "Application Name must be max {{length}} characters",
+    "common_toast_error_title": "Oh oh! Something went wrong.",
+
+
+    "dashboard_home_myApplications": "My applications",
+    "dashboard_home_newApplication": "New application",
+    "dashboard_home_createAnEmptyApplication": "Create an empty application",
+    "dashboard_home_createANewApplication": "Create a new application",
+    "dashboard_home_applicationName": "Application name",
+    "dashboard_home_applicationNameAlreadyExists": "There is already an application with this name.",
+    "dashboard_home_toast_applicationNameAlreadyExists": "An application named {{ applicationName }} already exists.",
+    "dashboard_home_toast_errorOccuredDuringCreationProcess": "An error occured during the creation process for this application {{ applicationName }}."
+}

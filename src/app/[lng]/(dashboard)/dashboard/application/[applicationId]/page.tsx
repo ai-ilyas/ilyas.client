@@ -3,13 +3,15 @@ import BreadCrumb from '@/src/lib/presenter/components/breadcrumb';
 import { Canvas } from '@/src/lib/presenter/components/ui/diagram';
 import { ScrollArea } from '@/src/lib/presenter/components/ui/scroll-area';
 import { getByApplicationId } from '@/src/lib/core/application/queries/get-by-application-id';
-import NotFound from '@/src/app/not-found';
+import NotFound from '@/src/app/[lng]/not-found';
+import { useTranslation } from '@/src/app/i18n';
 
 export default async function page({
-  params: { applicationId },
+  params: { lng, applicationId },
 }: {
-  params: { applicationId: string }
+  params: { lng: string, applicationId: string }
 }) {
+  const { t } = await useTranslation(lng)
   if (typeof applicationId !== 'string') return (<NotFound></NotFound>);
 
   let app;
