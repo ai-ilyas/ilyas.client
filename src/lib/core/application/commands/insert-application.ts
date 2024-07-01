@@ -3,6 +3,15 @@ import { getUnitOfWork } from "@/src/lib/infrastructure/persistence/repositories
 
 export async function insertApplication(application: IApplication, user_id: string): Promise<string>
 {
+    if (user_id.trim().length === 0)
+    {
+        throw new Error('Not allowed to insert application.');
+    }
+    if (application.name == undefined || application.name.length < 3 || application.name.length > 50 )
+    {
+        throw new Error('Application name: not conformed.');
+    }
+    application.name = application.name.trim();
     let uof;
     try{
         uof = (await getUnitOfWork());
@@ -12,9 +21,9 @@ export async function insertApplication(application: IApplication, user_id: stri
             throw new Error('Duplicate name: Application name already exists.');
         }
 
-        uof.startTransaction();
-        const id = uof.applicationRepository!.insertOne(application, user_id);
-        uof.commitTransaction();
+        await uof.startTransaction();
+        const id = await uof.applicationRepository!.insertOne(application, user_id);
+        await uof.commitTransaction();
         return id;
     }
     catch(error){        

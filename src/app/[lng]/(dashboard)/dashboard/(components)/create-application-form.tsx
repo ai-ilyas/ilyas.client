@@ -18,12 +18,11 @@ interface CreateApplicationFormProps {
   lng: string;
 }
 
-const createApplicationForm: React.FC<CreateApplicationFormProps> = ({ apps, lng}) => {  
+const createApplicationForm: React.FC<CreateApplicationFormProps> = ({ apps, lng }) => {  
   const { t } = useTranslation(lng)
   const postUrl = "/api/application/create";
   const applicationUrl = "/dashboard/application/";
   const router = useRouter();
-  const appsArray = Object.values(apps);
   let [isNameAlreadyExists, setIsNameAlreadyExists] = useState(false);
 
   const formSchema = z.object({
@@ -31,7 +30,7 @@ const createApplicationForm: React.FC<CreateApplicationFormProps> = ({ apps, lng
       .string()
       .min(3, { message: t("common_error_min", { length: "3" }) })
       .max(50, { message: t("common_error_max", { length: "50" }) })
-      .refine((val) => !appsArray.some((x) => x.name === val) && isNameAlreadyExists === false, {
+      .refine((val) => !apps.some((x) => x.name === val) && isNameAlreadyExists === false, {
         message: t("dashboard_home_applicationNameAlreadyExists"),
       })
   });

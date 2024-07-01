@@ -1,10 +1,10 @@
 import { Db, ObjectId } from "mongodb";
 import { CommonRepositoryValidator } from "./common-repository.validator";
 import assert from "assert";
-import { IUserId } from "@/src/lib/domain/entities/user-id.interface";
+import { IEntity } from "@/src/lib/domain/entities/IEntity.interface";
 import { IRepository } from "@/src/lib/domain/repositories/repository.interface";
 
-export abstract  class Repository<T extends IUserId> implements IRepository<T>  {
+export abstract  class Repository<T extends IEntity> implements IRepository<T>  {
   constructor(protected _db: Db, private _collectionName: string){    
   }
 
@@ -34,7 +34,9 @@ export abstract  class Repository<T extends IUserId> implements IRepository<T>  
       {
         projection: {
           _id: 1,
-          name: 1
+          name: 1,
+          creationDate:1,
+          editionDate:1
         }
       }).toArray();
     return result;
@@ -52,6 +54,7 @@ export abstract  class Repository<T extends IUserId> implements IRepository<T>  
 
   async insertOne(value: T, user_id: string): Promise<string> {
     value.user_id = user_id;
+    value.creationDate = value.editionDate = new Date();    
     const result = await this._db.collection(this._collectionName).insertOne(value);
     return result.insertedId.toString();
   }
