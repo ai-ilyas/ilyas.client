@@ -21,9 +21,9 @@ export async function insertApplication(application: IApplication, user_id: stri
             throw new Error('Duplicate name: Application name already exists.');
         }
 
-        uof.startTransaction();
-        const id = uof.applicationRepository!.insertOne(application, user_id);
-        uof.commitTransaction();
+        await uof.startTransaction();
+        const id = await uof.applicationRepository!.insertOne(application, user_id);
+        await uof.commitTransaction();
         return id;
     }
     catch(error){        

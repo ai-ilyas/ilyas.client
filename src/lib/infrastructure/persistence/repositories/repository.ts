@@ -35,8 +35,8 @@ export abstract  class Repository<T extends IEntity> implements IRepository<T>  
         projection: {
           _id: 1,
           name: 1,
-          creation:1,
-          edition:1
+          creationDate:1,
+          editionDate:1
         }
       }).toArray();
     return result;
@@ -54,7 +54,7 @@ export abstract  class Repository<T extends IEntity> implements IRepository<T>  
 
   async insertOne(value: T, user_id: string): Promise<string> {
     value.user_id = user_id;
-    value.creationDate = new Date();
+    value.creationDate = value.editionDate = new Date();    
     const result = await this._db.collection(this._collectionName).insertOne(value);
     return result.insertedId.toString();
   }
