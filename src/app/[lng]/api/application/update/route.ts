@@ -6,8 +6,8 @@ import { NextResponse } from 'next/server';
 export async function POST(req: Request) {  
     const body = await req.json();
     const id : string = body.id;
-    const values : Partial<IApplication> = body.values;
+    const applicationPartial : Partial<IApplication> = body.values;
     const session = (await auth())!;
-    const count = await updateApplication( id, values ,session.user!.id!);
+    const count = await updateApplication( id, applicationPartial ,session.user!.id!);
     return new NextResponse(`${count} updates.`, { status: 200 }); 
 }

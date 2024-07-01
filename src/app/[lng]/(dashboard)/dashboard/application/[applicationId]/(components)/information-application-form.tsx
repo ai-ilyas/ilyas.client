@@ -2,16 +2,7 @@
 import { useTranslation } from '@/src/app/i18n/client';
 import { IApplication } from '@/src/lib/domain/entities/application.interface';
 import LoadingButton from '@/src/lib/presenter/components/buttons/loading-button';
-import {
-  AlertDialog,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger
-} from '@/src/lib/presenter/components/ui/alert-dialog';
-import { Button } from '@/src/lib/presenter/components/ui/button';
+
 import {
   Card,
   CardContent,
@@ -27,11 +18,9 @@ import {
   FormMessage
 } from '@/src/lib/presenter/components/ui/form';
 import { Input } from '@/src/lib/presenter/components/ui/input';
-import { Label } from '@/src/lib/presenter/components/ui/label';
 import { Textarea } from '@/src/lib/presenter/components/ui/textarea';
 import { toast } from '@/src/lib/presenter/components/ui/use-toast';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -41,14 +30,13 @@ interface UpdateApplicationFormProps {
   lng: string;
 }
 
-const updateApplicationForm: React.FC<UpdateApplicationFormProps> = ({
+const informationApplicationForm: React.FC<UpdateApplicationFormProps> = ({
   app,
   lng
 }) => {
   const { t } = useTranslation(lng);
   const postUrl = '/api/application/update';
-  const applicationUrl = '/dashboard/application/';
-  const router = useRouter();
+
   let [isNameAlreadyExists, setIsNameAlreadyExists] = useState(false);
 
   const formSchema = z.object({
@@ -64,7 +52,7 @@ const updateApplicationForm: React.FC<UpdateApplicationFormProps> = ({
 
   type ApplicationFormValues = z.infer<typeof formSchema>;
   const [loading, setLoading] = useState(false);
-  const [isChanged, setIsChanged] = useState(false);
+  const [formHasChanged, setFormHasChanged] = useState(false);
 
   const defaultValues = {
     applicationName: app.name,
@@ -76,8 +64,8 @@ const updateApplicationForm: React.FC<UpdateApplicationFormProps> = ({
   });
 
   function handleFormChanged() {
-    if (!isChanged) {
-      setIsChanged(true);
+    if (!formHasChanged) {
+      setFormHasChanged(true);
     }
   }
   const onSubmit = async (data: ApplicationFormValues) => {
@@ -121,7 +109,7 @@ const updateApplicationForm: React.FC<UpdateApplicationFormProps> = ({
         toast({
             description: "Saved !"
         })
-        setIsChanged(false);
+        setFormHasChanged(false);
         setLoading(false);
     } 
     } catch (error) {
@@ -148,10 +136,10 @@ const updateApplicationForm: React.FC<UpdateApplicationFormProps> = ({
         <Card>
           <CardHeader>
             <div className="flex items-start">
-              <CardTitle>Information</CardTitle>
+              <CardTitle>{t('application_informationApplicationForm_information')}</CardTitle>
               <div className="items-center max-h-0.5 gap-2 md:ml-auto md:flex">
-                {isChanged && (
-                  <LoadingButton  loading={loading} type="submit" text="Save">
+                {formHasChanged && (
+                  <LoadingButton loading={loading} type="submit" text={t('application_informationApplicationForm_savelabel')}>
                     <svg
                       width="15"
                       height="15"
@@ -179,7 +167,7 @@ const updateApplicationForm: React.FC<UpdateApplicationFormProps> = ({
                   name="applicationName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Application Name</FormLabel>
+                      <FormLabel>{t('application_informationApplicationForm_applicationName')}</FormLabel>
                       <FormControl>
                         <Input {...field} />
                       </FormControl>
@@ -192,7 +180,7 @@ const updateApplicationForm: React.FC<UpdateApplicationFormProps> = ({
                   name="applicationDescription"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Description</FormLabel>
+                      <FormLabel>{t('application_informationApplicationForm_description')}</FormLabel>
                       <FormControl>
                         <Textarea {...field} className="min-h-32" />
                       </FormControl>
@@ -209,4 +197,4 @@ const updateApplicationForm: React.FC<UpdateApplicationFormProps> = ({
   );
 };
 
-export default updateApplicationForm;
+export default informationApplicationForm;
