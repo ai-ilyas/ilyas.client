@@ -3,6 +3,7 @@ import { getAllApplications } from '@/src/lib/core/application/queries/get-all-a
 import { ScrollArea } from '@/src/lib/presenter/components/ui/scroll-area';
 import CreateApplicationForm from './(components)/create-application-form';
 import { useTranslation } from '@/src/app/i18n/';
+import { ApplicationCard } from './(components)/application-card';
 
 export default async function page({
   params: { lng },
@@ -23,6 +24,7 @@ export default async function page({
         </div>
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">              
               <CreateApplicationForm lng={lng} apps={ {...apps} }></CreateApplicationForm>
+              <ApplicationCard lng={lng} apps={ {...apps} }></ApplicationCard>
             </div>
       </div>
     </ScrollArea>

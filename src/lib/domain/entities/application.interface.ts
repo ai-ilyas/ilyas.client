@@ -1,6 +1,6 @@
-import { IUserId } from "./user-id.interface";
+import { IEntity } from "./IEntity.interface";
 
-export interface IApplication extends Document, IUserId {
-    id: string;
+export interface IApplication extends IEntity {
+    _id: string;
     name: string;
   }
