@@ -21,11 +21,14 @@ export async function updateApplication(id: string, applicationNewValues: Partia
                 }
         }
 
-        if(applicationNewValues?.name){
-
+        //Check Name size.
+        if(applicationNewValues?.name && applicationNewValues?.name!.length >50){
+            throw new Error('Oversized name: Name should not exceed 50 characters.');
         }
-        if(applicationNewValues?.description){
 
+        //Check Description size.
+        if(applicationNewValues?.name && applicationNewValues?.name!.length >500){
+            throw new Error('Oversized name: Description should not exceed 500 characters.');
         }
         uof.startTransaction();
         const result = uof.applicationRepository?.updateOneById(id,applicationNewValues,user_id);

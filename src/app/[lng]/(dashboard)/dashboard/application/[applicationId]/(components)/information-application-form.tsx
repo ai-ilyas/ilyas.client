@@ -46,8 +46,8 @@ const informationApplicationForm: React.FC<UpdateApplicationFormProps> = ({
       .max(50, { message: t('common_error_max', { length: '50' }) }),
     applicationDescription: z
       .string()
-      .min(0, { message: t('common_error_min', { length: '3' }) })
-      .max(500, { message: t('common_error_max', { length: '50' }) })
+      .min(0, { message: t('common_error_min', { length: '0' }) })
+      .max(500, { message: t('common_error_max', { length: '500' }) })
   });
 
   type ApplicationFormValues = z.infer<typeof formSchema>;
