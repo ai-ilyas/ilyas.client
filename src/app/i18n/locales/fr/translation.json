@@ -12,5 +12,12 @@
     "dashboard_home_applicationName": "Nom de l'application",
     "dashboard_home_applicationNameAlreadyExists": "Il existe déjà une application portant ce nom.",
     "dashboard_home_toast_applicationNameAlreadyExists": "Une application nommée {{ applicationName }} existe déjà.",
-    "dashboard_home_toast_errorOccuredDuringCreationProcess": "Une erreur s'est produite durant le process de création de cette application {{ applicationName }}."
+    "dashboard_home_toast_errorOccuredDuringCreationProcess": "Une erreur s'est produite durant le process de création de cette application {{ applicationName }}.",
+    
+    "application_informationApplicationForm_applicationName": "Nom d'Application",
+    "application_informationApplicationForm_information": "Information",
+    "application_informationApplicationForm_description": "Description",
+    "application_informationApplicationForm_savelabel": "Sauvegarder",
+    "application_page_newProject": "Nouveau Projet"
+
 }
