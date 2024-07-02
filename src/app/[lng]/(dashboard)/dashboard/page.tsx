@@ -4,13 +4,6 @@ import { ScrollArea } from '@/src/lib/presenter/components/ui/scroll-area';
 import { useTranslation } from '@/src/app/i18n/';
 import ApplicationListWrapper from './(components)/application-list-wrapper';
 
-export const dynamic = 'force'
-export const dynamicParams = true
-export const revalidate = 0
-export const fetchCache = 'force-no-store'
-export const preferredRegion = 'auto'
-export const maxDuration = 5
-
 export default async function page({
   params: { lng },
 }: {
