@@ -4,22 +4,29 @@ import { Canvas } from '@/src/lib/presenter/components/ui/diagram';
 import { ScrollArea } from '@/src/lib/presenter/components/ui/scroll-area';
 import { getByApplicationId } from '@/src/lib/core/application/queries/get-by-application-id';
 import NotFound from '@/src/app/[lng]/not-found';
-import { useTranslation } from '@/src/app/i18n';
-import { Button } from '@/src/lib/presenter/components/ui/button';
-import { ChevronLeft } from 'lucide-react';
-import { Badge } from '@/src/lib/presenter/components/ui/badge';
 import InformationApplicationForm from './(components)/information-application-form';
 import { IApplication } from '@/src/lib/domain/entities/application.interface';
+import { getAllApplications } from '@/src/lib/core/application/queries/get-all-applications';
+
+
+const getApplications = async () : Promise<IApplication[]> => {
+  const session = (await auth())!;
+  return await getAllApplications(true, session.user!.id!);
+}
 
 export default async function page({
   params: { lng, applicationId }
 }: {
   params: { lng: string; applicationId: string };
 }) {
-  const { t } = await useTranslation(lng);
   if (typeof applicationId !== 'string') return <NotFound></NotFound>;
 
-  let app: IApplication | null;
+  const applications = await getApplications();
+  const app = applications.find((x) => x._id === applicationId);
+  if (app == undefined) return <NotFound></NotFound>;
+
+
+
 
   try {
     const session = (await auth())!;
@@ -33,46 +40,31 @@ export default async function page({
     throw e;
   }
 
+  const application = JSON.parse(JSON.stringify(app))
   const breadcrumbItems = [
     {
-      title:
-        applicationId === 'new' ? t('application_page_newProject') : app!.name,
-      link: '/dashboard/project'
+      title: app!.name,
+      link: '/dashboard/' + app._id
     }
   ];
   return (
     <ScrollArea className="h-full">
-      <h1>{JSON.stringify(app)}</h1>
-      <BreadCrumb items={breadcrumbItems} />
 
-      <div className="mx-auto grid flex-1 auto-rows-max gap-4">
-        <div className="flex items-center gap-4">
-          <Button variant="outline" size="icon" className="h-7 w-7">
-            <ChevronLeft className="h-4 w-4" />
-            <span className="sr-only">Back</span>
-          </Button>
-          <h1 className="flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
+      <div className="flex-1 space-y-4 p-4 pt-6 md:p-8">
+        <BreadCrumb items={breadcrumbItems} />
+        <div className="flex items-center justify-between space-y-2">
+          <h1 className="text-3xl font-bold tracking-tight">
             {app?.name}
           </h1>
-          <Badge variant="outline" className="ml-auto sm:ml-0">
-            Decom
-          </Badge>
-          <Badge variant="outline" className="ml-auto sm:ml-0">
-            Gold
-          </Badge>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-5 lg:gap-8">
-          <div className="grid auto-rows-max items-start gap-4 lg:col-span-3 lg:gap-8">
-            <InformationApplicationForm
-              app={app}
-              lng={lng}
-            ></InformationApplicationForm>
-          </div>
-          <div>
-            <Canvas></Canvas>
-          </div>
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <InformationApplicationForm
+            app={application}
+            lng={lng}
+          ></InformationApplicationForm>
         </div>
+          <Canvas></Canvas>
       </div>
     </ScrollArea>
   );
