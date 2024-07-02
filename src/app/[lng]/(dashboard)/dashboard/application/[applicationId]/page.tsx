@@ -2,7 +2,6 @@ import { auth } from '@/src/auth';
 import BreadCrumb from '@/src/lib/presenter/components/breadcrumb';
 import { Canvas } from '@/src/lib/presenter/components/ui/diagram';
 import { ScrollArea } from '@/src/lib/presenter/components/ui/scroll-area';
-import { getByApplicationId } from '@/src/lib/core/application/queries/get-by-application-id';
 import NotFound from '@/src/app/[lng]/not-found';
 import InformationApplicationForm from './(components)/information-application-form';
 import { IApplication } from '@/src/lib/domain/entities/application.interface';
@@ -19,28 +18,13 @@ export default async function page({
 }: {
   params: { lng: string; applicationId: string };
 }) {
+  
   if (typeof applicationId !== 'string') return <NotFound></NotFound>;
 
-  const applications = await getApplications();
+  const applications = JSON.parse(JSON.stringify(await getApplications())) as IApplication[];
   const app = applications.find((x) => x._id === applicationId);
   if (app == undefined) return <NotFound></NotFound>;
 
-
-
-
-  try {
-    const session = (await auth())!;
-    app = await getByApplicationId(
-      applicationId as string,
-      session.user!.id!
-    );
-    if (app === null) return <NotFound></NotFound>;
-  } catch (e) {
-    if (process.env.NODE_ENV === 'production') return <NotFound></NotFound>;
-    throw e;
-  }
-
-  const application = JSON.parse(JSON.stringify(app))
   const breadcrumbItems = [
     {
       title: app!.name,
@@ -60,7 +44,7 @@ export default async function page({
 
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <InformationApplicationForm
-            app={application}
+            app={app}
             lng={lng}
           ></InformationApplicationForm>
         </div>
