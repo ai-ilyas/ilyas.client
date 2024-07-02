@@ -58,4 +58,19 @@ export abstract  class Repository<T extends IEntity> implements IRepository<T>  
     const result = await this._db.collection(this._collectionName).insertOne(value);
     return result.insertedId.toString();
   }
+
+  async updateOneById(key: string, values: Partial<T>, user_id: string): Promise<string> {
+    // Id must not be empty
+    assert(CommonRepositoryValidator.checkIfUserIdIsNotEmpty(key), CommonRepositoryValidator.checkIfUserIdIsEmptyMessage);
+    // UserId must not be empty
+    assert(CommonRepositoryValidator.checkIfIdIsNotEmpty(user_id), CommonRepositoryValidator.checkIfIdEmptyMessage);
+    const _filters = {
+      _id: new ObjectId(key),
+      user_id: user_id
+    };    
+    const _updateFilter = { $set: values };
+    const _updateOption = {upsert: false};
+    const result = await this._db.collection(this._collectionName).updateOne(_filters,_updateFilter,_updateOption);
+    return result.toString();
+  }
 }
