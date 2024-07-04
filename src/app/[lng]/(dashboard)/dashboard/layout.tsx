@@ -1,5 +1,6 @@
 import Header from '@/src/lib/presenter/components/layout/header';
 import Sidebar from '@/src/lib/presenter/components/layout/sidebar';
+import StoreProvider from '@/src/lib/store/store-provider';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -17,7 +18,11 @@ export default function DashboardLayout({
       <Header />
       <div className="flex h-screen overflow-hidden">
         <Sidebar />
-        <main className="w-full pt-16">{children}</main>
+        <main className="w-full pt-16">
+          <StoreProvider>
+            {children}
+          </StoreProvider>
+        </main>
       </div>
     </>
   );

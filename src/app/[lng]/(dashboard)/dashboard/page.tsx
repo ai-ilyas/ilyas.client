@@ -1,8 +1,6 @@
-import { auth } from '@/src/auth';
-import { getAllApplications } from '@/src/lib/core/application/queries/get-all-applications';
 import { ScrollArea } from '@/src/lib/presenter/components/ui/scroll-area';
 import { useTranslation } from '@/src/app/i18n/';
-import ApplicationListWrapper from './(components)/application-list-wrapper';
+import DashboardContainer from './(components)/dashboard-container';
 
 export default async function page({
   params: { lng },
@@ -10,9 +8,6 @@ export default async function page({
   params: { lng: string }
 }) {
   const { t } = await useTranslation(lng);
-  const session = (await auth())!;
-  const applications = await(getAllApplications(true, session.user!.id!));
-  const apps = JSON.parse(JSON.stringify(applications))
   return (
     <ScrollArea className="h-full">
       <div className="flex-1 space-y-4 p-4 pt-6 md:p-8">
@@ -22,7 +17,7 @@ export default async function page({
           </h2>
         </div>
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">              
-              <ApplicationListWrapper lng={lng} apps={ {...apps} }></ApplicationListWrapper>
+              <DashboardContainer lng={lng}></DashboardContainer>
             </div>
       </div>
     </ScrollArea>
