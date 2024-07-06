@@ -13,7 +13,7 @@ export default function LoadingButton(
         children
     }:LoadingButtonProps) {
   return (
-    <Button disabled={loading} type={type}>   
+    <Button disabled={loading} className={loading === true ? 'cursor-wait': ''} type={type}>   
         <span className="mr-2">{text}{ loading }</span>          
         { loading && 
             <div role="status">

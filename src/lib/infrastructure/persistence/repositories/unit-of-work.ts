@@ -22,14 +22,21 @@ class UnitOfWork implements IUnitOfWork {
     this._session!.startTransaction();
   }
 
-  async commitTransaction(): Promise<void> {
+  async commitTransaction(closeSession = true): Promise<void> {
     await this._session!.commitTransaction();
+    if (closeSession) this._session!.endSession();
+  }
+
+  async closeSession(): Promise<void> {
     this._session!.endSession();
   }
 
   async abortTransaction(): Promise<void> {
-    await this._session!.abortTransaction();
-    this._session!.endSession();
+    if (this._session)
+    {
+      await this._session!.abortTransaction();
+      this._session!.endSession();
+    }
   }
 }
 

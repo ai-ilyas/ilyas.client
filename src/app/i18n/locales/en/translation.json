@@ -18,7 +18,7 @@
     "application_informationApplicationForm_information": "Information",
     "application_informationApplicationForm_description": "Description",
     "application_informationApplicationForm_savelabel": "Save",
-    "application_page_newProject": "New Project"
+    "application_page_newProject": "New Project",
 
-
+    "spinner_loading_loading": "Loading..."
 }

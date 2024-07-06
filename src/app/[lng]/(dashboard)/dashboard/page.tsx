@@ -15,10 +15,8 @@ export default async function page({
           <h2 className="text-3xl font-bold tracking-tight">
             {t("dashboard_home_myApplications")}
           </h2>
-        </div>
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">              
-              <DashboardContainer lng={lng}></DashboardContainer>
-            </div>
+        </div>         
+        <DashboardContainer lng={lng}></DashboardContainer>
       </div>
     </ScrollArea>
   );

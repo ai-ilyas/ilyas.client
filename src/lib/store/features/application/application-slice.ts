@@ -25,11 +25,31 @@ const applicationSlice = createSlice({
         state.status = 'failed'
         state.error = action.error.message;
       })
+      .addCase(postNewApplication.pending, (state, action) => {
+        state.status = 'adding'
+      })
+      .addCase(postNewApplication.fulfilled, (state, action) => {
+        state.status = 'succeeded'
+        state.applications.push(action.payload);
+      })
+      .addCase(postNewApplication.rejected, (state, action) => {
+        state.status = 'failed'
+        state.error = action.error.message;
+      })
   }
 })
 
+const apiRoot = "/en/api/application";
+
 export const fetchApplications = createAsyncThunk('application/getAll', async () => {
-   return (await fetch('/en/api/application')).json();
+   return (await fetch(apiRoot)).json();
+});
+
+export const postNewApplication = createAsyncThunk('application/newApplication', async (applicationName: string) => {
+  return (await fetch(apiRoot + "/create", {
+    method: 'POST',
+    body: applicationName,
+  })).json();
 });
 
 export const selectAllApplications = (state: RootState) => state.applications.applications;
