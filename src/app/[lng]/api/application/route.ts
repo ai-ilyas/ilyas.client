@@ -3,6 +3,6 @@ import { getAllApplications } from '@/src/lib/core/application/queries/get-all-a
 
 export async function GET(req: Request) {  
     const session = (await auth())!;
-    const applications = await(getAllApplications(true, session.user!.id!));
+    const applications = await(getAllApplications(session.user!.id!));
     return Response.json(applications, { status : 200 });
 }

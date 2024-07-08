@@ -1,19 +1,21 @@
 import { Button } from "../ui/button";
 interface LoadingButtonProps {
+    disabled?: boolean;
     loading: boolean;
     type: "button" | "submit" | undefined;
     text: string;
-    children: React.ReactNode;
+    children?: React.ReactNode;
   }
 export default function LoadingButton(
     {
+        disabled,
         loading,
         type,
         text,
         children
     }:LoadingButtonProps) {
   return (
-    <Button disabled={loading} className={loading === true ? 'cursor-wait': ''} type={type}>   
+    <Button disabled={loading || disabled} className={loading === true ? 'cursor-wait': ''} type={type}>   
         <span className="mr-2">{text}{ loading }</span>          
         { loading && 
             <div role="status">

@@ -34,7 +34,7 @@ class UnitOfWork implements IUnitOfWork {
   async abortTransaction(): Promise<void> {
     if (this._session)
     {
-      await this._session!.abortTransaction();
+      if (this._session.inTransaction()) await this._session!.abortTransaction();
       this._session!.endSession();
     }
   }

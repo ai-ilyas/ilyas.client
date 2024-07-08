@@ -4,6 +4,7 @@
     "common_error_min": "Application Name must be at least {{length}} characters",
     "common_error_max": "Application Name must be max {{length}} characters",
     "common_toast_error_title": "Oh oh! Something went wrong.",
+    "common_save": "Save",
 
     "dashboard_home_myApplications": "My applications",
     "dashboard_home_newApplication": "New application",
@@ -17,8 +18,9 @@
     "application_informationApplicationForm_applicationName": "Application Name",
     "application_informationApplicationForm_information": "Information",
     "application_informationApplicationForm_description": "Description",
-    "application_informationApplicationForm_savelabel": "Save",
     "application_page_newProject": "New Project",
+    "application_toast_errorOccuredDuringUpdatingProcess": "Error during the updating process.",
+    "application_toast_applicationHasBeenUpdated": "Application has been updated",
 
     "spinner_loading_loading": "Loading..."
 }

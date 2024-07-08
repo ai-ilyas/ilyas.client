@@ -12,11 +12,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/src/lib/presenter/co
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/src/lib/presenter/components/ui/form';
 import { Input } from '@/src/lib/presenter/components/ui/input';
 import { toast } from '@/src/lib/presenter/components/ui/use-toast';
-import { postNewApplication } from '@/src/lib/store/features/application/application-slice';
+import { insertApplication } from '@/src/lib/store/features/application/application-slice';
 import { useAppDispatch } from '@/src/lib/store/hooks';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { BaseSyntheticEvent, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -51,12 +51,12 @@ const createApplicationForm: React.FC<CreateApplicationFormProps> = ({ apps, lng
     defaultValues
   });
 
-  const onSubmit = async (data: ApplicationFormValues, event: Event) => {
+  const onSubmit = async (data: ApplicationFormValues, event: BaseSyntheticEvent<object, any, any>) => {
     event.preventDefault();
     setLoading(true);
     setIsNameAlreadyExists(false);
     try{
-      const newApp = (await dispatch(postNewApplication(data.applicationName)).unwrap()) as IApplication;
+      const newApp = (await dispatch(insertApplication(data.applicationName)).unwrap()) as IApplication;
       router.push(applicationUrl + newApp._id);
     }
     catch(error)
@@ -104,7 +104,7 @@ const createApplicationForm: React.FC<CreateApplicationFormProps> = ({ apps, lng
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit((data, event) =>onSubmit(data, event))}>
+        <form onSubmit={form.handleSubmit((data, event) =>onSubmit(data, event!))}>
           <DialogHeader>
             <DialogTitle>{t("dashboard_home_createANewApplication")}</DialogTitle>
                 <div className="gap-8">

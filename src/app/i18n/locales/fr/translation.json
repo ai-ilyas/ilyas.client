@@ -4,6 +4,7 @@
     "common_error_min": "Le nom de l'application doit comporter au moins {{length}} caractères",
     "common_error_max": "Le nom de l'application doit comporter au maximum {{length}} caractères",
     "common_toast_error_title": "Oh oh! Quelque chose s'est mal passé.",
+    "common_save": "Sauvegarder",
 
     "dashboard_home_myApplications": "Mes applications",
     "dashboard_home_newApplication": "Nouvelle application",
@@ -17,8 +18,9 @@
     "application_informationApplicationForm_applicationName": "Nom d'Application",
     "application_informationApplicationForm_information": "Information",
     "application_informationApplicationForm_description": "Description",
-    "application_informationApplicationForm_savelabel": "Sauvegarder",
     "application_page_newProject": "Nouveau Projet",
+    "application_toast_errorOccuredDuringUpdatingProcess": "Erreur durant le processus de mise à jour.",
+    "application_toast_applicationHasBeenUpdated": "L'application a été mise à jour",
 
     "spinner_loading_loading": "Chargement..."
 }

@@ -15,25 +15,56 @@ const applicationSlice = createSlice({
   extraReducers(builder) {
     builder
       .addCase(fetchApplications.pending, (state, action) => {
-        state.status = 'loading'
+        state.status = 'loading';
       })
       .addCase(fetchApplications.fulfilled, (state, action) => {
-        state.status = 'succeeded'
+        state.status = 'succeeded';
         state.applications = action.payload;
       })
       .addCase(fetchApplications.rejected, (state, action) => {
-        state.status = 'failed'
+        state.status = 'failed';
         state.error = action.error.message;
       })
-      .addCase(postNewApplication.pending, (state, action) => {
-        state.status = 'adding'
+
+      .addCase(insertApplication.pending, (state, action) => {
+        state.status = 'adding';
       })
-      .addCase(postNewApplication.fulfilled, (state, action) => {
-        state.status = 'succeeded'
+      .addCase(insertApplication.fulfilled, (state, action) => {
+        state.status = 'succeeded';
         state.applications.push(action.payload);
       })
-      .addCase(postNewApplication.rejected, (state, action) => {
-        state.status = 'failed'
+      .addCase(insertApplication.rejected, (state, action) => {
+        state.status = 'failed adding';
+        state.error = action.error.message;
+      })
+            
+      .addCase(updateApplication.pending, (state, action) => {
+        state.status = 'updating';
+      })
+      .addCase(updateApplication.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        const appIndex = state.applications.findIndex((x: IApplication) => x._id === action.payload._id)
+        if (appIndex !== -1) {
+          state.applications[appIndex] = {
+            ...state.applications[appIndex],
+            ...action.payload
+          };
+        }
+      })
+      .addCase(updateApplication.rejected, (state, action) => {
+        state.status = 'failed updating';
+        state.error = action.error.message;
+      })
+
+      .addCase(getApplication.pending, (state, action) => {
+        state.status = 'loading';
+      })
+      .addCase(getApplication.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.applications = action.payload;
+      })
+      .addCase(getApplication.rejected, (state, action) => {
+        state.status = 'failed';
         state.error = action.error.message;
       })
   }
@@ -45,10 +76,24 @@ export const fetchApplications = createAsyncThunk('application/getAll', async ()
    return (await fetch(apiRoot)).json();
 });
 
-export const postNewApplication = createAsyncThunk('application/newApplication', async (applicationName: string) => {
+export const getApplication = createAsyncThunk('application/getApplication', async (id: string) => {
+  return (await fetch(`${apiRoot}/${id}`)).json();
+});
+
+export const insertApplication = createAsyncThunk('application/insertApplication', async (applicationName: string) => {
   return (await fetch(apiRoot + "/create", {
     method: 'POST',
     body: applicationName,
+  })).json();
+});
+
+export const updateApplication = createAsyncThunk('application/updateApplication', async (application: Partial<IApplication>) => {
+  return (await fetch(apiRoot + "/update", {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(application)
   })).json();
 });
 

@@ -1,36 +1,45 @@
-import { auth } from '@/src/auth';
+'use client'
 import BreadCrumb from '@/src/lib/presenter/components/breadcrumb';
 import { Canvas } from '@/src/lib/presenter/components/ui/diagram';
 import { ScrollArea } from '@/src/lib/presenter/components/ui/scroll-area';
 import NotFound from '@/src/app/[lng]/not-found';
 import InformationApplicationForm from './(components)/information-application-form';
-import { IApplication } from '@/src/lib/domain/entities/application.interface';
-import { getAllApplications } from '@/src/lib/core/application/queries/get-all-applications';
+import { useAppDispatch, useAppSelector } from '@/src/lib/store/hooks';
+import { fetchApplications, getApplication, selectAllApplications, selectApplicationById, selectApplicationStatus } from '@/src/lib/store/features/application/application-slice';
+import { useEffect } from 'react';
+import SpinnerLoading from '@/src/lib/presenter/components/spinner-loading';
 
 
-const getApplications = async () : Promise<IApplication[]> => {
-  const session = (await auth())!;
-  return await getAllApplications(true, session.user!.id!);
-}
-
-export default async function page({
+export default function page({
   params: { lng, applicationId }
 }: {
   params: { lng: string; applicationId: string };
 }) {
-  
   if (typeof applicationId !== 'string') return <NotFound></NotFound>;
+  const dispatch = useAppDispatch();
+  const applications = useAppSelector(selectAllApplications);
+  const app = useAppSelector(state => selectApplicationById(state, applicationId));
+  const applicationsStatus = useAppSelector(selectApplicationStatus);
 
-  const applications = JSON.parse(JSON.stringify(await getApplications())) as IApplication[];
-  const app = applications.find((x) => x._id === applicationId);
-  if (app == undefined) return <NotFound></NotFound>;
-
+  useEffect(() => {
+    dispatch(getApplication(applicationId));
+  }, [dispatch])
   const breadcrumbItems = [
     {
-      title: app!.name,
-      link: '/dashboard/' + app._id
+      title: app?.name ?? '',
+      link: '/dashboard/' + app?._id
     }
   ];
+
+  if (applicationsStatus === 'loading')
+  {
+    return (
+      <div className="top-2/4">
+        <SpinnerLoading lng={lng}></SpinnerLoading>
+      </div>
+    );  
+  }
+
   return (
     <ScrollArea className="h-full">
 
@@ -44,8 +53,9 @@ export default async function page({
 
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <InformationApplicationForm
-            app={app}
+            app={app!}
             lng={lng}
+            apps={applications}
           ></InformationApplicationForm>
         </div>
           <Canvas></Canvas>
