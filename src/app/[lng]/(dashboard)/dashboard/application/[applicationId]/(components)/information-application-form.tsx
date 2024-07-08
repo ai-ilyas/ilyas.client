@@ -23,7 +23,7 @@ import { toast } from '@/src/lib/presenter/components/ui/use-toast';
 import { updateApplication } from '@/src/lib/store/features/application/application-slice';
 import { useAppDispatch } from '@/src/lib/store/hooks';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -75,12 +75,14 @@ const informationApplicationForm: React.FC<UpdateApplicationFormProps> = ({
     setLoading(true);
     setIsNameAlreadyExists(false);
     try{
-      await dispatch(updateApplication({ _id: app._id, ...data } as Partial<IApplication>)).unwrap();    
+      const updatedApp = await dispatch(updateApplication({ _id: app._id, ...data } as Partial<IApplication>)).unwrap() as IApplication;    
       toast({
         title: t("application_toast_applicationHasBeenUpdated") ,
         variant: 'default'
       });
       setLoading(false);
+      const formValues = form.getValues();
+      if (updatedApp.name === formValues.name && updatedApp.description === formValues.description) setFormHasChanged(false);
     }
     catch(error)
     {
