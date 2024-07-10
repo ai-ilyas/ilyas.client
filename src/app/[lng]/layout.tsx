@@ -7,6 +7,7 @@ import './globals.css';
 import { auth } from '@/src/auth';
 import { languages } from '../i18n/settings';
 import { dir } from 'i18next';
+import ConvexClientProvider from '@/src/lib/presenter/components/convex-client-provider';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -34,10 +35,10 @@ export default async function RootLayout({
   return (
     <html lang={lng} dir={dir(lng)} suppressHydrationWarning>
       <body className={`${inter.className} overflow-hidden`}>
-        <Providers session={session}>
+        <ConvexClientProvider session={session}>
           <Toaster />
           {children}
-        </Providers>
+        </ConvexClientProvider>
       </body>
     </html>
   );

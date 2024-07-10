@@ -52,4 +52,9 @@ export default auth((req) => {
   }
 });
 
-export const config = { matcher: ['/((?!_next/static|_next/image|.*\\.png$|fr/api/auth/session|en/api/auth/session).*)'] };
+export const config = 
+  {
+    matcher: [
+      '/((?!_next/static|_next/image|.*\\.png$|fr/api/auth/*|en/api/auth/*).*)'
+    ] 
+  };

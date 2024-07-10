@@ -1,29 +1,34 @@
-import { PrismaAdapter } from '@auth/prisma-adapter';
-import { PrismaClient } from '@prisma/client';
 import { NextAuthConfig } from 'next-auth';
 import GithubProvider from 'next-auth/providers/github';
 import GoogleProvider from "next-auth/providers/google";
 import AzureAD from "next-auth/providers/microsoft-entra-id";
+import { ConvexAdapter } from '../convex/convexAdapter';
+import { importPKCS8, SignJWT } from "jose";
 
-class Prisma{
-  public static PrismaClient: PrismaClient;
-
-  public static getPrismaClient() {
-    // create a new instance of PrismaClient if one isn't already created
-    this.PrismaClient ||= new PrismaClient();
-    return this.PrismaClient;
-  }
-}
-
-const prisma = Prisma.getPrismaClient()
+const CONVEX_SITE_URL = process.env.NEXT_PUBLIC_CONVEX_URL!.replace(
+  /.cloud$/,
+  ".site",
+);
 
 const authConfig = {
-  adapter: PrismaAdapter(prisma),  
+  adapter: ConvexAdapter,  
   callbacks: {
     async session({ session, token }) {
-      session.user.id = token.sub as string;
-      return session;
-    }
+      const privateKey = await importPKCS8(
+        process.env.CONVEX_AUTH_PRIVATE_KEY!,
+        "RS256",
+      );
+      const convexToken = await new SignJWT({
+        sub: session.userId,
+      })
+        .setProtectedHeader({ alg: "RS256" })
+        .setIssuedAt()
+        .setIssuer(CONVEX_SITE_URL)
+        .setAudience("convex")
+        .setExpirationTime("1h")
+        .sign(privateKey);
+      return { ...session, convexToken };
+    },
   },
   session: { strategy: "jwt" },
   providers: [
@@ -59,5 +64,11 @@ const authConfig = {
     signOut: '/' //sigin out
   }
 } satisfies NextAuthConfig;
+
+declare module "next-auth" {
+  interface Session {
+    convexToken: string;
+  }
+}
 
 export default authConfig;
