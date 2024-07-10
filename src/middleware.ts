@@ -20,7 +20,7 @@ export async function middleware(req: NextRequest) {
 
   if (req.nextUrl.pathname.startsWith(`/${lng}` + "/api/auth"))
   {
-    return NextResponse.redirect(new URL(`/en${req.nextUrl.pathname.replace(lng, '')}`, req.url))
+    return NextResponse.redirect(new URL(`/en${req.nextUrl.pathname.replace(`/${lng}`, '')}`, req.url))
   }
 
   const authResponse = await NextAuth(authConfig).auth();
