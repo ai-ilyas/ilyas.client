@@ -18,6 +18,11 @@ export async function middleware(req: NextRequest) {
   if (!lng) lng = acceptLanguage.get(req.headers.get('Accept-Language'))
   if (!lng) lng = fallbackLng
 
+  if (req.nextUrl.pathname.startsWith(`/${lng}` + "/api/auth"))
+  {
+    return NextResponse.redirect(new URL(`/en${req.nextUrl.pathname.replace(lng, '')}`, req.url))
+  }
+
   const authResponse = await NextAuth(authConfig).auth();
   const isAuthenticated: boolean = Boolean(authResponse?.user);
 
@@ -55,6 +60,6 @@ export default auth((req) => {
 export const config = 
   {
     matcher: [
-      '/((?!_next/static|_next/image|.*\\.png$|fr/api/auth/*|en/api/auth/*).*)'
+      '/((?!_next/static|_next/image|.*\\.png$|en/api/auth/*).*)'
     ] 
   };
