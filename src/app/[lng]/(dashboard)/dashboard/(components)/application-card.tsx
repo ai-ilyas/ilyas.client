@@ -1,6 +1,6 @@
 'use client'
 import { IApplication } from "@/src/lib/domain/entities/application.interface"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src/lib/presenter/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src/components/ui/card"
 import Link from "next/link"
 import moment from 'moment';
 

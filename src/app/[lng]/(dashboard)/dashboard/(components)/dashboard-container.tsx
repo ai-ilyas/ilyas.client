@@ -1,7 +1,7 @@
 'use client'
 import CreateApplicationForm from './create-application-form';
 import { ApplicationCard } from './application-card';
-import SpinnerLoading from '@/src/lib/presenter/components/spinner-loading';
+import SpinnerLoading from '@/src/components/spinner-loading';
 import { useQuery } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 

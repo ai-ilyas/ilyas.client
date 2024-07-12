@@ -3,15 +3,15 @@
 import { useState } from 'react';
 import { Message, continueConversation, continueConversationWithStreamedObject } from './actions';
 import { readStreamableValue } from 'ai/rsc';
-import { Button } from '@/src/lib/presenter/components/ui/button';
-import { Textarea } from '@/src/lib/presenter/components/ui/textarea';
-import { Badge } from '@/src/lib/presenter/components/ui/badge';
+import { Button } from '@/src/components/ui/button';
+import { Textarea } from '@/src/components/ui/textarea';
+import { Badge } from '@/src/components/ui/badge';
 
 import {
   Alert,
   AlertDescription,
   AlertTitle,
-} from "@/src/lib/presenter/components/ui/alert"
+} from "@/src/components/ui/alert"
 
 
 export default function Chat() {

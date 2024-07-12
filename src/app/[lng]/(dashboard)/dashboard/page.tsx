@@ -1,4 +1,4 @@
-import { ScrollArea } from '@/src/lib/presenter/components/ui/scroll-area';
+import { ScrollArea } from '@/src/components/ui/scroll-area';
 import { useTranslation } from '@/src/app/i18n/';
 import DashboardContainer from './(components)/dashboard-container';
 

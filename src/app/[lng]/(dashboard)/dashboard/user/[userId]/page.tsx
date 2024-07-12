@@ -1,6 +1,6 @@
-import BreadCrumb from '@/src/lib/presenter/components/breadcrumb';
-import { ProductForm } from '@/src/lib/presenter/components/forms/product-form';
-import { ScrollArea } from '@/src/lib/presenter/components/ui/scroll-area';
+import BreadCrumb from '@/src/components/breadcrumb';
+import { ProductForm } from '@/src/components/forms/product-form';
+import { ScrollArea } from '@/src/components/ui/scroll-area';
 import React from 'react';
 
 export default function Page() {

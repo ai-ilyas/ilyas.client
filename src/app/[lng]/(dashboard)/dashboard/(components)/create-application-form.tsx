@@ -1,16 +1,16 @@
 'use client'
 import { useTranslation } from '@/src/app/i18n/client';
 import { IApplication } from '@/src/lib/domain/entities/application.interface';
-import LoadingButton from '@/src/lib/presenter/components/buttons/loading-button';
+import LoadingButton from '@/src/components/buttons/loading-button';
 import { Dialog,
   DialogContent,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger, } from '@/src/lib/presenter/components/ui/dialog';
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/lib/presenter/components/ui/card';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/src/lib/presenter/components/ui/form';
-import { Input } from '@/src/lib/presenter/components/ui/input';
+  DialogTrigger, } from '@/src/components/ui/dialog';
+import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/src/components/ui/form';
+import { Input } from '@/src/components/ui/input';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import { BaseSyntheticEvent, useState } from 'react';

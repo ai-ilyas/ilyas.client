@@ -2,14 +2,14 @@
 import { api } from '@/convex/_generated/api';
 import { IApplication } from '@/convex/applications';
 import { useTranslation } from '@/src/app/i18n/client';
-import LoadingButton from '@/src/lib/presenter/components/buttons/loading-button';
+import LoadingButton from '@/src/components/buttons/loading-button';
 
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle
-} from '@/src/lib/presenter/components/ui/card';
+} from '@/src/components/ui/card';
 import {
   Form,
   FormControl,
@@ -17,10 +17,10 @@ import {
   FormItem,
   FormLabel,
   FormMessage
-} from '@/src/lib/presenter/components/ui/form';
-import { Input } from '@/src/lib/presenter/components/ui/input';
-import { Textarea } from '@/src/lib/presenter/components/ui/textarea';
-import { toast } from '@/src/lib/presenter/components/ui/use-toast';
+} from '@/src/components/ui/form';
+import { Input } from '@/src/components/ui/input';
+import { Textarea } from '@/src/components/ui/textarea';
+import { toast } from '@/src/components/ui/use-toast';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from 'convex/react';
 import { useState } from 'react';

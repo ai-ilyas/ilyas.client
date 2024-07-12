@@ -1,10 +1,10 @@
 'use client'
-import BreadCrumb from '@/src/lib/presenter/components/breadcrumb';
-import { Canvas } from '@/src/lib/presenter/components/ui/diagram';
-import { ScrollArea } from '@/src/lib/presenter/components/ui/scroll-area';
+import BreadCrumb from '@/src/components/breadcrumb';
+import { Canvas } from '@/src/components/ui/diagram';
+import { ScrollArea } from '@/src/components/ui/scroll-area';
 import NotFound from '@/src/app/[lng]/not-found';
 import InformationApplicationForm from './(components)/information-application-form';
-import SpinnerLoading from '@/src/lib/presenter/components/spinner-loading';
+import SpinnerLoading from '@/src/components/spinner-loading';
 import { useQuery } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 

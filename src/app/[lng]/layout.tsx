@@ -1,5 +1,5 @@
-import Providers from '@/src/lib/presenter/components/layout/providers';
-import { Toaster } from '@/src/lib/presenter/components/ui/toaster';
+import Providers from '@/src/components/layout/providers';
+import { Toaster } from '@/src/components/ui/toaster';
 import '@uploadthing/react/styles.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
@@ -7,7 +7,7 @@ import './globals.css';
 import { auth } from '@/src/auth';
 import { languages } from '../i18n/settings';
 import { dir } from 'i18next';
-import ConvexClientProvider from '@/src/lib/presenter/components/convex-client-provider';
+import ConvexClientProvider from '@/src/components/convex-client-provider';
 
 const inter = Inter({ subsets: ['latin'] });
 

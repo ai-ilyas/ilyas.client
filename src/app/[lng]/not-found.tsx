@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 
-import { Button } from '@/src/lib/presenter/components/ui/button';
+import { Button } from '@/src/components/ui/button';
 
 export default function NotFound() {
   const router = useRouter();
