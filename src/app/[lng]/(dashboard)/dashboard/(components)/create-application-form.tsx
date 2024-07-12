@@ -11,14 +11,13 @@ import { Dialog,
 import { Card, CardContent, CardHeader, CardTitle } from '@/src/lib/presenter/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/src/lib/presenter/components/ui/form';
 import { Input } from '@/src/lib/presenter/components/ui/input';
-import { toast } from '@/src/lib/presenter/components/ui/use-toast';
-import { insertApplication } from '@/src/lib/store/features/application/application-slice';
-import { useAppDispatch } from '@/src/lib/store/hooks';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import { BaseSyntheticEvent, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
+import { useMutation } from 'convex/react';
+import { api } from '@/convex/_generated/api';
 
 interface CreateApplicationFormProps {
   apps: IApplication[];
@@ -26,19 +25,18 @@ interface CreateApplicationFormProps {
 }
 
 const createApplicationForm: React.FC<CreateApplicationFormProps> = ({ apps, lng }) => {
-  const { t } = useTranslation(lng)
-  const dispatch = useAppDispatch();
+  const { t } = useTranslation(lng);
+  const insertApplication = useMutation(api.applications.insert);
   const applicationUrl = "/dashboard/application/";
   const router = useRouter();
   const [open, setOpen] = useState(false);
-  let [isNameAlreadyExists, setIsNameAlreadyExists] = useState(false);
 
   const formSchema = z.object({
     applicationName: z
       .string()
       .min(3, { message: t("common_error_min", { length: "3" }) })
       .max(50, { message: t("common_error_max", { length: "50" }) })
-      .refine((val) => !apps.some((x) => x.name === val) && isNameAlreadyExists === false, {
+      .refine((val) => !apps.some((x) => x.name === val), {
         message: t("dashboard_home_applicationNameAlreadyExists"),
       })
   });
@@ -54,26 +52,16 @@ const createApplicationForm: React.FC<CreateApplicationFormProps> = ({ apps, lng
   const onSubmit = async (data: ApplicationFormValues, event: BaseSyntheticEvent<object, any, any>) => {
     event.preventDefault();
     setLoading(true);
-    setIsNameAlreadyExists(false);
     try{
-      const newApp = (await dispatch(insertApplication(data.applicationName)).unwrap()) as IApplication;
-      router.push(applicationUrl + newApp._id);
+      const newAppId = await insertApplication({ name : data.applicationName });
+      router.push(applicationUrl + newAppId);
     }
     catch(error)
     {
-      if (error instanceof Error && error.message.includes("Duplicate name")) setIsNameAlreadyExists(true);
-      toast({
-        variant: 'destructive',
-        title: t("common_toast_error_title"),
-        description:
-          isNameAlreadyExists === true
-          ? t("dashboard_home_toast_applicationNameAlreadyExists", { applicationName: data.applicationName }) 
-          : t("dashboard_home_toast_errorOccuredDuringCreationProcess", { applicationName: data.applicationName })
-      });
       setLoading(false);
     }
   };
-
+ 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger>

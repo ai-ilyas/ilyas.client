@@ -1,6 +1,7 @@
 'use client';
+import { api } from '@/convex/_generated/api';
+import { IApplication } from '@/convex/applications';
 import { useTranslation } from '@/src/app/i18n/client';
-import { IApplication } from '@/src/lib/domain/entities/application.interface';
 import LoadingButton from '@/src/lib/presenter/components/buttons/loading-button';
 
 import {
@@ -20,9 +21,8 @@ import {
 import { Input } from '@/src/lib/presenter/components/ui/input';
 import { Textarea } from '@/src/lib/presenter/components/ui/textarea';
 import { toast } from '@/src/lib/presenter/components/ui/use-toast';
-import { updateApplication } from '@/src/lib/store/features/application/application-slice';
-import { useAppDispatch } from '@/src/lib/store/hooks';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation } from 'convex/react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -39,15 +39,14 @@ const informationApplicationForm: React.FC<UpdateApplicationFormProps> = ({
   apps
 }) => {
   const { t } = useTranslation(lng);
-  const dispatch = useAppDispatch();
-  let [isNameAlreadyExists, setIsNameAlreadyExists] = useState(false);
+  const patchApplication = useMutation(api.applications.patch);
 
   const formSchema = z.object({
     name: z
       .string()
       .min(3, { message: t('common_error_min', { length: '3' }) })
       .max(50, { message: t('common_error_max', { length: '50' }) })
-      .refine((val) => !apps.some((x) => x.name === val && x._id !== app._id) && isNameAlreadyExists === false, {
+      .refine((val) => !apps.some((x) => x.name === val && x._id !== app._id), {
         message: t("dashboard_home_applicationNameAlreadyExists"),
       }),
     description: z
@@ -73,28 +72,17 @@ const informationApplicationForm: React.FC<UpdateApplicationFormProps> = ({
   }
   const onSubmit = async (data: ApplicationFormValues) => {
     setLoading(true);
-    setIsNameAlreadyExists(false);
     try{
-      const updatedApp = await dispatch(updateApplication({ _id: app._id, ...data } as Partial<IApplication>)).unwrap() as IApplication;    
+      await patchApplication({ _id: app._id, name: data.name, description: data.description});
       toast({
         title: t("application_toast_applicationHasBeenUpdated") ,
         variant: 'default'
       });
       setLoading(false);
-      const formValues = form.getValues();
-      if (updatedApp.name === formValues.name && updatedApp.description === formValues.description) setFormHasChanged(false);
+      setFormHasChanged(false);
     }
     catch(error)
     {
-      if (error instanceof Error && error.message.includes("Duplicate name")) setIsNameAlreadyExists(true);
-      toast({
-        variant: 'destructive',
-        title: t("common_toast_error_title"),
-        description:
-          isNameAlreadyExists === true
-          ? t("dashboard_home_toast_applicationNameAlreadyExists", { applicationName: data.name }) 
-          : t("application_toast_errorOccuredDuringUpdatingProcess", { applicationName: data.name })
-      });
       setLoading(false);
     }
   };

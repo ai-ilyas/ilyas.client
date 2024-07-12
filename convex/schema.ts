@@ -76,7 +76,7 @@ export default defineSchema({
   applications: defineTable({
     name: v.string(),
     description: v.optional(v.string()),
-    userId: v.string(),
+    userId: v.id("users"),
     editionTime: v.number()
   }).index("byUserId", ["userId"]),
 });

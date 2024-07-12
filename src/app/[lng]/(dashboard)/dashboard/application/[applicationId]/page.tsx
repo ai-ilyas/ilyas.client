@@ -4,10 +4,9 @@ import { Canvas } from '@/src/lib/presenter/components/ui/diagram';
 import { ScrollArea } from '@/src/lib/presenter/components/ui/scroll-area';
 import NotFound from '@/src/app/[lng]/not-found';
 import InformationApplicationForm from './(components)/information-application-form';
-import { useAppDispatch, useAppSelector } from '@/src/lib/store/hooks';
-import { fetchApplications, getApplication, selectAllApplications, selectApplicationById, selectApplicationStatus } from '@/src/lib/store/features/application/application-slice';
-import { useEffect } from 'react';
 import SpinnerLoading from '@/src/lib/presenter/components/spinner-loading';
+import { useQuery } from 'convex/react';
+import { api } from '@/convex/_generated/api';
 
 
 export default function page({
@@ -16,14 +15,9 @@ export default function page({
   params: { lng: string; applicationId: string };
 }) {
   if (typeof applicationId !== 'string') return <NotFound></NotFound>;
-  const dispatch = useAppDispatch();
-  const applications = useAppSelector(selectAllApplications);
-  const app = useAppSelector(state => selectApplicationById(state, applicationId));
-  const applicationsStatus = useAppSelector(selectApplicationStatus);
+  const applications = useQuery(api.applications.list);
+  const app = applications?.find(x => x._id == applicationId);
 
-  useEffect(() => {
-    dispatch(getApplication(applicationId));
-  }, [dispatch])
   const breadcrumbItems = [
     {
       title: app?.name ?? '',
@@ -31,7 +25,7 @@ export default function page({
     }
   ];
 
-  if (applicationsStatus === 'loading')
+  if (app == undefined)
   {
     return (
       <div className="top-2/4">
@@ -55,7 +49,7 @@ export default function page({
           <InformationApplicationForm
             app={app!}
             lng={lng}
-            apps={applications}
+            apps={applications!}
           ></InformationApplicationForm>
         </div>
           <Canvas></Canvas>
