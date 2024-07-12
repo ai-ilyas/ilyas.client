@@ -70,9 +70,13 @@ const authTables = {
     .index("credentialID", ["credentialID"]),
 };
 
+
 export default defineSchema({
   ...authTables,
-  // your other tables
-	// or pass `strictTableNameTypes: false`
-	// in the second argument argument to `defineSchema`
+  applications: defineTable({
+    name: v.string(),
+    description: v.optional(v.string()),
+    userId: v.string(),
+    editionTime: v.number()
+  }).index("byUserId", ["userId"]),
 });

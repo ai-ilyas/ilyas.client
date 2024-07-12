@@ -25,7 +25,7 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({ apps, lng}) =>
                     </CardHeader>
                     <CardContent>
                         <div className="flex space-x-4 text-sm text-muted-foreground">
-                            <div>Updated { moment(app.editionDate).fromNow() }</div>
+                            <div>Updated { moment(new Date(app.editionTime)).fromNow() }</div>
                         </div>
                     </CardContent>
                     </Card>

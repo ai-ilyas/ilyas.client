@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "dev:backend": "convex dev",
     "lint": "next lint",
     "format": "prettier . --write",
     "postinstall": "patch-package --patch-dir src/patches"

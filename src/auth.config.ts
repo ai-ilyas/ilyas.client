@@ -19,7 +19,7 @@ const authConfig = {
         "RS256",
       );
       const convexToken = await new SignJWT({
-        sub: session.userId,
+        sub: token.sub,
       })
         .setProtectedHeader({ alg: "RS256" })
         .setIssuedAt()
