@@ -8,7 +8,6 @@ import { Input } from '@/src/components/ui/input';
 import { Textarea } from '@/src/components/ui/textarea';
 import useConvexAutoSave from '@/src/hooks/useAutosave';
 import { useEffect } from 'react';
-import useDeepCompareEffect from 'use-deep-compare-effect'
 import { z } from 'zod';
 
 interface UpdateApplicationFormProps {
