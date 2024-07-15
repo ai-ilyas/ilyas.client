@@ -3,27 +3,14 @@ import { api } from '@/convex/_generated/api';
 import { IApplication } from '@/convex/applications';
 import { useTranslation } from '@/src/app/i18n/client';
 import LoadingButton from '@/src/components/buttons/loading-button';
-
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle
-} from '@/src/components/ui/card';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage
-} from '@/src/components/ui/form';
+import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/src/components/ui/form';
 import { Input } from '@/src/components/ui/input';
 import { Textarea } from '@/src/components/ui/textarea';
 import { toast } from '@/src/components/ui/use-toast';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from 'convex/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -52,6 +39,7 @@ const informationApplicationForm: React.FC<UpdateApplicationFormProps> = ({
     description: z
       .string()
       .max(500, { message: t('common_error_max', { length: '500' }) })
+      .optional()
   });
 
   type ApplicationFormValues = z.infer<typeof formSchema>;
@@ -65,11 +53,16 @@ const informationApplicationForm: React.FC<UpdateApplicationFormProps> = ({
     defaultValues
   });
 
+  useEffect(()=> {
+    app && form.reset(app);
+  }, [app])
+
   function handleFormChanged() {
     if (!formHasChanged) {
       setFormHasChanged(true);
     }
   }
+  
   const onSubmit = async (data: ApplicationFormValues) => {
     setLoading(true);
     try{
@@ -97,7 +90,7 @@ const informationApplicationForm: React.FC<UpdateApplicationFormProps> = ({
         <Card>
           <CardHeader>
             <div className="flex items-start">
-              <CardTitle>{t('application_informationApplicationForm_information')}</CardTitle>
+              <CardTitle>{t('application_informationApplicationForm_information')} {app.name}</CardTitle>
               <div className="items-center max-h-0.5 gap-2 md:ml-auto md:flex">                
                 <LoadingButton disabled={!formHasChanged} loading={loading} type="submit" text={t('common_save')}>
                 </LoadingButton>                
