@@ -2,16 +2,13 @@
 import { api } from '@/convex/_generated/api';
 import { IApplication } from '@/convex/applications';
 import { useTranslation } from '@/src/app/i18n/client';
-import LoadingButton from '@/src/components/buttons/loading-button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/src/components/ui/form';
 import { Input } from '@/src/components/ui/input';
 import { Textarea } from '@/src/components/ui/textarea';
-import { toast } from '@/src/components/ui/use-toast';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation } from 'convex/react';
-import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import useConvexAutoSave from '@/src/hooks/useAutosave';
+import { useEffect } from 'react';
+import useDeepCompareEffect from 'use-deep-compare-effect'
 import { z } from 'zod';
 
 interface UpdateApplicationFormProps {
@@ -26,7 +23,6 @@ const informationApplicationForm: React.FC<UpdateApplicationFormProps> = ({
   apps
 }) => {
   const { t } = useTranslation(lng);
-  const patchApplication = useMutation(api.applications.patch);
 
   const formSchema = z.object({
     name: z
@@ -42,59 +38,25 @@ const informationApplicationForm: React.FC<UpdateApplicationFormProps> = ({
       .optional()
   });
 
-  type ApplicationFormValues = z.infer<typeof formSchema>;
-  const [loading, setLoading] = useState(false);
-  const [formHasChanged, setFormHasChanged] = useState(false);
-
-  const defaultValues = app;
-
-  const form = useForm<ApplicationFormValues>({
-    resolver: zodResolver(formSchema),
-    defaultValues
-  });
+  const { form, isSaving }= useConvexAutoSave({ _id: app._id, name: app?.name, description: app?.description }, formSchema, api.applications.patch, lng, 1000);
 
   useEffect(()=> {
-    app && form.reset(app);
+    const values = form.getValues();
+    if (form && !form.formState.isDirty && app && (app.name !== values.name || app.description !== values.description))
+      {
+        form.reset({ _id: app._id, name: app?.name, description: app?.description });
+      } 
   }, [app])
 
-  function handleFormChanged() {
-    if (!formHasChanged) {
-      setFormHasChanged(true);
-    }
-  }
-  
-  const onSubmit = async (data: ApplicationFormValues) => {
-    setLoading(true);
-    try{
-      await patchApplication({ _id: app._id, name: data.name, description: data.description});
-      toast({
-        title: t("application_toast_applicationHasBeenUpdated") ,
-        variant: 'default'
-      });
-      setLoading(false);
-      setFormHasChanged(false);
-    }
-    catch(error)
-    {
-      setLoading(false);
-    }
-  };
-
   return (
-    <Form {...form}>
+    form && <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        onChange={() => handleFormChanged()}
         className="space-y-8"
       >
         <Card>
           <CardHeader>
             <div className="flex items-start">
               <CardTitle>{t('application_informationApplicationForm_information')} {app.name}</CardTitle>
-              <div className="items-center max-h-0.5 gap-2 md:ml-auto md:flex">                
-                <LoadingButton disabled={!formHasChanged} loading={loading} type="submit" text={t('common_save')}>
-                </LoadingButton>                
-              </div>
             </div>
           </CardHeader>
           <CardContent>
@@ -114,7 +76,7 @@ const informationApplicationForm: React.FC<UpdateApplicationFormProps> = ({
                   )}
                 />
                 <FormField
-                  control={form.control}
+                  control={form!.control}
                   name="description"
                   render={({ field }) => (
                     <FormItem>
