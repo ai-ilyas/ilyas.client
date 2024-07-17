@@ -1,10 +1,14 @@
 {
     "common_cancel": "Cancel",
     "common_create": "Create",
+    "common_remove": "Remove",
+    "common_add": "Add",
     "common_error_min": "Application Name must be at least {{length}} characters",
     "common_error_max": "Application Name must be max {{length}} characters",
     "common_toast_error_title": "Oh oh! Something went wrong.",
     "common_save": "Save",
+    "common_tags": "Tags",
+    "common_label": "Label",
 
     "dashboard_home_myApplications": "My applications",
     "dashboard_home_newApplication": "New application",
@@ -22,5 +26,15 @@
     "application_toast_errorOccuredDuringUpdatingProcess": "Error during the updating process.",
     "application_toast_applicationHasBeenUpdated": "Application has been updated",
 
-    "spinner_loading_loading": "Loading..."
+    "spinner_loading_loading": "Loading...",
+
+    "customTags_addATag": "Add a tag",
+    "customTags_selectOrCreateTag": "Select oan existing tag or create a new one.",
+    "customTags_label": "New tag label",
+    "customTags_color": "Choose tag color",
+    "customTags_labelAlreadyExistsWithThisColor": "Label already exists with this color",
+    "customTags_removeTag": "Remove tag",
+    "customTags_areYouSureYouWantToRemoveThisTag": "Are you sure you want to remove the following tag ?",
+    "customTags_tagHasBeenAdded": "Tag has been added with success",
+    "customTags_tagAddedError": "Error: Tag hasn't been added"
 }

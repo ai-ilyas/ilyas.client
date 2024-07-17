@@ -7,6 +7,7 @@ import InformationApplicationForm from './(components)/information-application-f
 import SpinnerLoading from '@/src/components/spinner-loading';
 import { useQuery } from 'convex/react';
 import { api } from '@/convex/_generated/api';
+import ApplicationTags from './(components)/application-tags';
 
 
 export default function page({
@@ -16,7 +17,7 @@ export default function page({
 }) {
   if (typeof applicationId !== 'string') return <NotFound></NotFound>;
   const applications = useQuery(api.applications.list);
-  const app = applications?.find(x => x._id == applicationId);
+  const app =useQuery(api.applications.findOne, { id: applicationId });
 
   const breadcrumbItems = [
     {
@@ -51,8 +52,12 @@ export default function page({
             lng={lng}
             apps={applications!}
           ></InformationApplicationForm>
+          <ApplicationTags 
+            app={app!}
+            lng={lng}
+            apps={applications!}></ApplicationTags>
         </div>
-          <Canvas></Canvas>
+        
       </div>
     </ScrollArea>
   );

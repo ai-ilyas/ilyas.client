@@ -1,5 +1,6 @@
 import { defineSchema, defineTable } from "convex/server";
 import { Validator, v } from "convex/values";
+import { APPLICATIONS_TABLE, TAGS_TABLE } from "./tableNames";
 
 // The users, accounts, sessions and verificationTokens tables are modeled
 // from https://authjs.dev/getting-started/adapters#models
@@ -73,10 +74,24 @@ const authTables = {
 
 export default defineSchema({
   ...authTables,
+
   applications: defineTable({
     name: v.string(),
     description: v.optional(v.string()),
     userId: v.id("users"),
     editionTime: v.number()
   }).index("byUserId", ["userId"]),
+
+  tags: defineTable({
+    value: v.string(),
+    color: v.optional(v.string()),
+    icon: v.optional(v.string()),
+    type: v.number(),
+    userId: v.id("users"),    
+  }).index("byType", ["userId", "type"]).searchIndex("byValue", { searchField: "value", filterFields: ["userId", "type"] }),
+
+  applicationTags: defineTable({ 
+    tagId: v.id(TAGS_TABLE),
+    applicationId: v.id(APPLICATIONS_TABLE),
+  }).index("byApplicationId", ["applicationId"]),
 });

@@ -1,10 +1,14 @@
 {
     "common_cancel": "Annuler",
     "common_create": "Créer",
+    "common_remove": "Supprimer",
+    "common_add": "Ajouter",
     "common_error_min": "Le nom de l'application doit comporter au moins {{length}} caractères",
     "common_error_max": "Le nom de l'application doit comporter au maximum {{length}} caractères",
     "common_toast_error_title": "Oh oh! Quelque chose s'est mal passé.",
     "common_save": "Sauvegarder",
+    "common_tags": "Tags",
+    "common_label": "Label",
 
     "dashboard_home_myApplications": "Mes applications",
     "dashboard_home_newApplication": "Nouvelle application",
@@ -22,5 +26,13 @@
     "application_toast_errorOccuredDuringUpdatingProcess": "Erreur durant le processus de mise à jour.",
     "application_toast_applicationHasBeenUpdated": "L'application a été mise à jour",
 
-    "spinner_loading_loading": "Chargement..."
+    "spinner_loading_loading": "Chargement...",
+
+    "customTags_addATag": "Ajouter un tag",
+    "customTags_selectOrCreateTag": "Sélectionner un tag existant ou créez-en un nouveau",
+    "customTags_label": "Libellé du tag",
+    "customTags_color": "Choisissez la couleur du tag",
+    "customTags_labelAlreadyExistsWithThisColor": "Ce libellé existe déjà avec cette couleur",
+    "customTags_removeTag": "Supprimer un tag",
+    "customTags_areYouSureYouWantToRemoveThisTag": "Etes-vous sûr de vouloir supprimer le tag suivant ?"
 }

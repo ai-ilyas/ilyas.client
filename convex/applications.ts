@@ -3,8 +3,9 @@ import { mutation, query } from "./_generated/server";
 import { getUserId } from "./auth";
 import { checkIfStringIsNotOutOfLimits } from "./validator.helper";
 import { Id } from "./_generated/dataModel";
-
-const TABLENAME = "applications";
+import { APPLICATIONS_TABLE, APPLICATION_TAGS_TABLE, TAGS_TABLE } from "./tableNames";
+import { getManyVia } from "convex-helpers/server/relationships";
+import { ITags } from "./tags";
 
 export interface IApplication
 {
@@ -14,6 +15,7 @@ export interface IApplication
   name: string;
   userId: Id<"users">;
   editionTime: number;
+  tags?: ITags[];
 } 
 
 export const list = query({
@@ -21,20 +23,22 @@ export const list = query({
   handler: async (ctx) => {
     const userId = await getUserId(ctx);
     console.log(userId);
-    const applications = await ctx.db.query(TABLENAME).withIndex("byUserId", (q) => q.eq("userId", userId!)).collect();
+    const applications = await ctx.db.query(APPLICATIONS_TABLE).withIndex("byUserId", (q) => q.eq("userId", userId!)).collect();
 
     return applications.sort((a, b) => b.editionTime - a.editionTime);
   },
 });
 
 export const findOne = query({
-  args: { _id: v.id(TABLENAME)},
-  handler: async (ctx, { _id}) => {
+  args: { id: v.string() },
+  handler: async (ctx, { id}) => {
     const userId = await getUserId(ctx);
     console.log(userId);
+    const _id = id as Id<"applications">;
     const application = await ctx.db.get(_id);
     if (application?.userId !== userId) throw new Error("applications.findOne - Method not allowed.");
-    return application;
+    const tags = await getManyVia(ctx.db, APPLICATION_TAGS_TABLE, "tagId", "byApplicationId", _id, "applicationId");
+    return { ...application, tags } as IApplication;
   },
 });
 
@@ -45,14 +49,14 @@ export const insert = mutation({
     
     checkIfStringIsNotOutOfLimits(name, { min: 3, max:50 });
 
-    const appId = await ctx.db.insert(TABLENAME, { name, userId, editionTime: Date.now() });
+    const appId = await ctx.db.insert(APPLICATIONS_TABLE, { name, userId, editionTime: Date.now() });
     console.log(appId);
     return appId;
   },
 });
 
 export const patch = mutation({
-  args: { _id: v.id(TABLENAME), name: v.string(), description: v.optional(v.string()) },
+  args: { _id: v.id(APPLICATIONS_TABLE), name: v.string(), description: v.optional(v.string()) },
   handler: async (ctx, { _id, name, description }) => {
     checkIfStringIsNotOutOfLimits(name, { min: 3, max:50 })
     checkIfStringIsNotOutOfLimits(description, { max:500 });

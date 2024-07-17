@@ -1,6 +1,5 @@
 'use client'
 import { useTranslation } from '@/src/app/i18n/client';
-import { IApplication } from '@/src/lib/domain/entities/application.interface';
 import LoadingButton from '@/src/components/buttons/loading-button';
 import { Dialog,
   DialogContent,
@@ -18,6 +17,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
+import { IApplication } from '@/convex/applications';
 
 interface CreateApplicationFormProps {
   apps: IApplication[];

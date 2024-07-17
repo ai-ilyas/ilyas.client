@@ -10,7 +10,7 @@ import { FunctionReference } from 'convex/server';
 
 function useConvexAutoSave(
         defaultValues: any, 
-        formSchema: any, 
+        formSchema: any,
         saveFunction: FunctionReference<"mutation">,
         lng: string,
         delay = 1000) {
