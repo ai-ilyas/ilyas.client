@@ -160,7 +160,7 @@ export default function customApplicationTags ({ lng, application }: customTagsP
         }
         <Dialog modal={true} open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button variant="link">{t("customTags_addATag")}</Button>
+                <Button className="block" variant="link">{t("customTags_addATag")}</Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <Form {...form}>
