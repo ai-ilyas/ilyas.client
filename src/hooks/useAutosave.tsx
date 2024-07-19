@@ -17,6 +17,7 @@ function useConvexAutoSave(
     const { t } = useTranslation(lng);
     type ApplicationFormValues = z.infer<typeof formSchema>;
     const form = useForm<ApplicationFormValues>({
+        mode: "onChange",
         resolver: zodResolver(formSchema),
         defaultValues
         });

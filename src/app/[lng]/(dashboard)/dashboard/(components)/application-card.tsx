@@ -1,8 +1,8 @@
 'use client'
-import { IApplication } from "@/src/lib/domain/entities/application.interface"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src/components/ui/card"
 import Link from "next/link"
 import moment from 'moment';
+import { IApplication } from "@/convex/applications";
 
 interface ApplicationCardProps {
     apps: IApplication[];
