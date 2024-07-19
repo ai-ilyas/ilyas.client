@@ -10,7 +10,7 @@ import Circle from '@uiw/react-color-circle';
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "./ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "./ui/form";
 import { Separator } from "./ui/separator";
 import { Check, ChevronsUpDown, Loader2 } from "lucide-react";
 import { useMutation, useQuery } from "convex/react";
@@ -40,6 +40,7 @@ export default function customApplicationTags ({ lng, application }: customTagsP
     const availableTags = useQuery(api.tags.list, { type: 0 });
     const linkTag = useMutation(api.tags.linkToApplication);
     const Icon = Icons['close'];
+    const IconAdd = Icons['add'];
 
     const formSchema = z.object({
         tagId: z.string().optional(),
@@ -160,7 +161,7 @@ export default function customApplicationTags ({ lng, application }: customTagsP
         }
         <Dialog modal={true} open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button className="block" variant="link">{t("customTags_addATag")}</Button>
+                <Button className="block" variant="link"><IconAdd className="h-4 w-4 inline-block"></IconAdd>{t("customTags_addATag")}</Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <Form {...form}>
