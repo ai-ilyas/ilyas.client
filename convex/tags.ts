@@ -68,6 +68,9 @@ export const linkToApplication = mutation({
         if (userId !== tagToAdd?.userId) throw new Error("tags.linkToApplication - Method not allowed.")
         const applicationToUpdate = await ctx.db.get(applicationId);
         if (userId !== applicationToUpdate?.userId) throw new Error("tags.linkToApplication - Method not allowed.")
+        const appTag = await ctx.db.query(APPLICATION_TAGS_TABLE)
+            .withIndex("byApplicationId", (q) => q.eq("applicationId", applicationId)).filter((q) => q.eq(q.field("tagId"), tagId)).first();
+        if (appTag) throw new Error("tags.linkToApplication - Tag already exists with this application.")
         await ctx.db.insert(APPLICATION_TAGS_TABLE, { tagId: tagId as Id<"tags">, applicationId });
     },
 });
@@ -89,7 +92,7 @@ export const removeLindToApplication = mutation({
         const application = await ctx.db.get(applicationId);
         if (userId !== application?.userId) throw new Error("tags.deleteTag - Method not allowed.")
         const appTag = await ctx.db.query(APPLICATION_TAGS_TABLE)
-        .withIndex("byApplicationId", (q) => q.eq("applicationId", applicationId)).filter((q) => q.eq(q.field("tagId"), tagId)).unique()
+        .withIndex("byApplicationId", (q) => q.eq("applicationId", applicationId)).filter((q) => q.eq(q.field("tagId"), tagId)).unique();
         if (!appTag) throw new Error("Application Tag link doesn't exist.")
         await ctx.db.delete(appTag._id);
     },
