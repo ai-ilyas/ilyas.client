@@ -33,3 +33,9 @@ export const assert = (condition: boolean, message: string): void => {
     throw new Error(message);
   }
 };
+
+export const isValidHtmlColor = (color: string): boolean => {
+  // Définir une expression régulière pour les couleurs HTML valides
+  const htmlColorRegex = /^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/;
+  return htmlColorRegex.test(color);
+}

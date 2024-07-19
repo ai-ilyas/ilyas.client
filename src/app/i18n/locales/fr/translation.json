@@ -8,7 +8,11 @@
     "common_toast_error_title": "Oh oh! Quelque chose s'est mal passé.",
     "common_save": "Sauvegarder",
     "common_tags": "Tags",
-    "common_label": "Label",
+    "common_label": "Label",    
+    "common_search": "Recherchez {{value}}...",
+    "common_noFound": "Aucun {{value}} trouvé.",
+    "common_select": "Selectionnez {{value}}",
+    "common_required": "Ce champs est requis",
 
     "dashboard_home_myApplications": "Mes applications",
     "dashboard_home_newApplication": "Nouvelle application",
@@ -29,10 +33,16 @@
     "spinner_loading_loading": "Chargement...",
 
     "customTags_addATag": "Ajouter un tag",
-    "customTags_selectOrCreateTag": "Sélectionner un tag existant ou créez-en un nouveau",
-    "customTags_label": "Libellé du tag",
+    "customTags_selectTag": "Selectionner un tag existant",
+    "customTags_createTag": "Ou créer un nouveau tag",
+    "customTags_labelNewTag": "Libellé du nouveau tag",
     "customTags_color": "Choisissez la couleur du tag",
     "customTags_labelAlreadyExistsWithThisColor": "Ce libellé existe déjà avec cette couleur",
     "customTags_removeTag": "Supprimer un tag",
-    "customTags_areYouSureYouWantToRemoveThisTag": "Etes-vous sûr de vouloir supprimer le tag suivant ?"
+    "customTags_areYouSureYouWantToRemoveThisTag": "Etes-vous sûr de vouloir supprimer le tag suivant ?",
+    "customTags_tagHasBeenAdded": "Le tag a été ajouté avec succès.",
+    "customTags_tagHasntBeenAdded": "Erreur : Le tag n'a pas été ajouté",
+    "customTags_tagHasBeenRemoved": "Tag has been removed with success",
+    "customTags_tagHasntBeenRemoved": "Tag has not been removed with success",
+    "customTags_selectAnExistingTagOrCreateANewOne": "Sélectionnez un tag existant ou créez un nouveau tag."
 }

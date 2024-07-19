@@ -3,9 +3,9 @@ import { mutation, query } from "./_generated/server";
 import { getUserId } from "./auth";
 import { Id } from "./_generated/dataModel";
 import { APPLICATIONS_TABLE, APPLICATION_TAGS_TABLE, TAGS_TABLE } from "./tableNames";
-import { api } from "./_generated/api";
+import { isValidHtmlColor } from "@/src/lib/utils";
 
-export interface ITags
+export interface ITag
 {
   _id: Id<"tags">;
   _creationTime: number;
@@ -36,9 +36,10 @@ export const insert = mutation({
     applicationId: v.optional(v.id(APPLICATIONS_TABLE))
    },
   handler: async (ctx, { value, type, color, icon, applicationId }) => {
-    if (value.trim() === "") throw new Error("Impossible to add a tag with no value.");
+    if (value.trim() === "") throw new Error("Impossible to add a tag with no value.");    
+    if (color && !isValidHtmlColor(color)) throw new Error("Impossible to add a tag with this color.");
     const userId = (await getUserId(ctx, true))!;
-    const tagId = await ctx.db.insert(TAGS_TABLE, { value, type, color, userId, icon });
+    const tagId = await ctx.db.insert(TAGS_TABLE, { value: value.trim(), type, color, userId, icon });
     if (applicationId) {
         const applicationToUpdate = await ctx.db.get(applicationId);
         if (userId !== applicationToUpdate?.userId) throw new Error("tags.insert - Method not allowed.")
@@ -60,14 +61,14 @@ export const patch = mutation({
 });
 
 export const linkToApplication = mutation({
-    args: { tagId: v.id(TAGS_TABLE), applicationId: v.id(APPLICATIONS_TABLE) },
+    args: { tagId: v.string(), applicationId: v.id(APPLICATIONS_TABLE) },
     handler: async (ctx, { tagId, applicationId }) => {
         const userId = (await getUserId(ctx, true))!;
-        const tagToAdd = await ctx.db.get(tagId);
+        const tagToAdd = await ctx.db.get(tagId as Id<"tags">);
         if (userId !== tagToAdd?.userId) throw new Error("tags.linkToApplication - Method not allowed.")
         const applicationToUpdate = await ctx.db.get(applicationId);
         if (userId !== applicationToUpdate?.userId) throw new Error("tags.linkToApplication - Method not allowed.")
-        await ctx.db.insert(APPLICATION_TAGS_TABLE, { tagId, applicationId });
+        await ctx.db.insert(APPLICATION_TAGS_TABLE, { tagId: tagId as Id<"tags">, applicationId });
     },
 });
 
@@ -78,5 +79,18 @@ export const deleteTag = mutation({
         const tagToDelete = await ctx.db.get(id);
         if (userId !== tagToDelete?.userId) throw new Error("tags.deleteTag - Method not allowed.")
         await ctx.db.delete(id);
+    },
+});
+
+export const removeLindToApplication = mutation({
+    args: { tagId: v.id(TAGS_TABLE), applicationId: v.id(APPLICATIONS_TABLE) },
+    handler: async (ctx, { tagId, applicationId }) => {
+        const userId = (await getUserId(ctx, true));
+        const application = await ctx.db.get(applicationId);
+        if (userId !== application?.userId) throw new Error("tags.deleteTag - Method not allowed.")
+        const appTag = await ctx.db.query(APPLICATION_TAGS_TABLE)
+        .withIndex("byApplicationId", (q) => q.eq("applicationId", applicationId)).filter((q) => q.eq(q.field("tagId"), tagId)).unique()
+        if (!appTag) throw new Error("Application Tag link doesn't exist.")
+        await ctx.db.delete(appTag._id);
     },
 });

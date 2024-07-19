@@ -1,13 +1,12 @@
 'use client'
 import BreadCrumb from '@/src/components/breadcrumb';
-import { Canvas } from '@/src/components/ui/diagram';
 import { ScrollArea } from '@/src/components/ui/scroll-area';
 import NotFound from '@/src/app/[lng]/not-found';
 import InformationApplicationForm from './(components)/information-application-form';
 import SpinnerLoading from '@/src/components/spinner-loading';
 import { useQuery } from 'convex/react';
 import { api } from '@/convex/_generated/api';
-import ApplicationTags from './(components)/application-tags';
+import CustomApplicationTags from '@/src/components/custom-application-tags';
 
 
 export default function page({
@@ -40,10 +39,15 @@ export default function page({
 
       <div className="flex-1 space-y-4 p-4 pt-6 md:p-8">
         <BreadCrumb items={breadcrumbItems} />
-        <div className="flex items-center justify-between space-y-2">
+        <div className="items-center justify-between space-y-2">
           <h1 className="text-3xl font-bold tracking-tight">
             {app?.name}
           </h1>
+          <div className="grid gap-4 md:grid-cols-1 lg:grid-cols-2">
+            <CustomApplicationTags 
+              application={app!}
+              lng={lng}></CustomApplicationTags>
+          </div>          
         </div>
 
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -52,10 +56,6 @@ export default function page({
             lng={lng}
             apps={applications!}
           ></InformationApplicationForm>
-          <ApplicationTags 
-            app={app!}
-            lng={lng}
-            apps={applications!}></ApplicationTags>
         </div>
         
       </div>

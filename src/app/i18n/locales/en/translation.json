@@ -8,7 +8,11 @@
     "common_toast_error_title": "Oh oh! Something went wrong.",
     "common_save": "Save",
     "common_tags": "Tags",
-    "common_label": "Label",
+    "common_label": "Label",    
+    "common_search": "Search {{value}}...",
+    "common_noFound": "No {{value}} found.",
+    "common_select": "Select {{value}}",
+    "common_required": "This field is required",
 
     "dashboard_home_myApplications": "My applications",
     "dashboard_home_newApplication": "New application",
@@ -16,8 +20,8 @@
     "dashboard_home_createANewApplication": "Create a new application",
     "dashboard_home_applicationName": "Application name",
     "dashboard_home_applicationNameAlreadyExists": "There is already an application with this name.",
-    "dashboard_home_toast_applicationNameAlreadyExists": "An application named {{ applicationName }} already exists.",
-    "dashboard_home_toast_errorOccuredDuringCreationProcess": "An error occured during the creation process for this application {{ applicationName }}.",
+    "dashboard_home_toast_applicationNameAlreadyExists": "An application named {{applicationName}} already exists.",
+    "dashboard_home_toast_errorOccuredDuringCreationProcess": "An error occured during the creation process for this application {{applicationName}}.",
 
     "application_informationApplicationForm_applicationName": "Application Name",
     "application_informationApplicationForm_information": "Information",
@@ -29,12 +33,16 @@
     "spinner_loading_loading": "Loading...",
 
     "customTags_addATag": "Add a tag",
-    "customTags_selectOrCreateTag": "Select oan existing tag or create a new one.",
+    "customTags_selectTag": "Select an existing tag",
+    "customTags_createTag": "Or create a new tag",
     "customTags_label": "New tag label",
     "customTags_color": "Choose tag color",
     "customTags_labelAlreadyExistsWithThisColor": "Label already exists with this color",
     "customTags_removeTag": "Remove tag",
     "customTags_areYouSureYouWantToRemoveThisTag": "Are you sure you want to remove the following tag ?",
     "customTags_tagHasBeenAdded": "Tag has been added with success",
-    "customTags_tagAddedError": "Error: Tag hasn't been added"
+    "customTags_tagHasntBeenAdded": "Error: Tag hasn't been added",
+    "customTags_tagHasBeenRemoved": "Tag has been removed with success",
+    "customTags_tagHasntBeenRemoved": "Tag has not been removed with success",
+    "customTags_selectAnExistingTagOrCreateANewOne": "Select an existing tag or create a new tag."
 }

@@ -5,7 +5,7 @@ import { checkIfStringIsNotOutOfLimits } from "./validator.helper";
 import { Id } from "./_generated/dataModel";
 import { APPLICATIONS_TABLE, APPLICATION_TAGS_TABLE, TAGS_TABLE } from "./tableNames";
 import { getManyVia } from "convex-helpers/server/relationships";
-import { ITags } from "./tags";
+import { ITag } from "./tags";
 
 export interface IApplication
 {
@@ -15,7 +15,7 @@ export interface IApplication
   name: string;
   userId: Id<"users">;
   editionTime: number;
-  tags?: ITags[];
+  tags?: ITag[];
 } 
 
 export const list = query({
