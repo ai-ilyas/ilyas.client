@@ -79,7 +79,10 @@ export default defineSchema({
     name: v.string(),
     description: v.optional(v.string()),
     userId: v.id("users"),
-    editionTime: v.number()
+    editionTime: v.number(),
+    technicalOwner: v.optional(v.string()),
+    businessOwner: v.optional(v.string()),
+    numberOfUsers: v.optional(v.string()),
   }).index("byUserId", ["userId"]),
 
   tags: defineTable({

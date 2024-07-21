@@ -32,14 +32,29 @@ const informationApplicationForm: React.FC<UpdateApplicationFormProps> = ({
       .refine((val) => !apps.some((x) => x.name === val && x._id !== app._id), {
         message: t("dashboard_home_applicationNameAlreadyExists"),
       }),
-    description: z
-      .string()
-      // #050 CLIENT SERVER Application description length should be lower than 500 characters 
-      .max(500, { message: t('common_error_max', { length: '500' }) })
-      .optional()
+      description: z
+        .string()
+        // #050 CLIENT SERVER Application description length should be lower than 500 characters 
+        .max(500, { message: t('common_error_max', { length: '500' }) })
+        .optional(),
+      technicalOwner: z
+        .string()
+        // #070 CLIENT SERVER Fields length for Technical Owner, Business Owner and NumberOfUsers should be 50 characters maximum
+        .max(50, { message: t('common_error_max', { length: '50' }) })
+        .optional(),
+      businessOwner: z
+        .string()
+        // #070 CLIENT SERVER Fields length for Technical Owner, Business Owner and NumberOfUsers should be 50 characters maximum 
+        .max(15, { message: t('common_error_max', { length: '50' }) })
+        .optional(),
+      numberOfUsers: z
+        .string()
+        // #070 CLIENT SERVER Fields length for Technical Owner, Business Owner and NumberOfUsers should be 50 characters maximum
+        .max(15, { message: t('common_error_max', { length: '50' }) })
+        .optional()
   });
 
-  const { form, isSaving }= useConvexAutoSave({ _id: app._id, name: app?.name, description: app?.description }, formSchema, api.applications.patch, lng, 1000);
+  const { form, isSaving }= useConvexAutoSave({ ...app, _id: app._id }, formSchema, api.applications.patch, lng, 1000);
 
   useEffect(()=> {
     const values = form.getValues();
@@ -61,7 +76,7 @@ const informationApplicationForm: React.FC<UpdateApplicationFormProps> = ({
             </div>
           </CardHeader>
           <CardContent>
-            <div className="grid gap-3">
+            <div className="grid grid-cols-2 gap-3">
               <div className="grid gap-3">
                 <FormField
                   control={form.control}
@@ -84,6 +99,47 @@ const informationApplicationForm: React.FC<UpdateApplicationFormProps> = ({
                       <FormLabel>{t('application_informationApplicationForm_description')}</FormLabel>
                       <FormControl>
                         <Textarea {...field} className="min-h-32" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="grid gap-3">
+                <FormField
+                  control={form.control}
+                  name="businessOwner"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t('application_informationApplicationForm_businessOwner')}</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="technicalOwner"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t('application_informationApplicationForm_technicalOwner')}</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="numberOfUsers"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t('application_informationApplicationForm_numberOfUsers')}</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

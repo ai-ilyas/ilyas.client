@@ -2,7 +2,7 @@
 import { api } from '@/convex/_generated/api';
 import { IApplication } from '@/convex/applications';
 import { useTranslation } from '@/src/app/i18n/client';
-import CustomTags from '@/src/components/custom-tags';
+import CustomTags from '@/src/components/custom-application-tags';
 import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card';
 import { useQuery } from 'convex/react';
 

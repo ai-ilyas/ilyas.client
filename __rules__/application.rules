@@ -9,7 +9,7 @@
 
 #050 CLIENT SERVER Application description length should be lower than 500 characters
 
-
 #TODO
 #060 SERVER Application can be delete only when current userId match with userId in Application Table
 
+#070 CLIENT SERVER Fields length for Technical Owner, Business Owner and NumberOfUsers should be 50 characters maximum

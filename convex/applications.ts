@@ -3,7 +3,7 @@ import { mutation, query } from "./_generated/server";
 import { getUserId } from "./auth";
 import { checkIfStringIsNotOutOfLimits } from "./validator.helper";
 import { Id } from "./_generated/dataModel";
-import { APPLICATIONS_TABLE, APPLICATION_TAGS_TABLE, TAGS_TABLE } from "./tableNames";
+import { APPLICATIONS_TABLE, APPLICATION_TAGS_TABLE } from "./tableNames";
 import { getManyVia } from "convex-helpers/server/relationships";
 import { ITag } from "./tags";
 
@@ -11,11 +11,13 @@ export interface IApplication
 {
   _id: Id<"applications">;
   _creationTime: number;
-  description?: string | undefined;
+  description?: string;
   name: string;
   userId: Id<"users">;
   editionTime: number;
   tags?: ITag[];
+  technicalOwner?: string;
+  businessOwner?: string;
 } 
 
 export const list = query({
@@ -62,10 +64,22 @@ export const insert = mutation({
 });
 
 export const patch = mutation({
-  args: { _id: v.id(APPLICATIONS_TABLE), name: v.string(), description: v.optional(v.string()) },
-  handler: async (ctx, { _id, name, description }) => {    
+  args: { 
+    _id: v.id(APPLICATIONS_TABLE), 
+    name: v.string(), 
+    description: v.optional(v.string()),
+    businessOwner: v.optional(v.string()), 
+    technicalOwner: v.optional(v.string()), 
+    numberOfUsers: v.optional(v.string()) 
+  },
+  handler: async (ctx, { _id, name, description, businessOwner, technicalOwner, numberOfUsers }) => {    
     // #040 CLIENT SERVER Application name length should be between 3 and 50 characters 
-    checkIfStringIsNotOutOfLimits(name, { min: 3, max:50 })
+    checkIfStringIsNotOutOfLimits(name, { min: 3, max:50 });
+    
+    // #070 CLIENT SERVER Fields length for Technical Owner, Business Owner and NumberOfUsers should be 50 characters maximum
+    checkIfStringIsNotOutOfLimits(businessOwner, { max:50 });
+    checkIfStringIsNotOutOfLimits(technicalOwner, { max:50 });
+    checkIfStringIsNotOutOfLimits(numberOfUsers, { max:50 });
     
     // #050 CLIENT SERVER Application description length should be lower than 500 characters 
     checkIfStringIsNotOutOfLimits(description, { max:500 });
@@ -73,6 +87,6 @@ export const patch = mutation({
     const applicationToUpdate = await ctx.db.get(_id);
     // #020 SERVER Insert or Update application only when current userId match with userId in Application Table
     if (userId !== applicationToUpdate?.userId) throw new Error("applications.patch - Method not allowed.")
-    await ctx.db.patch(_id, { name, description, editionTime: Date.now() });
+    await ctx.db.patch(_id, { name, description, editionTime: Date.now(), businessOwner, technicalOwner, numberOfUsers });
   },
 });
