@@ -1,0 +1,20 @@
+#010 SERVER Get tag only when current userId match with userId in Tag Table
+
+#020 SERVER Update tag only when current userId match with userId in Tag Table
+
+#030 SERVER Link tag to application only when current userId match with userId in Application Table
+
+#040 SERVER Link tag to application can be remove only when current userId match with userId in Application Table
+
+#050 SERVER When Insert tag current userId is the userId in Tag Table
+
+#060 CLIENT SERVER Tag name length should be 50 characters maximum
+
+#070 CLIENT SERVER Tag name should not be empty
+
+#080 CLIENT SERVER Tag color should be a valid HTML hexadecimal color
+
+#090 CLIENT SERVER The combination Tag Name/Tag color should be unique per application
+
+#100 CLIENT SERVER Maximum tag per application is 10
+

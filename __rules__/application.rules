@@ -1,0 +1,15 @@
+
+#010 SERVER Get application only when current userId match with userId in Application Table
+
+#020 SERVER Update application only when current userId match with userId in Application Table
+
+#030 SERVER When Insert application current userId is the userId in Application Table
+
+#040 CLIENT SERVER Application name length should be between 3 and 50 characters
+
+#050 CLIENT SERVER Application description length should be lower than 500 characters
+
+
+#TODO
+#060 SERVER Application can be delete only when current userId match with userId in Application Table
+

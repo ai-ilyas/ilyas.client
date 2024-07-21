@@ -47,21 +47,26 @@ export default function customApplicationTags ({ lng, application }: customTagsP
         tagId: z.string().optional(),
         color: z.string()
           .optional()
+          // #090 CLIENT SERVER The combination Tag Name/Tag color should be unique per application
           .refine(val => !availableTags?.some((x) => x.value === val && x.color === hex), {
             message: t("customTags_labelAlreadyExistsWithThisColor"),
           })
+          // #080 CLIENT SERVER Tag color should be a valid HTML hexadecimal color
           .refine(val => isValidHtmlColor(hex), {
             message: t("customTags_labelAlreadyExistsWithThisColor"),
           }),
         value: z
           .string()
+          // #060 CLIENT SERVER Tag name length should be 50 characters maximum
           .max(15, { message: t("common_error_max", { length: "15" }) })
           .refine((val) => !availableTags?.some((x) => x.value === val && x.color === hex), {
             message: t("customTags_labelAlreadyExistsWithThisColor"),
           })
           .optional(),
         confirmTag: z.string().optional()
-    }).refine(schema => schema.value !== '' || schema.value?.trim() !== '' || schema.tagId !== '', {
+    })
+    // #070 CLIENT SERVER Tag name should not be empty
+    .refine(schema => schema.value !== '' || schema.value?.trim() !== '' || schema.tagId !== '', {
         message: t("customTags_selectAnExistingTagOrCreateANewOne"), 
         path: ["confirmTag"]
     });
@@ -75,6 +80,7 @@ export default function customApplicationTags ({ lng, application }: customTagsP
     });
 
     useEffect(() => {
+        // #100 CLIENT SERVER Maximum tag per application is 10
         application?.tags?.length && application?.tags?.length >= 10 ? setIsAddButtonDisabled(true): setIsAddButtonDisabled(false);
     }, [application.tags])
 

@@ -33,7 +33,8 @@ const createApplicationForm: React.FC<CreateApplicationFormProps> = ({ apps, lng
 
   const formSchema = z.object({
     applicationName: z
-      .string()
+      .string()      
+      // #040 CLIENT SERVER Application name length should be between 3 and 50 characters 
       .min(3, { message: t("common_error_min", { length: "3" }) })
       .max(50, { message: t("common_error_max", { length: "50" }) })
       .refine((val) => !apps.some((x) => x.name === val), {
