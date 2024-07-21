@@ -5,7 +5,7 @@ import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
 import { Input } from "./ui/input";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Circle from '@uiw/react-color-circle';
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -32,6 +32,7 @@ export default function customApplicationTags ({ lng, application }: customTagsP
     const { t } = useTranslation(lng);
     const [hex, setHex] = useState('#7C3AED');
     const [open, setOpen] = useState(false);
+    const [isAddButtonDisabled, setIsAddButtonDisabled] = useState(false);
     const [openRemove, setOpenRemove] = useState(false);
     const [tagToRemove, setTagToRemove] = useState<ITag>();
     const [openPopover, setOpenPopover] = useState(false)
@@ -72,6 +73,10 @@ export default function customApplicationTags ({ lng, application }: customTagsP
       resolver: zodResolver(formSchema),
       defaultValues
     });
+
+    useEffect(() => {
+        application?.tags?.length && application?.tags?.length >= 10 ? setIsAddButtonDisabled(true): setIsAddButtonDisabled(false);
+    }, [application.tags])
 
     const onSubmit = async (data: formValues) => {
         setLoading(true);
@@ -161,7 +166,7 @@ export default function customApplicationTags ({ lng, application }: customTagsP
         }
         <Dialog modal={true} open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button className="block" variant="link"><IconAdd className="h-4 w-4 inline-block"></IconAdd>{t("customTags_addATag")}</Button>
+                <Button disabled={isAddButtonDisabled} className="block" variant="link"><IconAdd className="h-4 w-4 inline-block"></IconAdd>{t("customTags_addATag")}</Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <Form {...form}>
