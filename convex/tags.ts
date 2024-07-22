@@ -44,14 +44,15 @@ export const insert = mutation({
     // #070 CLIENT SERVER Tag name should not be empty
     if (value.trim() === "") throw new Error("Impossible to add a tag with no value."); 
     // #060 CLIENT SERVER Tag name length should be 50 characters maximum   
-    if (value.length > 15) throw new Error("Impossible to add a tag with more than 15 characters.");
-    // #0110 CLIENT SERVER Tag name length should be 500 characters maximum
+    if (value.length > 50) throw new Error("Impossible to add a tag with more than 15 characters.");
+    // #0110 CLIENT SERVER Tag description length should be 500 characters maximum
     if (description && description.length > 500) throw new Error("Impossible to add a tag with more than 500 characters.");
     // #080 CLIENT SERVER Tag color should be a valid HTML hexadecimal color
     if (color && !isValidHtmlColor(color)) throw new Error("Impossible to add a tag with this color.");
     const userId = (await getUserId(ctx, true))!;
+
     // #050 SERVER When Insert tag current userId is the userId in Tag Table
-    const tagId = await ctx.db.insert(TAGS_TABLE, { value: value.trim(), type, color, userId, icon });
+    const tagId = await ctx.db.insert(TAGS_TABLE, { value: value.trim(), type, color, userId, icon, description });
     if (applicationId) {
         const applicationToUpdate = await ctx.db.get(applicationId);
         // #030 SERVER Link tag to application only when current userId match with userId in Application Table

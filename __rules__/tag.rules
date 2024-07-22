@@ -18,5 +18,5 @@
 
 #100 CLIENT SERVER Maximum Application tag per application is 10
 
-#0110 CLIENT SERVER Tag name length should be 500 characters maximum
+#0110 CLIENT SERVER Tag description length should be 500 characters maximum
 

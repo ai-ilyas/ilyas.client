@@ -39,7 +39,8 @@ export default function customApplicationTags ({ lng, tags, applicationId, type,
     const [isAddButtonDisabled, setIsAddButtonDisabled] = useState(false);
     const [openRemove, setOpenRemove] = useState(false);
     const [tagToRemove, setTagToRemove] = useState<ITag>();
-    const [openPopover, setOpenPopover] = useState(false)
+    const [openPopover, setOpenPopover] = useState(false);
+    const [isDescriptionDisabled, setIsDescriptionDisabled] = useState(true);
     const insertTag = useMutation(api.tags.insert);
     const removeTag = useMutation(api.tags.removeLindToApplication)
     const availableTags = useQuery(api.tags.list, { type });
@@ -79,13 +80,13 @@ export default function customApplicationTags ({ lng, tags, applicationId, type,
           }),
         description: z
           .string()
-          // #0110 CLIENT SERVER Tag name length should be 500 characters maximum
+          // #0110 CLIENT SERVER Tag description length should be 500 characters maximum
           .max(500, { message: t('common_error_max', { length: '500' }) })
           .optional(),
         value: z
           .string()
           // #060 CLIENT SERVER Tag name length should be 50 characters maximum
-          .max(15, { message: t("common_error_max", { length: "15" }) })
+          .max(50, { message: t("common_error_max", { length: "15" }) })
           .refine((val) => !availableTags?.some((x) => x.value === val && x.color === hex), {
             message: t(`custom${labelType}_labelAlreadyExistsWithThisColor`),
           })
@@ -249,6 +250,7 @@ export default function customApplicationTags ({ lng, tags, applicationId, type,
                                                                 if (tag._id) {
                                                                     form.resetField("color");
                                                                     form.resetField("value");
+                                                                    form.resetField("description");
                                                                 }
                                                                 setOpenPopover(false);
                                                             }}
@@ -289,8 +291,9 @@ export default function customApplicationTags ({ lng, tags, applicationId, type,
                                             placeholder={t(`custom${labelType}_labelNew`)}
                                             {...field}
                                             onChange={e => {
-                                                form.setValue("value", e.target.value)
-                                                if (e.target.value) form.resetField("tagId");
+                                                    form.setValue("value", e.target.value);
+                                                    setIsDescriptionDisabled(e.target.value === '' ? true : false);
+                                                    if (e.target.value) form.resetField("tagId");
                                                 }
                                             }
                                         />
@@ -338,31 +341,32 @@ export default function customApplicationTags ({ lng, tags, applicationId, type,
                                 </FormItem>
                                 )}
                                 />
-                            <FormField
-                                control={form.control}
-                                name="confirmTag"
-                                render={({ field }) => (
-                                <FormItem className="mt-4">
-                                    <FormMessage />
-                                </FormItem>
-                                )}
-                            />
-
                         </div>
-                        <FormField
-                            control={form!.control}
-                            name="description"
-                            render={({ field }) => (
-                                <FormItem>
-                                <FormLabel>{t('common_description')}</FormLabel>
-                                <FormControl>
-                                    <Textarea {...field} className="min-h-32" />
-                                </FormControl>
-                                <FormMessage />
-                                </FormItem>
-                            )}
-                            />
-
+                        <div className="mt-2">
+                            <FormField
+                                disabled={isDescriptionDisabled}
+                                control={form!.control}
+                                name="description"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>{t('common_description')}</FormLabel>
+                                        <FormControl>
+                                            <Textarea {...field} className="min-h-32" />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                                />                        
+                            <FormField
+                                    control={form.control}
+                                    name="confirmTag"
+                                    render={({ field }) => (
+                                    <FormItem className="mt-4">
+                                        <FormMessage />
+                                    </FormItem>
+                                    )}
+                                />
+                        </div>
                         <DialogFooter>
                             <Button className="mt-4" disabled={loading} type="submit">
                                 { loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
