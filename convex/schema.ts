@@ -90,6 +90,7 @@ export default defineSchema({
     color: v.optional(v.string()),
     icon: v.optional(v.string()),
     type: v.number(),
+    description: v.optional(v.string()),
     userId: v.id("users"),    
   }).index("byType", ["userId", "type"]).searchIndex("byValue", { searchField: "value", filterFields: ["userId", "type"] }),
 

@@ -7,6 +7,7 @@ import SpinnerLoading from '@/src/components/spinner-loading';
 import { useQuery } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import CustomApplicationTags from '@/src/components/custom-application-tags';
+import BusinessCapabilities from './(components)/business-capabilities';
 
 
 export default function page({
@@ -45,17 +46,26 @@ export default function page({
           </h1>
           <div className="grid gap-4 md:grid-cols-1 lg:grid-cols-2">
             <CustomApplicationTags 
-              application={app!}
+              applicationId={app!._id}
+              tags={app!.tags!}
+              type={0}
+              // #100 CLIENT SERVER Maximum Application tag per application is 10
+              maxNumber={10}
               lng={lng}></CustomApplicationTags>
           </div>          
         </div>
 
-        <div className="grid gap-4 md:grid-cols-1 lg:grid-cols-2">
-          <InformationApplicationForm
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <div className='col-span-2'>
+            <InformationApplicationForm
+              app={app!}
+              lng={lng}
+              apps={applications!}
+            ></InformationApplicationForm>
+          </div>
+          <BusinessCapabilities
             app={app!}
-            lng={lng}
-            apps={applications!}
-          ></InformationApplicationForm>
+            lng={lng}></BusinessCapabilities>
         </div>
         
       </div>

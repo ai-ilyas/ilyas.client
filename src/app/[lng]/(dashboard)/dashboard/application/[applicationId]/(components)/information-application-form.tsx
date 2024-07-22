@@ -5,6 +5,7 @@ import { useTranslation } from '@/src/app/i18n/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/src/components/ui/form';
 import { Input } from '@/src/components/ui/input';
+import CustomApplicationTags from '@/src/components/custom-application-tags';
 import { Textarea } from '@/src/components/ui/textarea';
 import useConvexAutoSave from '@/src/hooks/useAutosave';
 import { useEffect } from 'react';

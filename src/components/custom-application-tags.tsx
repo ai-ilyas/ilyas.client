@@ -15,20 +15,24 @@ import { Separator } from "./ui/separator";
 import { Check, ChevronsUpDown, Loader2 } from "lucide-react";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { IApplication } from "@/convex/applications";
 import { Icons } from "./icons";
 import { toast } from "./ui/use-toast";
 import { ITag } from "@/convex/tags";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "./ui/command";
 import { cn, isValidHtmlColor } from "../lib/utils";
+import { Id } from "@/convex/_generated/dataModel";
+import { Textarea } from "./ui/textarea";
 
 interface customTagsProps {
   lng: string;
-  application: IApplication;
+  tags: ITag[];
+  applicationId: Id<"applications">;
+  type: number;
+  maxNumber?: number;
 }
 
-export default function customApplicationTags ({ lng, application }: customTagsProps) {
+export default function customApplicationTags ({ lng, tags, applicationId, type, maxNumber }: customTagsProps) {
     const { t } = useTranslation(lng);
     const [hex, setHex] = useState('#7C3AED');
     const [open, setOpen] = useState(false);
@@ -38,10 +42,28 @@ export default function customApplicationTags ({ lng, application }: customTagsP
     const [openPopover, setOpenPopover] = useState(false)
     const insertTag = useMutation(api.tags.insert);
     const removeTag = useMutation(api.tags.removeLindToApplication)
-    const availableTags = useQuery(api.tags.list, { type: 0 });
+    const availableTags = useQuery(api.tags.list, { type });
     const linkTag = useMutation(api.tags.linkToApplication);
     const Icon = Icons['close'];
     const IconAdd = Icons['add'];
+    const linkedTags = tags.filter(x => x.type === type);
+
+    let labelType;
+    let singleLabelType;
+    switch(type) {
+        case 0:
+            labelType = "Tags";
+            singleLabelType = "Tag";
+            break;
+        case 1:
+            labelType = "BusinessCapabilities";
+            singleLabelType = "BusinessCapability";
+            break;
+        default:
+            labelType = "Tags";
+            singleLabelType = "Tag";
+        }
+    
 
     const formSchema = z.object({
         tagId: z.string().optional(),
@@ -49,25 +71,30 @@ export default function customApplicationTags ({ lng, application }: customTagsP
           .optional()
           // #090 CLIENT SERVER The combination Tag Name/Tag color should be unique per application
           .refine(val => !availableTags?.some((x) => x.value === val && x.color === hex), {
-            message: t("customTags_labelAlreadyExistsWithThisColor"),
+            message: t(`custom${labelType}_labelAlreadyExistsWithThisColor`),
           })
           // #080 CLIENT SERVER Tag color should be a valid HTML hexadecimal color
           .refine(val => isValidHtmlColor(hex), {
-            message: t("customTags_labelAlreadyExistsWithThisColor"),
+            message: t(`custom${labelType}_labelAlreadyExistsWithThisColor`),
           }),
+        description: z
+          .string()
+          // #0110 CLIENT SERVER Tag name length should be 500 characters maximum
+          .max(500, { message: t('common_error_max', { length: '500' }) })
+          .optional(),
         value: z
           .string()
           // #060 CLIENT SERVER Tag name length should be 50 characters maximum
           .max(15, { message: t("common_error_max", { length: "15" }) })
           .refine((val) => !availableTags?.some((x) => x.value === val && x.color === hex), {
-            message: t("customTags_labelAlreadyExistsWithThisColor"),
+            message: t(`custom${labelType}_labelAlreadyExistsWithThisColor`),
           })
           .optional(),
         confirmTag: z.string().optional()
     })
     // #070 CLIENT SERVER Tag name should not be empty
     .refine(schema => schema.value !== '' || schema.value?.trim() !== '' || schema.tagId !== '', {
-        message: t("customTags_selectAnExistingTagOrCreateANewOne"), 
+        message: t(`custom${labelType}_selectAnExistingOneOrCreateANewOne`), 
         path: ["confirmTag"]
     });
 
@@ -80,27 +107,26 @@ export default function customApplicationTags ({ lng, application }: customTagsP
     });
 
     useEffect(() => {
-        // #100 CLIENT SERVER Maximum tag per application is 10
-        application?.tags?.length && application?.tags?.length >= 10 ? setIsAddButtonDisabled(true): setIsAddButtonDisabled(false);
-    }, [application.tags])
+        maxNumber && linkedTags?.length && linkedTags?.length >= maxNumber ? setIsAddButtonDisabled(true): setIsAddButtonDisabled(false);
+    }, [tags])
 
     const onSubmit = async (data: formValues) => {
         setLoading(true);
         try{
             if (data.tagId)
             {
-                await linkTag({ tagId: data.tagId, applicationId: application._id });
+                await linkTag({ tagId: data.tagId, applicationId });
             }
             else
             {
-                await insertTag({ value: data.value!, type: 0, applicationId: application._id, color: hex });
+                await insertTag({ value: data.value!, type, applicationId, color: hex, description: data.description });
             }
 
             form.reset();
             setHex("#7C3AED")
             setOpen(false);
             toast({
-                title: t("customTags_tagHasBeenAdded") ,
+                title: t(`custom${labelType}_hasBeenAdded`) ,
                 variant: 'default'
             });  
         }
@@ -108,7 +134,7 @@ export default function customApplicationTags ({ lng, application }: customTagsP
         {
             console.log(error);
             toast({
-                title: t("customTags_tagHasntBeenAdded") ,
+                title: t(`custom${labelType}_hasntBeenAdded`) ,
                 variant: 'destructive'
             });  
             throw error;
@@ -121,10 +147,10 @@ export default function customApplicationTags ({ lng, application }: customTagsP
       const onRemoveTag = async (tag: ITag) => {
           setLoading(true);
           try{
-              await removeTag({tagId: tag._id, applicationId: application._id});
+              await removeTag({tagId: tag._id, applicationId });
               setOpenRemove(false);
               toast({
-                  title: t("customTags_tagHasBeenRemoved") ,
+                  title: t(`custom${labelType}_hasBeenRemoved`) ,
                   variant: 'default'
               });  
           }
@@ -132,7 +158,7 @@ export default function customApplicationTags ({ lng, application }: customTagsP
           {
               console.log(error);
               toast({
-                  title: t("customTags_tagHasntBeenRemoved") ,
+                  title: t(`custom${labelType}_hasntBeenRemoved`) ,
                   variant: 'destructive'
               });  
               throw error;
@@ -146,7 +172,7 @@ export default function customApplicationTags ({ lng, application }: customTagsP
     return (
       <div> 
         { 
-            application.tags?.map(x => 
+            linkedTags?.map(x => 
             <Badge key={x._id} style={{background: x.color }} className="m-0.5">
                 { x.value }
                 
@@ -156,11 +182,11 @@ export default function customApplicationTags ({ lng, application }: customTagsP
                     </DialogTrigger>
                     <DialogContent>
                         <DialogHeader>
-                            <DialogTitle>{t('customTags_removeTag')}</DialogTitle>
-                            <DialogDescription>
-                                {t('customTags_areYouSureYouWantToRemoveThisTag')}
+                            <DialogTitle>{t(`custom${labelType}_remove`)}</DialogTitle>
+                            <div className="text-sm text-muted-foreground">
+                                {t(`custom${labelType}_areYouSureYouWantToRemove`)}
                                 <Badge style={{background: tagToRemove?.color }} className="m-0.5">{ tagToRemove?.value }</Badge>
-                            </DialogDescription>
+                            </div>
                         </DialogHeader>
                         <DialogFooter>
                             <Button onClick={() => setOpenRemove(false)} variant="secondary">{t('common_cancel')}</Button>
@@ -172,24 +198,24 @@ export default function customApplicationTags ({ lng, application }: customTagsP
         }
         <Dialog modal={true} open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button disabled={isAddButtonDisabled} className="block" variant="link"><IconAdd className="h-4 w-4 inline-block"></IconAdd>{t("customTags_addATag")}</Button>
+                <Button disabled={isAddButtonDisabled} className="block" variant="link"><IconAdd className="h-4 w-4 inline-block"></IconAdd>{t(`custom${labelType}_add`)}</Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit((data) =>onSubmit(data))}>
                         <DialogHeader>
-                            <DialogTitle>{t("customTags_addATag")}</DialogTitle>
+                            <DialogTitle>{t(`custom${labelType}_add`)}</DialogTitle>
                         </DialogHeader>
                         <div className="gap-8 mt-3">
-                            <DialogDescription>
-                                {t("customTags_selectTag")}
+                            <DialogDescription className="mb-2">
+                                {t(`custom${labelType}_select`)}
                             </DialogDescription>
                             <FormField
                                 control={form.control}
                                 name="tagId"
                                 render={({ field }) => (
                                 <FormItem className="flex flex-col">
-                                    <FormLabel>{t('common_tags')}</FormLabel>
+                                    <FormLabel>{t(`custom${labelType}`)}</FormLabel>
                                     <Popover open={openPopover} onOpenChange={setOpenPopover} modal={true}>
                                         <PopoverTrigger asChild>
                                             <FormControl>
@@ -197,24 +223,24 @@ export default function customApplicationTags ({ lng, application }: customTagsP
                                                     variant="outline"
                                                     role="combobox"
                                                     className={cn(
-                                                        "w-[200px] justify-between",
+                                                        "justify-between",
                                                         !field.value && "text-muted-foreground"
                                                     )}
                                                     >
                                                     {field.value
                                                         ? getBadge(availableTags?.find((tag: ITag) => tag._id === field.value))
-                                                        : t('common_select', { value: 'tag' })}
+                                                        : t('common_select', { value: t(`custom${singleLabelType}`) })}
                                                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                                                 </Button>
                                             </FormControl>
                                         </PopoverTrigger>
-                                        <PopoverContent className="w-[200px] p-0">
+                                        <PopoverContent className="p-0">
                                             <Command>
-                                                <CommandInput placeholder={t('common_search', { value: 'tag' })} />
+                                                <CommandInput placeholder={t('common_search', { value: t(`custom${singleLabelType}`) })} />
                                                 <CommandList >
-                                                    <CommandEmpty>{t('common_noFound', { value: 'tag' })}</CommandEmpty>
+                                                    <CommandEmpty>{t('common_noFound', { value: t(`custom${singleLabelType}`) })}</CommandEmpty>
                                                     <CommandGroup>
-                                                        {availableTags?.filter(x => !application.tags?.some(y => x._id === y._id)).map((tag) => (
+                                                        {availableTags?.filter(x => !linkedTags?.some(y => x._id === y._id)).map((tag) => (
                                                         <CommandItem
                                                             value={tag.value}
                                                             key={tag._id}
@@ -249,18 +275,18 @@ export default function customApplicationTags ({ lng, application }: customTagsP
                             />
                             <Separator className="my-3" />
                             <DialogDescription>
-                                {t("customTags_createTag")}
+                                {t(`custom${labelType}_create`)}
                             </DialogDescription>
                             <FormField
                                 control={form.control}
                                 name="value"
                                 render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>{t("customTags_labelNewTag")}</FormLabel>
+                                    <FormLabel>{t(`custom${labelType}_labelNew`)}</FormLabel>
                                     <FormControl>
                                         <Input
                                             disabled={loading}
-                                            placeholder={t("customTags_labelNewTag")}
+                                            placeholder={t(`custom${labelType}_labelNew`)}
                                             {...field}
                                             onChange={e => {
                                                 form.setValue("value", e.target.value)
@@ -280,7 +306,7 @@ export default function customApplicationTags ({ lng, application }: customTagsP
                                 name="color"
                                 render={() => (
                                 <FormItem>
-                                    <FormLabel>{t("customTags_color")}</FormLabel>
+                                    <FormLabel>{t(`custom${labelType}_color`)}</FormLabel>
                                     <FormControl>
                                         <Circle
                                             colors={[ 
@@ -323,6 +349,19 @@ export default function customApplicationTags ({ lng, application }: customTagsP
                             />
 
                         </div>
+                        <FormField
+                            control={form!.control}
+                            name="description"
+                            render={({ field }) => (
+                                <FormItem>
+                                <FormLabel>{t('common_description')}</FormLabel>
+                                <FormControl>
+                                    <Textarea {...field} className="min-h-32" />
+                                </FormControl>
+                                <FormMessage />
+                                </FormItem>
+                            )}
+                            />
 
                         <DialogFooter>
                             <Button className="mt-4" disabled={loading} type="submit">

@@ -12,7 +12,8 @@ export interface ITag
   value: string;
   color?: string;
   icon?: string;
-  type: number; // 0: Application
+  type: number; // 0: Application, 1: Business Capabilities
+  description?: string;
   userId: Id<"users">;
 } 
 
@@ -36,13 +37,16 @@ export const insert = mutation({
     type: v.number(),
     color: v.optional(v.string()),
     icon: v.optional(v.string()),
+    description: v.optional(v.string()),
     applicationId: v.optional(v.id(APPLICATIONS_TABLE))
    },
-  handler: async (ctx, { value, type, color, icon, applicationId }) => {
+  handler: async (ctx, { value, type, color, icon, description, applicationId }) => {
     // #070 CLIENT SERVER Tag name should not be empty
     if (value.trim() === "") throw new Error("Impossible to add a tag with no value."); 
     // #060 CLIENT SERVER Tag name length should be 50 characters maximum   
     if (value.length > 15) throw new Error("Impossible to add a tag with more than 15 characters.");
+    // #0110 CLIENT SERVER Tag name length should be 500 characters maximum
+    if (description && description.length > 500) throw new Error("Impossible to add a tag with more than 500 characters.");
     // #080 CLIENT SERVER Tag color should be a valid HTML hexadecimal color
     if (color && !isValidHtmlColor(color)) throw new Error("Impossible to add a tag with this color.");
     const userId = (await getUserId(ctx, true))!;
@@ -55,7 +59,7 @@ export const insert = mutation({
         const appTags = await ctx.db.query(APPLICATION_TAGS_TABLE).withIndex("byApplicationId", (q) => q.eq("applicationId", applicationId)).collect();
         // #090 CLIENT SERVER The combination Tag Name/Tag color should be unique per application
         // #100 CLIENT SERVER Maximum tag per application is 10
-        checkTagNumberAndUnique(appTags, tagId);
+        checkTagNumberAndUnique(appTags, tagId, type);
         await ctx.db.insert(APPLICATION_TAGS_TABLE, { tagId, applicationId });
     }
     return tagId;
@@ -95,7 +99,7 @@ export const linkToApplication = mutation({
             .withIndex("byApplicationId", (q) => q.eq("applicationId", applicationId)).collect();
         // #090 CLIENT SERVER The combination Tag Name/Tag color should be unique per application
         // #100 CLIENT SERVER Maximum tag per application is 10
-        checkTagNumberAndUnique(appTags, tagId);
+        checkTagNumberAndUnique(appTags, tagId, tagToAdd.type);
         await ctx.db.insert(APPLICATION_TAGS_TABLE, { tagId: tagId as Id<"tags">, applicationId });
     },
 });
@@ -126,7 +130,7 @@ export const removeLindToApplication = mutation({
     },
 });
 
-const  checkTagNumberAndUnique = (appTags: any[], tagId: string) => {
-  if (appTags.length >= MAX_TAG_NUMBER) throw new Error("tags.linkToApplication - Too many tags already added.");
+const  checkTagNumberAndUnique = (appTags: any[], tagId: string, type: number) => {
+  if (appTags.filter(x => x.type === type).length >= MAX_TAG_NUMBER) throw new Error("tags.linkToApplication - Too many tags already added.");
   if (appTags.some(x => x.tagId === tagId as Id<"tags">)) throw new Error("tags.linkToApplication - Tag already exists with this application.");
 }
