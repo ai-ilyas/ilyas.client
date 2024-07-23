@@ -78,12 +78,13 @@ export default defineSchema({
   applications: defineTable({
     name: v.string(),
     description: v.optional(v.string()),
+    parentApplicationId: v.optional(v.id("applications")),
     userId: v.id("users"),
     editionTime: v.number(),
     technicalOwner: v.optional(v.string()),
     businessOwner: v.optional(v.string()),
     numberOfUsers: v.optional(v.string()),
-  }).index("byUserId", ["userId"]),
+  }).index("byUserId", ["userId"]).index("byName", ["name", "userId"]),
 
   tags: defineTable({
     value: v.string(),

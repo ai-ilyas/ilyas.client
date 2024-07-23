@@ -18,6 +18,7 @@ import { z } from 'zod';
 import { useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import { IApplication } from '@/convex/applications';
+import { applicationNameDefinition } from '@/src/lib/helpers/application-fields-definition';
 
 interface CreateApplicationFormProps {
   apps: IApplication[];
@@ -32,14 +33,7 @@ const createApplicationForm: React.FC<CreateApplicationFormProps> = ({ apps, lng
   const [open, setOpen] = useState(false);
 
   const formSchema = z.object({
-    applicationName: z
-      .string()      
-      // #040 CLIENT SERVER Application name length should be between 3 and 50 characters 
-      .min(3, { message: t("common_error_min", { length: "3" }) })
-      .max(50, { message: t("common_error_max", { length: "50" }) })
-      .refine((val) => !apps.some((x) => x.name === val), {
-        message: t("dashboard_home_applicationNameAlreadyExists"),
-      })
+    applicationName: applicationNameDefinition(t, apps)
   });
 
   type ApplicationFormValues = z.infer<typeof formSchema>;

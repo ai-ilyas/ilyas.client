@@ -7,6 +7,8 @@
 
 #040 CLIENT SERVER Application name length should be between 3 and 50 characters
 
+#041 CLIENT SERVER the combination Application name/userId must be unique 
+
 #050 CLIENT SERVER Application description length should be lower than 500 characters
 
 #TODO

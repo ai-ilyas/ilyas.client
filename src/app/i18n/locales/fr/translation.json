@@ -13,6 +13,7 @@
     "common_select": "Selectionnez {{value}}",
     "common_required": "Ce champs est requis",
     "common_description": "Description",
+    "common_application": "Application",
 
     "dashboard_home_myApplications": "Mes applications",
     "dashboard_home_newApplication": "Nouvelle application",
@@ -32,6 +33,11 @@
     "application_page_newProject": "Nouveau Projet",
     "application_toast_errorOccuredDuringUpdatingProcess": "Erreur durant le processus de mise à jour.",
     "application_toast_applicationHasBeenUpdated": "L'application a été mise à jour",
+
+    "application_parentChildren_hierarchy": "Hiérarchie",
+    "application_parentChildren_parentApplication": "Application parente",
+    "application_parentChildren_addParentApplication": "Ajouter l'application parente",
+    "application_parentChildren_createANewParentApplication": "Ou créer une nouvelle application",
 
     "application_businessCapabilities_businessCapabilities": "Business capabilities",
 

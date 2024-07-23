@@ -19,6 +19,7 @@ export interface IApplication
   technicalOwner?: string;
   businessOwner?: string;
   numberOfUsers?: string;
+  parentApplicationId?: Id<"applications">;
 } 
 
 export const list = query({
@@ -56,7 +57,11 @@ export const insert = mutation({
 
     // #040 CLIENT SERVER Application name length should be between 3 and 50 characters 
     checkIfStringIsNotOutOfLimits(name, { min: 3, max:50 });
-    
+
+    // #041 CLIENT SERVER the combination Application name/userId must be unique
+    const existingApp = await ctx.db.query(APPLICATIONS_TABLE).withIndex("byName", (q) => q.eq("name", name).eq("userId", userId!)).first();
+    if (existingApp) throw new Error("applications.insert - Name already used.")
+
     // #030 SERVER When Insert application current userId is the userId in Application Table
     const appId = await ctx.db.insert(APPLICATIONS_TABLE, { name, userId, editionTime: Date.now() });
     console.log(appId);
@@ -89,6 +94,11 @@ export const patch = mutation({
     const applicationToUpdate = await ctx.db.get(_id);
     // #020 SERVER Insert or Update application only when current userId match with userId in Application Table
     if (userId !== applicationToUpdate?.userId) throw new Error("applications.patch - Method not allowed.")
+
+    // #041 CLIENT SERVER the combination Application name/userId must be unique
+    const existingApp = await ctx.db.query(APPLICATIONS_TABLE).withIndex("byName", (q) => q.eq("name", name).eq("userId", userId!)).filter((q) => q.neq(q.field("_id"), _id)).first();
+    if (existingApp) throw new Error("applications.patch - Name already used.")
+
     await ctx.db.patch(_id, { name, description, editionTime: Date.now(), businessOwner, technicalOwner, numberOfUsers });
   },
 });

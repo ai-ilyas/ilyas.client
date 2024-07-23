@@ -45,7 +45,7 @@ export default function customApplicationTags ({ lng, tags, applicationId, type,
     const removeTag = useMutation(api.tags.removeLindToApplication)
     const availableTags = useQuery(api.tags.list, { type });
     const linkTag = useMutation(api.tags.linkToApplication);
-    const Icon = Icons['close'];
+    const IconClose = Icons['close'];
     const IconAdd = Icons['add'];
     const linkedTags = tags.filter(x => x.type === type);
 
@@ -179,7 +179,7 @@ export default function customApplicationTags ({ lng, tags, applicationId, type,
                 
                 <Dialog open={openRemove} onOpenChange={setOpenRemove}>
                     <DialogTrigger asChild>
-                        <Icon onClick={() => setTagToRemove(x)} className="cursor-pointer ml-2 h-3 w-3" />
+                        <IconClose onClick={() => setTagToRemove(x)} className="cursor-pointer ml-2 h-3 w-3" />
                     </DialogTrigger>
                     <DialogContent>
                         <DialogHeader>
@@ -235,7 +235,7 @@ export default function customApplicationTags ({ lng, tags, applicationId, type,
                                                 </Button>
                                             </FormControl>
                                         </PopoverTrigger>
-                                        <PopoverContent className="p-0">
+                                        <PopoverContent className="w-[300px] p-0">
                                             <Command>
                                                 <CommandInput placeholder={t('common_search', { value: t(`custom${singleLabelType}`) })} />
                                                 <CommandList >
@@ -367,7 +367,10 @@ export default function customApplicationTags ({ lng, tags, applicationId, type,
                                     )}
                                 />
                         </div>
-                        <DialogFooter>
+                        <DialogFooter>                            
+                            <Button variant="secondary" type="button" className="mt-4" onClick={() => { setOpen(false); form.reset();}}>
+                                {t("common_cancel")}
+                            </Button>
                             <Button className="mt-4" disabled={loading} type="submit">
                                 { loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                                 {t("common_add")}
