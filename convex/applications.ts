@@ -18,6 +18,7 @@ export interface IApplication
   tags?: ITag[];
   technicalOwner?: string;
   businessOwner?: string;
+  numberOfUsers?: string;
 } 
 
 export const list = query({
@@ -83,6 +84,7 @@ export const patch = mutation({
     
     // #050 CLIENT SERVER Application description length should be lower than 500 characters 
     checkIfStringIsNotOutOfLimits(description, { max:500 });
+
     const userId = (await getUserId(ctx, true))!;
     const applicationToUpdate = await ctx.db.get(_id);
     // #020 SERVER Insert or Update application only when current userId match with userId in Application Table

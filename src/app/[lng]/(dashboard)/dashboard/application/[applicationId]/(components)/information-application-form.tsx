@@ -5,7 +5,6 @@ import { useTranslation } from '@/src/app/i18n/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/src/components/ui/form';
 import { Input } from '@/src/components/ui/input';
-import CustomApplicationTags from '@/src/components/custom-application-tags';
 import { Textarea } from '@/src/components/ui/textarea';
 import useConvexAutoSave from '@/src/hooks/useAutosave';
 import { useEffect } from 'react';
@@ -46,16 +45,25 @@ const informationApplicationForm: React.FC<UpdateApplicationFormProps> = ({
       businessOwner: z
         .string()
         // #070 CLIENT SERVER Fields length for Technical Owner, Business Owner and NumberOfUsers should be 50 characters maximum 
-        .max(15, { message: t('common_error_max', { length: '50' }) })
+        .max(50, { message: t('common_error_max', { length: '50' }) })
         .optional(),
       numberOfUsers: z
         .string()
         // #070 CLIENT SERVER Fields length for Technical Owner, Business Owner and NumberOfUsers should be 50 characters maximum
-        .max(15, { message: t('common_error_max', { length: '50' }) })
+        .max(50, { message: t('common_error_max', { length: '50' }) })
         .optional()
   });
 
-  const { form, isSaving }= useConvexAutoSave({ ...app, _id: app._id }, formSchema, api.applications.patch, lng, 1000);
+  const { form, isSaving }= useConvexAutoSave(
+    { 
+      descrition: app.description, 
+      name: app.name, 
+      _id: app._id,
+      businessOwner: app.businessOwner,
+      technicalOwner: app.technicalOwner,
+      numberOfUsers: app.numberOfUsers
+    }, 
+    formSchema, api.applications.patch, lng, 1000);
 
   useEffect(()=> {
     const values = form.getValues();
