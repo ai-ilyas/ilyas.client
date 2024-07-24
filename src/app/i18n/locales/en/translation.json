@@ -37,8 +37,13 @@
     "application_parentChildren_hierarchy": "Hierarchy",    
     "application_parentChildren_parentApplication": "Parent application",
     "application_parentChildren_addParentApplication": "Add parent application",
-    "application_parentChildren_selectExistingParentApplication": "Sélectionner une application parente existante",
+    "application_parentChildren_selectAnotherParentApplication": "Select another parent application",
+    "application_parentChildren_selectExistingParentApplication": "Select an existing parent application",
     "application_parentChildren_createANewParentApplication": "Or create a new application",
+    "application_parentChildren_areYouSureYouWantToRemoveTheParentApplication": "Are you sure you want to remove the parent application ?",
+    "application_parentChildren_parentApplicationHasBeenRemoved": "Parent application has been removed.",
+    "application_parentChildren_parentApplicationHasNotBeenRemoved": "Parent application hasn't been removed.",
+    "application_parentChildren_removeTheParentApplication": "Remove parent application",
 
     "application_businessCapabilities_businessCapabilities": "Business capabilities",
 

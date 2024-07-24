@@ -102,3 +102,55 @@ export const patch = mutation({
     await ctx.db.patch(_id, { name, description, editionTime: Date.now(), businessOwner, technicalOwner, numberOfUsers });
   },
 });
+
+export const updateParentApplication = mutation({
+  args: { 
+    _id: v.id(APPLICATIONS_TABLE), 
+    parentApplicationId: v.optional(v.string()),
+    name: v.optional(v.string()),
+    description: v.optional(v.string())
+  },
+  handler: async (ctx, { _id, parentApplicationId, name, description, }) => {
+    const userId = (await getUserId(ctx, true))!;
+    const applicationToUpdate = await ctx.db.get(_id);
+    // #020 SERVER Insert or Update application only when current userId match with userId in Application Table
+    if (userId !== applicationToUpdate?.userId) throw new Error("applications.patch - Method not allowed.")
+    let _parentApplicationId;
+
+    if (parentApplicationId)
+    {
+      _parentApplicationId = parentApplicationId as Id<"applications">;
+    } else
+    {
+      if (!name) throw new Error("applications.updateParentApplication - Name cannot be null.");
+
+      // #040 CLIENT SERVER Application name length should be between 3 and 50 characters 
+      checkIfStringIsNotOutOfLimits(name, { min: 3, max:50 });
+      
+      // #050 CLIENT SERVER Application description length should be lower than 500 characters 
+      checkIfStringIsNotOutOfLimits(description, { max:500 });
+
+      // #041 CLIENT SERVER the combination Application name/userId must be unique
+      const existingApp = await ctx.db.query(APPLICATIONS_TABLE).withIndex("byName", (q) => q.eq("name", name!).eq("userId", userId!)).first();
+      if (existingApp) throw new Error("applications.insert - Name already used.")
+
+      // #030 SERVER When Insert application current userId is the userId in Application Table
+      _parentApplicationId = await ctx.db.insert(APPLICATIONS_TABLE, { name: name!, userId, editionTime: Date.now() });
+
+    }
+    await ctx.db.patch(_id, { parentApplicationId: _parentApplicationId, editionTime: Date.now() });
+  },
+});
+
+
+export const removeParentApplication = mutation({
+  args: { _id: v.id(APPLICATIONS_TABLE) },
+  handler: async (ctx, { _id }) => {
+    const userId = (await getUserId(ctx, true))!;
+    const applicationToUpdate = await ctx.db.get(_id);
+    // #020 SERVER Insert or Update application only when current userId match with userId in Application Table
+    if (userId !== applicationToUpdate?.userId) throw new Error("applications.patch - Method not allowed.")
+
+    await ctx.db.patch(_id, { parentApplicationId: undefined });
+  },
+});

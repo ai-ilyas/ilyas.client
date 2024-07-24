@@ -19,6 +19,9 @@ import { toast } from '@/src/components/ui/use-toast';
 import { applicationDescriptionDefinition, applicationNameDefinition } from '@/src/lib/helpers/application-fields-definition';
 import { Input } from '@/src/components/ui/input';
 import { Textarea } from '@/src/components/ui/textarea';
+import { useMutation } from 'convex/react';
+import { api } from '@/convex/_generated/api';
+import { Label } from '@/src/components/ui/label';
 
 interface ApplicationParentChildrenFormProps {
   app: IApplication;
@@ -37,14 +40,17 @@ const applicationParentChildren: React.FC<ApplicationParentChildrenFormProps> = 
   const [loading, setLoading] = useState(false);
   const [openPopover, setOpenPopover] = useState(false);
   const [isDescriptionDisabled, setIsDescriptionDisabled] = useState(true);
-
+  const updateParentApplication = useMutation(api.applications.updateParentApplication);
+  const removeParentApplication = useMutation(api.applications.removeParentApplication);
+  const [openRemove, setOpenRemove] = useState(false);
+  const IconClose = Icons['close'];
   const formSchema = z.object({
     parentApplicationId: z.string().optional(),
-    name: applicationNameDefinition(t, apps).optional(),
+    name: applicationNameDefinition(t, apps).optional().or(z.literal('')),
     description: applicationDescriptionDefinition(t)
   });
   type formValues = z.infer<typeof formSchema>;
-  const defaultValues = { parentApplicationId: app.parentApplicationId };
+  const defaultValues = { parentApplicationId: '', name: '', description: '' };
   const form = useForm<formValues>({
     resolver: zodResolver(formSchema),
     defaultValues
@@ -53,6 +59,10 @@ const applicationParentChildren: React.FC<ApplicationParentChildrenFormProps> = 
   const onSubmit = async (data: formValues) => {
     setLoading(true);
     try{
+        const r = await updateParentApplication({ 
+          _id: app._id, 
+          parentApplicationId: data.parentApplicationId,
+          ...data });
         form.reset();
         setOpen(false);
         toast({
@@ -74,6 +84,30 @@ const applicationParentChildren: React.FC<ApplicationParentChildrenFormProps> = 
     }
   };
   
+  const onRemoveParentApplication = async () => {
+    setLoading(true);
+    try{
+        await removeParentApplication({ _id: app._id });
+        setOpenRemove(false);
+        toast({
+            title: t(`application_parentChildren_parentApplicationHasBeenRemoved`) ,
+            variant: 'default'
+        });  
+    }
+    catch(error)
+    {
+        console.log(error);
+        toast({
+            title: t(`custom_hasntBeenRemoved`) ,
+            variant: 'destructive'
+        });  
+        throw error;
+    }
+    finally{
+      setLoading(false);
+    }
+  };
+
   return (
     form && <Form {...form}>
     <form
@@ -86,10 +120,42 @@ const applicationParentChildren: React.FC<ApplicationParentChildrenFormProps> = 
           </div>
           </CardHeader>
           <CardContent>
+
+          <div className="flex">
+            <Label>{t('application_parentChildren_parentApplication')}</Label>
+          </div>
+          { 
+            app.parentApplicationId && 
+              <div className="db font-extrabold my-2 text-3xl">
+                { apps.find(x => x._id === app.parentApplicationId)?.name }
+                <Dialog open={openRemove} onOpenChange={setOpenRemove}>
+                    <DialogTrigger asChild>
+                      <IconClose className="inline-table align-text-top cursor-pointer ml-2 h-3 w-3" />
+                    </DialogTrigger>
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle>{t(`application_parentChildren_removeTheParentApplication`)}</DialogTitle>
+                            <div className="text-sm text-muted-foreground">
+                                {t(`application_parentChildren_areYouSureYouWantToRemoveTheParentApplication`)}                                
+                            </div>
+                        </DialogHeader>
+                        <DialogFooter>
+                            <Button onClick={() => setOpenRemove(false)} variant="secondary">{t('common_cancel')}</Button>
+                            <Button onClick={() => onRemoveParentApplication()} variant="destructive">{t('common_remove')}</Button>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
+              </div>
+          }
+
           <div>
           <Dialog modal={true} open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button className="block" variant="link"><IconAdd className="h-4 w-4 inline-block"></IconAdd>{t(`common_add`)}</Button>
+            { 
+              app.parentApplicationId 
+              ? <Button className="block" variant="link"><IconAdd className="h-4 w-4 inline-block"></IconAdd>{t(`application_parentChildren_selectAnotherParentApplication`)}</Button>
+              : <Button className="block" variant="link"><IconAdd className="h-4 w-4 inline-block"></IconAdd>{t(`application_parentChildren_addParentApplication`)}</Button>
+            }                
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <Form {...form}>
