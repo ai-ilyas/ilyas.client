@@ -145,10 +145,10 @@ export default function customApplicationTags ({ lng, tags, applicationId, type,
         }
       };
 
-      const onRemoveTag = async (tag: ITag) => {
+      const onRemoveTag = async () => {
           setLoading(true);
           try{
-              await removeTag({tagId: tag._id, applicationId });
+              await removeTag({tagId: tagToRemove!._id, applicationId });
               setOpenRemove(false);
               toast({
                   title: t(`custom${labelType}_hasBeenRemoved`) ,
@@ -191,7 +191,7 @@ export default function customApplicationTags ({ lng, tags, applicationId, type,
                         </DialogHeader>
                         <DialogFooter>
                             <Button onClick={() => setOpenRemove(false)} variant="secondary">{t('common_cancel')}</Button>
-                            <Button onClick={() => onRemoveTag(tagToRemove!)} variant="destructive">{t('common_remove')}</Button>
+                            <Button onClick={() => onRemoveTag()} variant="destructive">{t('common_remove')}</Button>
                         </DialogFooter>
                     </DialogContent>
                 </Dialog>

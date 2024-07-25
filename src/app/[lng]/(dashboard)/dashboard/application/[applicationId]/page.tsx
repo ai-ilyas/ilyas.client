@@ -8,7 +8,8 @@ import { useQuery } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import CustomApplicationTags from '@/src/components/custom-application-tags';
 import BusinessCapabilities from './(components)/business-capabilities';
-import ApplicationParentChildren from './(components)/application-parent-children';
+import ParentApplication from './(components)/parent-application';
+import ChildrenApplications from './(components)/children-applications';
 
 
 export default function page({
@@ -69,10 +70,14 @@ export default function page({
             lng={lng}></BusinessCapabilities>
         </div>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          <ApplicationParentChildren
+          <ParentApplication
             app={app!}
             lng={lng}
-            apps={applications!}></ApplicationParentChildren>
+            apps={applications!}></ParentApplication>
+          <ChildrenApplications
+            app={app!}
+            lng={lng}
+            apps={applications!}></ChildrenApplications>
         </div>
         
       </div>

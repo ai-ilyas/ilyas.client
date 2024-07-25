@@ -4,13 +4,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/ca
 import { useTranslation } from '@/src/app/i18n/client';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/src/components/ui/form';
 import { z } from 'zod';
-import { Popover, PopoverContent, PopoverTrigger } from '@/src/components/ui/popover';
 import { Button } from '@/src/components/ui/button';
-import { Check, ChevronsUpDown, Loader2 } from 'lucide-react';
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/src/components/ui/command';
+import { Loader2 } from 'lucide-react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { cn } from '@/src/lib/utils';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/src/components/ui/dialog';
 import { Separator } from '@/src/components/ui/separator';
 import { useState } from 'react';
@@ -21,15 +18,16 @@ import { Input } from '@/src/components/ui/input';
 import { Textarea } from '@/src/components/ui/textarea';
 import { useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
-import { Label } from '@/src/components/ui/label';
+import { MultiSelect } from '@/src/components/multi-select';
+import { Id } from '@/convex/_generated/dataModel';
 
-interface ApplicationParentChildrenFormProps {
+interface ParentApplicationFormProps {
   app: IApplication;
   lng: string;  
   apps: IApplication[];
 }
 
-const applicationParentChildren: React.FC<ApplicationParentChildrenFormProps> = ({
+const childrenApplications: React.FC<ParentApplicationFormProps> = ({
   app,
   lng,
   apps
@@ -38,12 +36,15 @@ const applicationParentChildren: React.FC<ApplicationParentChildrenFormProps> = 
   const [open, setOpen] = useState(false);
   const IconAdd = Icons['add'];
   const [loading, setLoading] = useState(false);
-  const [openPopover, setOpenPopover] = useState(false);
   const [isDescriptionDisabled, setIsDescriptionDisabled] = useState(true);
-  const updateParentApplication = useMutation(api.applications.updateParentApplication);
+  const addChildrenApplications = useMutation(api.applications.addChildrenApplications);
   const removeParentApplication = useMutation(api.applications.removeParentApplication);
   const [openRemove, setOpenRemove] = useState(false);
+  const [childAppToRemove, setChildAppToRemove] = useState<IApplication>();
   const IconClose = Icons['close'];
+  const childApplications = apps.filter(x => x.parentApplicationId === app._id)
+  const [selectedChildren, setSelectedChildren] = useState<string[]>([]);
+
   const formSchema = z.object({
     parentApplicationId: z.string().optional(),
     name: applicationNameDefinition(t, apps).optional().or(z.literal('')),
@@ -59,11 +60,14 @@ const applicationParentChildren: React.FC<ApplicationParentChildrenFormProps> = 
   const onSubmit = async (data: formValues) => {
     setLoading(true);
     try{
-        const r = await updateParentApplication({ 
-          _id: app._id, 
-          parentApplicationId: data.parentApplicationId,
-          ...data });
+        const r = await addChildrenApplications({ 
+          parentApplicationId: app._id, 
+          childrenApplicationsIds: selectedChildren,
+          name: data.name,
+          description: data.description
+        });
         form.reset();
+        setSelectedChildren([]);
         setOpen(false);
         toast({
             title: t(`application_toast_applicationHasBeenUpdated`) ,
@@ -84,13 +88,13 @@ const applicationParentChildren: React.FC<ApplicationParentChildrenFormProps> = 
     }
   };
   
-  const onRemoveParentApplication = async () => {
+  const onRemoveChildApplication = async () => {
     setLoading(true);
     try{
-        await removeParentApplication({ _id: app._id });
+        await removeParentApplication({ _id: childAppToRemove!._id });
         setOpenRemove(false);
         toast({
-            title: t(`application_parentChildren_parentApplicationHasBeenRemoved`) ,
+            title: t(`application_childrenApplication_childApplicationHasBeenRemoved`) ,
             variant: 'default'
         });  
     }
@@ -98,7 +102,7 @@ const applicationParentChildren: React.FC<ApplicationParentChildrenFormProps> = 
     {
         console.log(error);
         toast({
-            title: t(`custom_hasntBeenRemoved`) ,
+            title: t(`application_childrenApplication_childApplicationHasNotBeenRemoved`) ,
             variant: 'destructive'
         });  
         throw error;
@@ -116,128 +120,77 @@ const applicationParentChildren: React.FC<ApplicationParentChildrenFormProps> = 
       <Card>
           <CardHeader>
           <div className="flex items-start">
-              <CardTitle>{t('application_parentChildren_hierarchy')}</CardTitle>
+              <CardTitle>{childApplications.length ?? '0' } {t('application_childrenApplication_childrenApplication')}</CardTitle>
           </div>
           </CardHeader>
           <CardContent>
 
-          <div className="flex">
-            <Label>{t('application_parentChildren_parentApplication')}</Label>
-          </div>
           { 
-            app.parentApplicationId && 
-              <div className="db font-extrabold my-2 text-3xl">
-                { apps.find(x => x._id === app.parentApplicationId)?.name }
+            childApplications.map( childApp =>               
+              <div key={childApp._id} className="db font-extrabold my-2 text-1xl">
+                { childApp.name }
                 <Dialog open={openRemove} onOpenChange={setOpenRemove}>
                     <DialogTrigger asChild>
-                      <IconClose className="inline-table align-text-top cursor-pointer ml-2 h-3 w-3" />
+                      <IconClose onClick={() => setChildAppToRemove(childApp)} className="inline-table align-text-top cursor-pointer ml-2 h-3 w-3" />
                     </DialogTrigger>
                     <DialogContent>
                         <DialogHeader>
-                            <DialogTitle>{t(`application_parentChildren_removeTheParentApplication`)}</DialogTitle>
+                            <DialogTitle>{t(`application_childrenApplication_removeChildApplication`)}</DialogTitle>
                             <div className="text-sm text-muted-foreground">
-                                {t(`application_parentChildren_areYouSureYouWantToRemoveTheParentApplication`)}                                
+                                {t(`application_childrenApplication_areYouSureYouWantToRemoveThisChildApplication`)}
+                                <div className='db font-black text-center'>{childAppToRemove?.name}</div>                            
                             </div>
                         </DialogHeader>
                         <DialogFooter>
                             <Button onClick={() => setOpenRemove(false)} variant="secondary">{t('common_cancel')}</Button>
-                            <Button onClick={() => onRemoveParentApplication()} variant="destructive">{t('common_remove')}</Button>
+                            <Button onClick={() => onRemoveChildApplication()} variant="destructive">{t('common_remove')}</Button>
                         </DialogFooter>
                     </DialogContent>
                 </Dialog>
-              </div>
+              </div>)
           }
 
           <div>
           <Dialog modal={true} open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
             { 
-              app.parentApplicationId 
-              ? <Button className="block" variant="link"><IconAdd className="h-4 w-4 inline-block"></IconAdd>{t(`application_parentChildren_selectAnotherParentApplication`)}</Button>
-              : <Button className="block" variant="link"><IconAdd className="h-4 w-4 inline-block"></IconAdd>{t(`application_parentChildren_addParentApplication`)}</Button>
+              <Button className="block" variant="link"><IconAdd className="h-4 w-4 inline-block"></IconAdd>{t(`application_childrenApplication_addChildrenApplication`)}</Button>
             }                
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit((data) =>onSubmit(data))}>
                         <DialogHeader>
-                            <DialogTitle>{t(`application_parentChildren_addParentApplication`)}</DialogTitle>
+                            <DialogTitle>{t(`application_childrenApplication_addChildrenApplication`)}</DialogTitle>
                         </DialogHeader>
                         <div className="gap-8 mt-3">
                             <DialogDescription className="mb-2">
-                                {t(`application_parentChildren_selectExistingParentApplication`)}
+                                {t(`application_childrenApplication_selectExistingChildrenApplication`)}
                             </DialogDescription>
                             <FormField
                               control={form.control}
                               name="parentApplicationId"
                               render={({ field }) => (
                               <FormItem className="flex flex-col">
-                                  <FormLabel>{t(`application_parentChildren_parentApplication`)}</FormLabel>
-                                  <Popover open={openPopover} onOpenChange={setOpenPopover} modal={true}>
-                                      <PopoverTrigger asChild>
-                                          <FormControl>
-                                              <Button
-                                                  variant="outline"
-                                                  role="combobox"
-                                                  className={cn(
-                                                      "justify-between",
-                                                      !field.value && "text-muted-foreground"
-                                                  )}
-                                                  >
-                                                  {field.value
-                                                    ? apps.find(
-                                                        (x) => x._id === field.value
-                                                      )?.name
-                                                    : t('common_select', { value: t(`common_application`) })}
-                                                  <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                              </Button>
-                                          </FormControl>
-                                      </PopoverTrigger>
-                                      <PopoverContent className="w-[300px] p-0">
-                                          <Command>
-                                              <CommandInput placeholder={t('common_search', { value: t(`common_application`) })} />
-                                              <CommandList >
-                                                  <CommandEmpty>{t('common_noFound', { value: t(`common_application`) })}</CommandEmpty>
-                                                  <CommandGroup>
-                                                      {
-                                                        apps.filter(x => x._id !== app.parentApplicationId && x._id !== app._id)
-                                                          .map((popoverApp) => (
-                                                        <CommandItem
-                                                          value={popoverApp.name}
-                                                          key={popoverApp._id}
-                                                          onSelect={() => {
-                                                            form.setValue("parentApplicationId", popoverApp._id);
-                                                            if (popoverApp._id) {
-                                                              form.resetField("name");
-                                                              form.resetField("description");
-                                                            }                                                           
-                                                            setOpenPopover(false);
-                                                          }}
-                                                        >
-                                                          <Check
-                                                            className={cn(
-                                                                "mr-2 h-4 w-4",
-                                                                popoverApp._id === field.value
-                                                                ? "opacity-100"
-                                                                : "opacity-0"
-                                                            )}
-                                                          />
-                                                          { popoverApp.name }
-                                                        </CommandItem>
-                                                        ))
-                                                      }
-                                                  </CommandGroup>
-                                              </CommandList>
-                                          </Command>
-                                      </PopoverContent>
-                                  </Popover>
+                                  <FormLabel>{t(`application_childrenApplication_childrenApplication`)}</FormLabel>
+                                  <MultiSelect
+                                      lng={lng}
+                                      // #080 CLIENT SERVER Application cannot be its own parent application
+                                      options={apps.filter(x => x.parentApplicationId !== app._id && app._id !== x._id).map(x => ({ value: x._id, label: x.name }))}
+                                      onValueChange={setSelectedChildren}
+                                      defaultValue={selectedChildren}
+                                      placeholder={t("application_childrenApplication_selectChildrenApplication")}
+                                      variant="secondary"
+                                      animation={2}
+                                      maxCount={3}
+                                    />
                                   <FormMessage />
                               </FormItem>
                               )}
                             />
                             <Separator className="my-3" />
                             <DialogDescription>
-                                {t(`application_parentChildren_createANewParentApplication`)}
+                                {t(`application_childrenApplication_createANewChildApplication`)}
                             </DialogDescription>
                             <FormField
                                 control={form.control}
@@ -299,4 +252,4 @@ const applicationParentChildren: React.FC<ApplicationParentChildrenFormProps> = 
   );
 };
 
-export default applicationParentChildren;
+export default childrenApplications;
