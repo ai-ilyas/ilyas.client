@@ -1,0 +1,17 @@
+#010 SERVER Get interface only when current userId match with userId in Tag Table
+
+#020 SERVER Update interface only when current userId match with userId in Tag Table
+
+#030 SERVER When Insert interface current userId is the userId in Interface Table
+
+#040 CLIENT SERVER Interface name length should be between 3 and 50 characters
+
+#050 CLIENT SERVER the combination Interface/userId must be unique
+
+#060 CLIENT When interface name is null interface name is [ApplicationName]_interface_[increment]
+
+#070 CLIENT SERVER Application's userId must be the same than the current user
+
+#080 CLIENT SERVER IT Component's userId must be the same than the current user 
+
+#090 CLIENT SERVER Data object's userId must be the same than the current user 

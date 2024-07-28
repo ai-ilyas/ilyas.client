@@ -52,6 +52,7 @@ export const findOne = query({
 
 export const insert = mutation({
   args: { name: v.string() },
+  returns: v.id(APPLICATIONS_TABLE),
   handler: async (ctx, { name }) => {
     const userId = (await getUserId(ctx, true))!;
 

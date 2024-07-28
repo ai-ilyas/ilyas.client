@@ -1,6 +1,6 @@
 import { defineSchema, defineTable } from "convex/server";
 import { Validator, v } from "convex/values";
-import { APPLICATIONS_TABLE, TAGS_TABLE } from "./tableNames";
+import { APPLICATIONS_TABLE, INTERFACES_TABLE, TAGS_TABLE } from "./tableNames";
 
 // The users, accounts, sessions and verificationTokens tables are modeled
 // from https://authjs.dev/getting-started/adapters#models
@@ -95,8 +95,53 @@ export default defineSchema({
     userId: v.id("users"),    
   }).index("byType", ["userId", "type"]).searchIndex("byValue", { searchField: "value", filterFields: ["userId", "type"] }),
 
-  applicationTags: defineTable({ 
+  applicationTags: defineTable({
     tagId: v.id(TAGS_TABLE),
     applicationId: v.id(APPLICATIONS_TABLE),
   }).index("byApplicationId", ["applicationId"]),
+
+  interfaces: defineTable({
+    name: v.string(),
+    description: v.optional(v.string()),
+    direction: v.union(
+      v.literal("outgoing"),
+      v.literal("incoming"),
+      v.literal("bi-directional"),
+    ),
+    itComponentId: v.optional(v.id(TAGS_TABLE)),
+    dataObjectId: v.optional(v.id(TAGS_TABLE)),
+    volumetry: v.optional(v.string()),
+    applicationId: v.id(APPLICATIONS_TABLE),
+    userId: v.id("users"),    
+    frequence: v.union(
+      v.literal("hourly"),
+      v.literal("daily"),
+      v.literal("weekly"),
+      v.literal("monthly"),
+      v.literal("yearly"),
+      v.literal("on demand"),
+      v.literal("real-time"),
+    ),
+    editionTime: v.number(),
+  }).index("byApplicationId", ["applicationId", "userId"])
+  .index("byUserId", ["userId"])
+  .index("byName", ["name", "userId"])
+  .index("byDataObjectId", ["dataObjectId"])
+  .index("byItComponentId", ["itComponentId"]),
+    
+  interfaceConsumers: defineTable({
+    interfaceId: v.id(INTERFACES_TABLE),
+    applicationId: v.id(APPLICATIONS_TABLE),
+    volumetry: v.optional(v.string()),
+    frequence: v.union(
+      v.literal("hourly"),
+      v.literal("daily"),
+      v.literal("weekly"),
+      v.literal("monthly"),
+      v.literal("yearly"),
+      v.literal("on demand"),
+      v.literal("real-time"),
+    ),
+    editionTime: v.number(),
+  }).index("byApplicationId", ["applicationId"])
 });

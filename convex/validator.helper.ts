@@ -21,3 +21,7 @@ export const  checkIfStringIsNotOutOfLimits = (stringToTest?: string, { min, max
             throw new Error(checkStringNotOutOfLimitsMessage);
         }
     }
+
+export const checkUserIdsMatch = (userId: string, userId2: string, fromMethod?: string) => {
+    if (userId !== userId2) throw new Error((fromMethod + " - " ?? " ") + "userId doesn't match.");
+}
