@@ -91,7 +91,7 @@ export const deleteTag = mutation({
     },
 });
 
-export const removeLindToApplication = mutation({
+export const removeLinkToApplication = mutation({
     args: { tagId: v.id(TAGS_TABLE), applicationId: v.id(APPLICATIONS_TABLE) },
     handler: async (ctx, { tagId, applicationId }) => {
         const userId = (await getUserId(ctx, true));

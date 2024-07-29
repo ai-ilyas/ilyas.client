@@ -3,9 +3,10 @@ import { mutation, query } from "./_generated/server";
 import { getUserId } from "./auth";
 import { checkIfStringIsNotOutOfLimits } from "./validator.helper";
 import { Id } from "./_generated/dataModel";
-import { APPLICATIONS_TABLE, APPLICATION_TAGS_TABLE } from "./tableNames";
+import { APPLICATIONS_TABLE, APPLICATION_TAGS_TABLE, INTERFACES_TABLE } from "./tableNames";
 import { getAll, getManyVia } from "convex-helpers/server/relationships";
 import { ITag } from "./tags";
+import { IInterface } from "./interfaces";
 
 export interface IApplication
 {
@@ -16,6 +17,7 @@ export interface IApplication
   userId: Id<"users">;
   editionTime: number;
   tags?: ITag[];
+  interfaces?: IInterface[];
   technicalOwner?: string;
   businessOwner?: string;
   numberOfUsers?: string;
@@ -46,7 +48,13 @@ export const findOne = query({
     // #010 SERVER Get application only when current userId match with userId in Application Table
     if (application?.userId !== userId) throw new Error("applications.findOne - Method not allowed.");
     const tags = await getManyVia(ctx.db, APPLICATION_TAGS_TABLE, "tagId", "byApplicationId", _id, "applicationId");
-    return { ...application, tags } as IApplication;
+
+    const interfaces = await ctx.db
+      .query(INTERFACES_TABLE)
+      .withIndex("byApplicationId", q => q.eq("applicationId", _id).eq("userId", userId!))
+      .collect();
+
+    return { ...application, tags, interfaces } as IApplication;
   },
 });
 

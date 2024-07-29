@@ -21,13 +21,13 @@ import { api } from '@/convex/_generated/api';
 import { MultiSelect } from '@/src/components/multi-select';
 import { Id } from '@/convex/_generated/dataModel';
 
-interface ParentApplicationFormProps {
+interface ChildrenApplicationsProps {
   app: IApplication;
   lng: string;  
   apps: IApplication[];
 }
 
-const childrenApplications: React.FC<ParentApplicationFormProps> = ({
+const childrenApplications: React.FC<ChildrenApplicationsProps> = ({
   app,
   lng,
   apps

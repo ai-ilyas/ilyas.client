@@ -10,6 +10,7 @@ import CustomApplicationTags from '@/src/components/custom-application-tags';
 import BusinessCapabilities from './(components)/business-capabilities';
 import ParentApplication from './(components)/parent-application';
 import ChildrenApplications from './(components)/children-applications';
+import ProvidedInterfaces from './(components)/provided-interfaces';
 
 
 export default function page({
@@ -79,7 +80,9 @@ export default function page({
             lng={lng}
             apps={applications!}></ChildrenApplications>
         </div>
-        
+        <div className="grid gap-4 md:grid-cols-1 lg:grid-cols-2">
+          <ProvidedInterfaces app={app} interfaces={app!.interfaces!} lng={lng}></ProvidedInterfaces>
+        </div>
       </div>
     </ScrollArea>
   );

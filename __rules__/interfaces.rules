@@ -6,12 +6,14 @@
 
 #040 CLIENT SERVER Interface name length should be between 3 and 50 characters
 
-#050 CLIENT SERVER the combination Interface/userId must be unique
+#050 CLIENT SERVER the combination Interface/ApplicationId/userId must be unique
 
-#060 CLIENT When interface name is null interface name is [ApplicationName]_interface_[increment]
+#060 CLIENT When interface name is null interface name is interface_[increment]
 
 #070 CLIENT SERVER Application's userId must be the same than the current user
 
 #080 CLIENT SERVER IT Component's userId must be the same than the current user 
 
-#090 CLIENT SERVER Data object's userId must be the same than the current user 
+#090 CLIENT SERVER Data object's userId must be the same than the current user
+
+#100 CLIENT SERVER Interface description length should be lower than 1000 characters

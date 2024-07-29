@@ -42,7 +42,7 @@
     "@radix-ui/react-toast": "^1.1.5",
     "@radix-ui/react-tooltip": "^1.1.2",
     "@reduxjs/toolkit": "^2.2.6",
-    "@tanstack/react-table": "^8.10.7",
+    "@tanstack/react-table": "^8.19.3",
     "@types/lodash.throttle": "^4.1.9",
     "@types/node": "20.5.7",
     "@types/react": "^18.3.3",

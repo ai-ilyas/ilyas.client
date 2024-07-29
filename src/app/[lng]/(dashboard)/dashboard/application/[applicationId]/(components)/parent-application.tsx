@@ -2,7 +2,7 @@
 import { IApplication } from '@/convex/applications';
 import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card';
 import { useTranslation } from '@/src/app/i18n/client';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/src/components/ui/form';
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/src/components/ui/form';
 import { z } from 'zod';
 import { Popover, PopoverContent, PopoverTrigger } from '@/src/components/ui/popover';
 import { Button } from '@/src/components/ui/button';
@@ -270,6 +270,10 @@ const parentApplication: React.FC<ParentApplicationFormProps> = ({
                                         <FormControl>
                                             <Textarea {...field} className="min-h-32" />
                                         </FormControl>
+                                        <FormDescription className="float-right">
+                                            {/* #050 CLIENT SERVER Application description length should be lower than 500 characters */}
+                                            {(form.getValues().description?.length ?? 0) + "/500"}
+                                        </FormDescription>
                                         <FormMessage />
                                     </FormItem>
                                 )}

@@ -4,7 +4,6 @@ import { getUserId } from "./auth";
 import { checkIfStringIsNotOutOfLimits, checkUserIdsMatch } from "./validator.helper";
 import { DataModel, Id } from "./_generated/dataModel";
 import { APPLICATIONS_TABLE, INTERFACES_TABLE, TAGS_TABLE } from "./tableNames";
-import { getAll } from "convex-helpers/server/relationships";
 import { GenericMutationCtx } from "convex/server";
 
 export interface IInterface
@@ -14,11 +13,12 @@ export interface IInterface
     editionTime: number;
     name: string,
     description?: string,
-    direction?: "outgoing" | "incoming" | "bi-directional",
+    direction: "outgoing" | "incoming" | "bi-directional",
     itComponentId?: Id<"tags">,
     dataObjectId?: Id<"tags">,
     volumetry?: string,
-    applicationId?: Id<"applications">,
+    userId: string,
+    applicationId: Id<"applications">,
     frequence?: "hourly" | "daily" | "weekly" | "monthly" | "yearly" | "on demand" | "real-time"
 } 
 
@@ -58,11 +58,11 @@ export const insert = mutation({
       v.literal("incoming"),
       v.literal("bi-directional"),
     ),
-    itComponentId: v.optional(v.id(TAGS_TABLE)),
-    dataObjectId: v.optional(v.id(TAGS_TABLE)),
+    itComponentId: v.optional(v.string()),
+    dataObjectId: v.optional(v.string()),
     volumetry: v.optional(v.string()),
     applicationId: v.id(APPLICATIONS_TABLE),
-    frequence: v.union(
+    frequence: v.optional(v.union(
       v.literal("hourly"),
       v.literal("daily"),
       v.literal("weekly"),
@@ -70,16 +70,16 @@ export const insert = mutation({
       v.literal("yearly"),
       v.literal("on demand"),
       v.literal("real-time"),
-    )},
+    ))},
   returns: v.id(INTERFACES_TABLE),
   handler: async (ctx, { name, description, direction, itComponentId, dataObjectId, volumetry, applicationId, frequence }) => {
     const userId = (await getUserId(ctx, true))!;
 
-    await validateInterface(name, ctx, userId, applicationId, itComponentId, dataObjectId);       
+    await validateInterface(ctx, name, description, userId, applicationId, itComponentId as Id<"tags">, dataObjectId as Id<"tags">);       
 
     // #030 SERVER When Insert interface current userId is the userId in Interface Table
     const interfaceId = await ctx.db.insert(INTERFACES_TABLE, 
-        { name, description, direction, itComponentId, dataObjectId, volumetry, applicationId, frequence, userId, editionTime: Date.now() });
+        { name, description, direction, itComponentId: itComponentId as Id<"tags">, dataObjectId: dataObjectId as Id<"tags">, volumetry, applicationId, frequence, userId, editionTime: Date.now() });
     console.log(interfaceId);
     return interfaceId;
   },
@@ -111,7 +111,7 @@ export const patch = mutation({
   },
   handler: async (ctx, { _id, name, description, direction, itComponentId, dataObjectId, volumetry, applicationId, frequence }) => {    
     const userId = (await getUserId(ctx, true))!;
-    await validateInterface(name, ctx, userId, applicationId, itComponentId, dataObjectId);
+    await validateInterface( ctx, name, description, userId, applicationId, itComponentId, dataObjectId);
     await ctx.db.patch(_id, { name, description, direction, itComponentId, dataObjectId, volumetry, applicationId, frequence, userId, editionTime: Date.now() });
   },
 });
@@ -129,8 +129,9 @@ export const removeInterface = mutation({
 });
 
 async function validateInterface(
-    name: string, 
-    ctx: GenericMutationCtx<DataModel>, 
+    ctx: GenericMutationCtx<DataModel>,
+    name: string,
+    description: string | undefined,
     userId: Id<"users">, 
     applicationId: Id<"applications">, 
     itComponentId?: Id<"tags">, 
@@ -138,12 +139,17 @@ async function validateInterface(
     // #040 CLIENT SERVER Interface name length should be between 3 and 50 characters 
     checkIfStringIsNotOutOfLimits(name, { min: 3, max: 50 });
 
+    // #100 CLIENT SERVER Interface description length should be lower than 1000 characters
+    checkIfStringIsNotOutOfLimits(description, { max: 1000 });
+
     // #070 CLIENT SERVER Application's userId must be the same than the current user
     const app = await ctx.db.get(applicationId);
     checkUserIdsMatch(app!.userId, userId, "interfaces.insert application");
 
-    // #050 CLIENT SERVER the combination Interface/userId must be unique
-    const existingInterface = await ctx.db.query(INTERFACES_TABLE).withIndex("byName", (q) => q.eq("name", name).eq("userId", userId!)).first();
+    // #050 CLIENT SERVER the combination Interface/ApplicationId/userId must be unique
+    const existingInterface = await ctx.db.query(INTERFACES_TABLE)
+    .withIndex("byNameApplicationId", (q) => q.eq("name", name).eq("applicationId", applicationId).eq("userId", userId!))
+    .first();
     if (existingInterface) throw new Error("interfaces.insert - Name already used.");
 
     if (itComponentId) {

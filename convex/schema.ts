@@ -113,7 +113,7 @@ export default defineSchema({
     volumetry: v.optional(v.string()),
     applicationId: v.id(APPLICATIONS_TABLE),
     userId: v.id("users"),    
-    frequence: v.union(
+    frequence: v.optional(v.union(
       v.literal("hourly"),
       v.literal("daily"),
       v.literal("weekly"),
@@ -121,11 +121,11 @@ export default defineSchema({
       v.literal("yearly"),
       v.literal("on demand"),
       v.literal("real-time"),
-    ),
+    )),
     editionTime: v.number(),
   }).index("byApplicationId", ["applicationId", "userId"])
   .index("byUserId", ["userId"])
-  .index("byName", ["name", "userId"])
+  .index("byNameApplicationId", ["name", "applicationId", "userId"])
   .index("byDataObjectId", ["dataObjectId"])
   .index("byItComponentId", ["itComponentId"]),
     
