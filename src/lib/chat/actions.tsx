@@ -484,6 +484,11 @@ async function submitUserMessage(content: string) {
   }
 }
 
+async function retrieveAIState(params: string) : Promise<Chat> {
+  'use server'
+  const aiState = getAIState() as Chat
+  return aiState;
+}
 export type AIState = {
   chatId: string
   messages: Message[]
@@ -497,7 +502,8 @@ export type UIState = {
 export const AI = createAI<AIState, UIState>({
   actions: {
     submitUserMessage,
-    confirmPurchase
+    confirmPurchase,
+    retrieveAIState
   },
   initialUIState: [],
   initialAIState: { chatId: nanoid(), messages: [] },

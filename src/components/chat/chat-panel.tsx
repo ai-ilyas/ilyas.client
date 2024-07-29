@@ -1,4 +1,6 @@
 import * as React from 'react'
+import { useState} from 'react'
+
 import { shareChat } from '@/src/app/[lng]/(dashboard)/dashboard/chat/actions'
 import { Button } from '@/src/components/ui/button'
 import { PromptForm } from '@/src/components/chat/prompt-form'
@@ -7,10 +9,15 @@ import { IconShare } from '@/src/components/ui/icons'
 import { FooterText } from '@/src/components/chat/footer'
 import { ChatShareDialog } from '@/src/components/chat/chat-share-dialog'
 import { useAIState, useActions, useUIState } from 'ai/rsc'
+import { Chat } from '@/src/components/chat/types'
+
 import type { AI } from '@/src/lib/chat/actions'
 import { nanoid } from 'nanoid'
 import { UserMessage } from '@/src/components/stocks/message'
 
+import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction } from "@/src/components/ui/alert-dialog"
+import { BugPlay } from 'lucide-react'
+import { Separator } from '@radix-ui/react-separator'
 export interface ChatPanelProps {
   id?: string
   title?: string
@@ -32,6 +39,8 @@ export function ChatPanel({
   const [messages, setMessages] = useUIState<typeof AI>()
   const { submitUserMessage } = useActions()
   const [shareDialogOpen, setShareDialogOpen] = React.useState(false)
+  const { retrieveAIState } = useActions()
+  const [currentAIState, setcurrentAIState] = useState< Chat>();
 
   const exampleMessages = [
     {
@@ -62,7 +71,48 @@ export function ChatPanel({
         isAtBottom={isAtBottom}
         scrollToBottom={scrollToBottom}
       />
+<div >
 
+<AlertDialog >
+      <AlertDialogTrigger asChild>
+      <Button
+    variant="secondary"
+        size="icon"
+        className="absolute left-0 top-[14px] size-8 rounded-full bg-background p-0 sm:left-4"
+        onClick={async () => {
+          setcurrentAIState(await retrieveAIState())
+        }}
+      >
+        <BugPlay />
+        <span className="sr-only">Debug</span>
+      </Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent className="sm:max-w-[480px]">
+        <AlertDialogHeader>
+          <AlertDialogTitle>AI Message Trace</AlertDialogTitle>
+        </AlertDialogHeader>
+        <AlertDialogDescription className="max-h-[300px] overflow-auto">
+          <div className="prose">
+          {currentAIState?.messages.map((message, index) => (
+        <div key={message.id}>
+           <h3>{message.role}</h3>
+            <p> 
+              {JSON.stringify( message.content, null, 2)}
+            </p>
+          {<Separator className="my-4" />}
+        </div>
+      ))}
+            
+          </div>
+        </AlertDialogDescription>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+
+
+      </div>
       <div className="mx-auto sm:max-w-2xl sm:px-4">
         <div className="mb-4 grid grid-cols-2 gap-2 px-4 sm:px-0">
           {messages.length === 0 &&
