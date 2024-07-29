@@ -42,7 +42,7 @@ export default function customApplicationTags ({ lng, tags, applicationId, type,
     const [openPopover, setOpenPopover] = useState(false);
     const [isDescriptionDisabled, setIsDescriptionDisabled] = useState(true);
     const insertTag = useMutation(api.tags.insert);
-    const removeTag = useMutation(api.tags.removeLindToApplication)
+    const removeTag = useMutation(api.tags.removeLinkToApplication)
     const availableTags = useQuery(api.tags.list, { type });
     const linkTag = useMutation(api.tags.linkToApplication);
     const IconClose = Icons['close'];
