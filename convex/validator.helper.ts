@@ -9,9 +9,11 @@ export const  checkIfIdIsNotEmpty = (id: string) => {
 interface CheckStringOptions {
     min?: number;
     max?: number;
+    nullAllowed?: boolean
 }
-export const  checkIfStringIsNotOutOfLimits = (stringToTest?: string, { min, max }: CheckStringOptions = {}) =>
+export const  checkIfStringIsNotOutOfLimits = (stringToTest?: string, { min, max, nullAllowed = false }: CheckStringOptions = {}) =>
     {
+        if ((stringToTest ?? '') === '' && nullAllowed) return;
         if (min === undefined && max === undefined) {
             throw new Error("checkStringNotOversized no parameter given");
         } 

@@ -95,11 +95,10 @@ export const patch = mutation({
       v.literal("incoming"),
       v.literal("bi-directional"),
     ),
-    itComponentId: v.optional(v.id(TAGS_TABLE)),
-    dataObjectId: v.optional(v.id(TAGS_TABLE)),
+    itComponentId: v.optional(v.string()),
+    dataObjectId: v.optional(v.string()),
     volumetry: v.optional(v.string()),
-    applicationId: v.id(APPLICATIONS_TABLE),
-    frequence: v.union(
+    frequence: v.optional(v.union(
       v.literal("hourly"),
       v.literal("daily"),
       v.literal("weekly"),
@@ -107,12 +106,13 @@ export const patch = mutation({
       v.literal("yearly"),
       v.literal("on demand"),
       v.literal("real-time"),
-    )
+    ))
   },
-  handler: async (ctx, { _id, name, description, direction, itComponentId, dataObjectId, volumetry, applicationId, frequence }) => {    
+  handler: async (ctx, { _id, name, description, direction, itComponentId, dataObjectId, volumetry, frequence }) => {    
     const userId = (await getUserId(ctx, true))!;
-    await validateInterface( ctx, name, description, userId, applicationId, itComponentId, dataObjectId);
-    await ctx.db.patch(_id, { name, description, direction, itComponentId, dataObjectId, volumetry, applicationId, frequence, userId, editionTime: Date.now() });
+    const _interface = await ctx.db.get(_id);
+    await validateInterface( ctx, name, description, userId, _interface!.applicationId, itComponentId as Id<"tags">, dataObjectId as Id<"tags">);
+    await ctx.db.patch(_id, { name, description, direction, itComponentId: itComponentId as Id<"tags">, dataObjectId: dataObjectId as Id<"tags">, volumetry, frequence, userId, editionTime: Date.now() });
   },
 });
 

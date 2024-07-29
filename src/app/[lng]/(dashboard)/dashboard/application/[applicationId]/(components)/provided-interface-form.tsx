@@ -1,7 +1,9 @@
 import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
 import { IApplication } from "@/convex/applications";
 import { IInterface } from "@/convex/interfaces"
 import { useTranslation } from "@/src/app/i18n/client";
+import CustomSelectTags from "@/src/components/custom-select-tags";
 import { Button } from "@/src/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/src/components/ui/card";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/src/components/ui/form";
@@ -12,8 +14,8 @@ import { toast } from "@/src/components/ui/use-toast";
 import { interfaceDataObjectDefinition, interfaceDescriptionDefinition, interfaceDirectionDefinition, interfaceFrequenceDefinition, interfaceItComponentDefinition, interfaceNameDefinition, interfaceVolumetryDefinition } from "@/src/lib/helpers/interface-fields-definition";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "convex/react";
-import { ArrowLeftToLine, ArrowRightFromLine, ArrowRightLeft, CalendarClock, Loader2, Rocket } from "lucide-react";
-import { useState } from "react";
+import { ArrowRightFromLine, ArrowRightLeft, ArrowRightToLine, CalendarClock, Loader2, Rocket } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -22,44 +24,75 @@ interface ProvidedInterfaceFormProps {
     app: IApplication;
     lng: string;
     close: () => void;
+    interfaceNameToUpdate?: string | undefined;
   }
   
-const providedInterfaceForm: React.FC<ProvidedInterfaceFormProps> = ({ interfaces, app, lng, close }) => {
+const providedInterfaceForm: React.FC<ProvidedInterfaceFormProps> = ({ interfaces, app, lng, close, interfaceNameToUpdate }) => {
     const { t } = useTranslation(lng);
     const insertInterface = useMutation(api.interfaces.insert);
+    const patchInterface = useMutation(api.interfaces.patch);
+    const [selectValue, setSelectValue] = useState('');
+    const [interfaceToUpdate, setInterfaceToUpdate] = useState<IInterface | undefined>();
+    useEffect(() => {
+      const i = interfaces.find(x => x.name == interfaceNameToUpdate);
+      setInterfaceToUpdate(i);
+      if (i) {
+        form.reset({ ...defaultValues, ...i});
+        setSelectValue(i.direction);
+      }
+    }, [interfaceNameToUpdate]) 
     const formSchema = z.object({
-      name: interfaceNameDefinition(t, interfaces),
+      name: interfaceNameDefinition(t, interfaces.filter(x => x._id !== interfaceToUpdate?._id)),
       description: interfaceDescriptionDefinition(t),
-      direction: interfaceDirectionDefinition,
+      direction: interfaceDirectionDefinition(t),
       itComponent: interfaceItComponentDefinition,
       dataObject: interfaceDataObjectDefinition,
       volumetry: interfaceVolumetryDefinition,
       frequence: interfaceFrequenceDefinition,
   });
-
+  const closeForm = () => {
+    form.reset(defaultValues); 
+    close();
+  }
   type formValues = z.infer<typeof formSchema>;
   const [loading, setLoading] = useState(false);
-  const defaultValues = { name: '', description: '', direction: undefined, itComponent: undefined, dataObject: undefined, volumetry: undefined, frequence: undefined };
+  const defaultValues = { name: '', description: '', direction: '', itComponent: undefined, dataObject: undefined, volumetry: undefined, frequence: undefined };
   const form = useForm<formValues>({
     resolver: zodResolver(formSchema),
-    defaultValues
+    defaultValues: interfaceToUpdate ? { ...defaultValues, ...interfaceToUpdate} : defaultValues
   });
 
   const onSubmit = async (data: formValues) => {
     setLoading(true);
     try{
-        await insertInterface({ 
-          applicationId: app._id,
-          // #060 CLIENT When interface name is null interface name is interface_[increment]
-          name: data.name ?? "interface_" + interfaces.length + 1 , 
-          description: data.description, 
-          direction: data.direction,
-          itComponentId: data.itComponent, 
-          dataObjectId: data.dataObject, 
-          volumetry: data.volumetry, 
-          frequence: data.frequence });
-        form.reset();
-        close();
+        if (interfaceToUpdate)
+        {
+          await patchInterface({ 
+            _id: interfaceToUpdate._id,
+            // #060 CLIENT When interface name is null interface name is interface_[increment]
+            name: (data.name ?? '') === '' ? "interface_" + (interfaces.length + 1) : data.name!, 
+            description: data.description, 
+            direction: data.direction as 'incoming' | 'outgoing' | 'bi-directional',
+            itComponentId: data.itComponent, 
+            dataObjectId: data.dataObject, 
+            volumetry: data.volumetry, 
+            frequence: data.frequence });  
+        }
+        else
+        {
+          await insertInterface({ 
+            applicationId: app._id,
+            // #060 CLIENT When interface name is null interface name is interface_[increment]
+            name: (data.name ?? '') === '' ? "interface_" + (interfaces.length + 1) : data.name!, 
+            description: data.description, 
+            direction: data.direction as 'incoming' | 'outgoing' | 'bi-directional',
+            itComponentId: data.itComponent, 
+            dataObjectId: data.dataObject, 
+            volumetry: data.volumetry, 
+            frequence: data.frequence });          
+        }
+
+        closeForm();
         toast({
             title: t(`application_providedInterfaces_interfaceHasBeenAdded`) ,
             variant: 'default'
@@ -83,8 +116,18 @@ const providedInterfaceForm: React.FC<ProvidedInterfaceFormProps> = ({ interface
             <form onSubmit={form.handleSubmit((data) =>onSubmit(data))}>
             <Card>
               <CardHeader>
-                  <CardTitle>{t('application_providedInterfaces_provideANewInterface')}</CardTitle>
-                  <CardDescription>{t('application_providedInterfaces_provideANewInterfaceDescription', { name: app.name })}</CardDescription>
+                {
+                  !interfaceToUpdate && <>
+                    <CardTitle>{t('application_providedInterfaces_provideANewInterface')}</CardTitle>
+                    <CardDescription>{t('application_providedInterfaces_provideANewInterfaceDescription', { name: app.name })}</CardDescription>
+                  </>
+                }
+                {
+                  interfaceToUpdate && <>
+                    <CardTitle>{t('application_providedInterfaces_updateInterface', {name: interfaceToUpdate.name})}</CardTitle>
+                    <CardDescription>{t('application_providedInterfaces_updateInterfaceDescription', { interfaceName: interfaceToUpdate.name, name: app.name })}</CardDescription>
+                  </>
+                }                  
               </CardHeader>
               <CardContent>
                 <FormField
@@ -125,11 +168,16 @@ const providedInterfaceForm: React.FC<ProvidedInterfaceFormProps> = ({ interface
                 <FormField
                   disabled={loading}
                   control={form.control}
-                  name="description"
+                  name="direction"
                   render={({ field }) => (
                     <FormItem className="my-3">
                       <FormLabel><ArrowRightLeft strokeWidth={1} size={15} className="inline-block" /> {t('application_providedInterfaces_direction')}</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={(value: string) => {
+                        if (value) {
+                          setSelectValue(value); 
+                          field.onChange(value)
+                        }}} 
+                        value={selectValue} defaultValue={field.value}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder={t("application_providedInterfaces_directionPlaceholder")} />
@@ -138,19 +186,36 @@ const providedInterfaceForm: React.FC<ProvidedInterfaceFormProps> = ({ interface
                         <SelectContent>
                           <SelectGroup>
                             <SelectLabel>{t("application_providedInterfaces_direction")}</SelectLabel>
-                            <SelectItem value="incoming"><ArrowLeftToLine strokeWidth={1} size={15} className="inline-block" /> {t("application_providedInterfaces_incoming")}</SelectItem>
+                            <SelectItem value="incoming"><ArrowRightToLine strokeWidth={1} size={15} className="inline-block" /> {t("application_providedInterfaces_incoming")}</SelectItem>
                             <SelectItem value="outgoing"><ArrowRightFromLine strokeWidth={1} size={15} className="inline-block" /> {t("application_providedInterfaces_outgoing")}</SelectItem>
                             <SelectItem value="bi-directional"><ArrowRightLeft strokeWidth={1} size={15} className="inline-block" /> {t("application_providedInterfaces_biDirectional")}</SelectItem>                        
                           </SelectGroup>
                         </SelectContent>
                       </Select>
-                      <FormDescription>
-                      <p><ArrowLeftToLine strokeWidth={1} size={15} className="inline-block" /> <strong>{t("application_providedInterfaces_incoming")}</strong>: {t("application_providedInterfaces_directionIncomingDescription", { name: app.name })}</p>
-                      <p><ArrowRightFromLine strokeWidth={1} size={15} className="inline-block" /> <strong>{t("application_providedInterfaces_outgoing")}</strong>: {t("application_providedInterfaces_directionOutgoingDescription", { name: app.name })}</p>
-                      <p><ArrowRightLeft strokeWidth={1} size={15} className="inline-block" /> <strong>{t("application_providedInterfaces_biDirectional")}</strong>: {t("application_providedInterfaces_directionBiDirectionalDescription")}</p>
-                      </FormDescription>
                       <FormMessage />
+                      <FormDescription>
+                        <span><ArrowRightToLine strokeWidth={1} size={15} className="inline-block" /> <strong>{t("application_providedInterfaces_incoming")}</strong>: {t("application_providedInterfaces_directionIncomingDescription", { name: app.name })}</span><br />
+                        <span><ArrowRightFromLine strokeWidth={1} size={15} className="inline-block" /> <strong>{t("application_providedInterfaces_outgoing")}</strong>: {t("application_providedInterfaces_directionOutgoingDescription", { name: app.name })}</span><br />
+                        <span><ArrowRightLeft strokeWidth={1} size={15} className="inline-block" /> <strong>{t("application_providedInterfaces_biDirectional")}</strong>: {t("application_providedInterfaces_directionBiDirectionalDescription")}</span>
+                      </FormDescription>
                     </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  disabled={loading}
+                  control={form.control}
+                  name="dataObject"
+                  render={({ field }) => (
+                    <CustomSelectTags className="my-3" lng={lng} type={2} field={field}></CustomSelectTags>
+                  )}
+                />
+                <FormField
+                  disabled={loading}
+                  control={form.control}
+                  name="itComponent"
+                  render={({ field }) => (
+                    <CustomSelectTags className="my-3" lng={lng} type={3} field={field}></CustomSelectTags>
                   )}
                 />
                 <FormField
@@ -201,11 +266,11 @@ const providedInterfaceForm: React.FC<ProvidedInterfaceFormProps> = ({ interface
                 />
               </CardContent>
               <CardFooter className="place-content-end">
-                <Button className="mr-2" onClick={() => close()} variant="outline">{t("common_cancel")}</Button>
+                <Button className="mr-2" onClick={() => closeForm()} variant="outline">{t("common_cancel")}</Button>
                 <Button disabled={loading} type="submit">
                   { loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                   { !loading && <Rocket className="mr-2 h-4 w-4" />}
-                  {t("common_create")}</Button>
+                  { interfaceToUpdate ? t("common_save") : t("common_create")}</Button>
               </CardFooter>
             </Card>
           </form>

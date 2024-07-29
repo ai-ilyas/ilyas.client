@@ -63,7 +63,7 @@
     "spinner_loading_loading": "Loading...",
 
     "customTags_add": "Add a tag",
-    "customTags_select": "Select an existing tag",
+    "customTags_selectExisting": "Select an existing tag",
     "customTags_create": "Or create a new tag",
     "customTags_labelNew": "New tag label",
     "customTags_color": "Choose tag color",
@@ -77,9 +77,10 @@
     "customTags_selectAnExistingOneOrCreateANewOne": "Select an existing tag or create a new tag.",
     "customTags": "Tags",
     "customTag": "tag",
+    "customTags_select": "Select tag",  
 
     "customBusinessCapabilities_add": "Add a business capability",
-    "customBusinessCapabilities_select": "Select an existing business capability",
+    "customBusinessCapabilities_selectExisting": "Select an existing business capability",
     "customBusinessCapabilities_create": "Or create a new business capability",
     "customBusinessCapabilities_labelNew": "New business capability label",
     "customBusinessCapabilities_color": "Choose business capability color",
@@ -93,6 +94,17 @@
     "customBusinessCapabilities_selectAnExistingOneOrCreateANewOne": "Select an existing business capability or create a new business capability.",
     "customBusinessCapabilities": "Business capabilities",
     "customBusinessCapability": "business capability",
+    "customBusinessCapabilities_select": "Select business capability",
+    
+    "customDataObjects": "Data objects",
+    "customDataObject": "data object",
+    "customDataObjects_selectExisting": "Select an existing data object",
+    "customDataObjecs_select": "Select data object",   
+    
+    "customItComponents": "IT Components",
+    "customItComponent": "It Component",
+    "customItComponents_selectExisting": "Select an existing it component",
+    "customItComponents_select": "Select it component", 
 
     "application_providedInterfaces_name": "Name",
     "application_providedInterfaces_providedInterfaces": "Interface fournis",
@@ -117,5 +129,8 @@
     "application_providedInterfaces_interfaceHasBeenAdded": "Interface has been added.",
     "application_providedInterfaces_interfaceHasNotBeenAdded": "Interface hasn't been added.",
     "application_providedInterfaces_provideANewInterface": "Provide a new interface",
-    "application_providedInterfaces_provideANewInterfaceDescription": "Create a new interface provide by application {{ name }}"
+    "application_providedInterfaces_provideANewInterfaceDescription": "Create a new interface provide by application {{ name }}",
+    "application_providedInterfaces_updateInterface": "Update interface {{name}}",
+    "application_providedInterfaces_updateInterfaceDescription": "Update interface {{ interfaceName }} provide by application {{ name }}",
+    "application_providedInterfaces_addInterface": "Add interface"
 }

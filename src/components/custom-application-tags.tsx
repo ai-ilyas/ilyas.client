@@ -209,7 +209,7 @@ export default function customApplicationTags ({ lng, tags, applicationId, type,
                         </DialogHeader>
                         <div className="gap-8 mt-3">
                             <DialogDescription className="mb-2">
-                                {t(`custom${labelType}_select`)}
+                                {t(`custom${labelType}_selectExisting`)}
                             </DialogDescription>
                             <FormField
                                 control={form.control}

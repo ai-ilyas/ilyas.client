@@ -63,7 +63,7 @@
     "spinner_loading_loading": "Chargement...",
 
     "customTags_add": "Ajouter un tag",
-    "customTags_select": "Selectionner un tag existant",
+    "customTags_selectExisting": "Selectionner un tag existant",
     "customTags_create": "Ou créer un nouveau tag",
     "customTags_labelNew": "Libellé du nouveau tag",
     "customTags_color": "Choisissez la couleur du tag",
@@ -77,9 +77,10 @@
     "customTags_selectAnExistingOneOrCreateANewOne": "Sélectionnez un tag existant ou créez un nouveau tag.",
     "customTags": "Tags",
     "customTag": "tag",
+    "customTags_select": "Selectionner tag",  
 
     "customBusinessCapabilities_add": "Ajouter une business capability",
-    "customBusinessCapabilities_select": "Selectionner une business capability existante",
+    "customBusinessCapabilities_selectExisting": "Selectionner une business capability existante",
     "customBusinessCapabilities_create": "Ou créer un nouvel business capability",
     "customBusinessCapabilities_labelNew": "Libellé de la nouvelle business capability",
     "customBusinessCapabilities_color": "Choisissez la couleur de la business capability",
@@ -93,6 +94,17 @@
     "customBusinessCapabilities_selectAnExistingOneOrCreateANewOne": "Sélectionnez une business capability existante ou créez une nouvel business capability.",
     "customBusinessCapabilities": "Business capabilities",    
     "customBusinessCapability": "business capability",
+    "customBusinessCapabilities_select": "Selectionner business capability",
+        
+    "customDataObjects": "Data objects",
+    "customDataObject": "data object",
+    "customDataObjects_selectExisting": "Selectionner un data object existant",
+    "customDataObjects_select": "Selectionner data object",   
+    
+    "customItComponents": "IT Components",
+    "customItComponent": "It Component",
+    "customItComponents_selectExisting": "Selectionner un It Component existant",
+    "customItComponents_select": "Selectionner it component", 
 
     "application_providedInterfaces_name": "Nom",
     "application_providedInterfaces_providedInterfaces": "Interfaces exposées",
@@ -118,5 +130,8 @@
     "application_providedInterfaces_interfaceHasBeenAdded": "L'interface a été ajoutée.",
     "application_providedInterfaces_interfaceHasNotBeenAdded": "L'interface n'a pas été ajoutée.",
     "application_providedInterfaces_provideANewInterface": "Exposer une nouvelle interface",
-    "application_providedInterfaces_provideANewInterfaceDescription": "Créer une nouvelle interface exposée par l'application {{ name }}"
+    "application_providedInterfaces_provideANewInterfaceDescription": "Créer une nouvelle interface exposée par l'application {{ name }}",
+    "application_providedInterfaces_updateInterface": "Modifier l'interface {{name}}",
+    "application_providedInterfaces_updateInterfaceDescription": "Modifier l'interface {{ interfaceName }} exposée par l'application {{ name }}",
+    "application_providedInterfaces_addInterface": "Ajouter une interface"
 }
