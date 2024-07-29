@@ -1,71 +1,23 @@
-'use client';
+import { Chat }  from '@/src/components/chat/chat';
+import { nanoid } from '@/src/lib/utils'
+import { AI } from '@/src/lib/chat/actions'
+import { auth } from '@/src/auth'
+import { Session } from '@/src/components/chat/types'
+import { getMissingKeys } from '@/src/app/[lng]/(dashboard)/dashboard/chat/actions'
 
-import { useState } from 'react';
-import { Message, continueConversation, continueConversationWithStreamedObject } from './actions';
-import { readStreamableValue } from 'ai/rsc';
-import { Button } from '@/src/components/ui/button';
-import { Textarea } from '@/src/components/ui/textarea';
-import { Badge } from '@/src/components/ui/badge';
-
-import {
-  Alert,
-  AlertDescription,
-  AlertTitle,
-} from "@/src/components/ui/alert"
-
-
-export default function Chat() {
-  const [conversation, setConversation] = useState<Message[]>([]);
-  const [input, setInput] = useState<string>('');
-
-
+export const metadata = {
+  title: 'Ilyas AI'
+}
+export default async function ChatPage() {
+  const id = nanoid()
+  const session = (await auth()) as Session
+  const missingKeys = await getMissingKeys()
 
   return (
-    <div>
-      <div>
-        {conversation.map((message, index) => (
-          <Alert key={index} >
-            <div className="flex flex-row" ><Badge ><AlertTitle>{message.role}:</AlertTitle></Badge><AlertDescription className="basis-auto">{message.content}</AlertDescription></div>
-          </Alert>
-        ))}
-      </div>
 
-      <div>
-        <Textarea
-          value={input}
-          onChange={event => {
-            setInput(event.target.value);
-          }}
-        />
-        <Button
-          onClick={async () => {
-            setInput('');
-            const { messages, newMessage } = await continueConversationWithStreamedObject
-            (conversation, input);
+    <AI initialAIState={{ chatId: id, messages: [] }}>
+      <Chat id={id} session={session} missingKeys={missingKeys} ></Chat>
+    </AI>
 
-            let textContent = '';
-
-            for await (const delta of readStreamableValue(newMessage)){
-              console.log(delta)
-
-              if(typeof delta == "object"){
-                setConversation([
-                  ...messages,
-                  { role: 'assistant', content: JSON.stringify(delta.notifications, null, 2)},
-                ]);
-              }else{
-                textContent = `${textContent}${delta}`;
-                setConversation([
-                  ...messages,
-                  { role: 'assistant', content: textContent },
-                ]);
-              }
-            }
-          }}
-        >
-          Send Message
-        </Button>
-      </div>
-    </div>
   );
 }

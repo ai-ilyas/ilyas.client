@@ -8,6 +8,7 @@ import { auth } from '@/src/auth';
 import { languages } from '../i18n/settings';
 import { dir } from 'i18next';
 import ConvexClientProvider from '@/src/components/convex-client-provider';
+import { TooltipProvider } from '@radix-ui/react-tooltip';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -37,7 +38,8 @@ export default async function RootLayout({
       <body className={`${inter.className} overflow-hidden`}>
         <ConvexClientProvider session={session}>
           <Toaster />
-          {children}
+          <TooltipProvider>{children}</TooltipProvider>
+          
         </ConvexClientProvider>
       </body>
     </html>

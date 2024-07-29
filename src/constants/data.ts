@@ -117,5 +117,11 @@ export const navItems: NavItem[] = [
     href: '/dashboard',
     icon: 'dashboard',
     label: 'Dashboard'
+  },
+  {
+    title: 'Assistant',
+    href: '/dashboard/chat',
+    icon: 'bot',
+    label: 'Assistant'
   }
 ];
