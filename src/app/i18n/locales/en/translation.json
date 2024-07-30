@@ -18,6 +18,7 @@
     "common_selectAll": "Select All",
     "common_clear": "Clear",
     "common_close": "Close",
+    "common_columns": "Columns",
 
     "dashboard_home_myApplications": "My applications",
     "dashboard_home_newApplication": "New application",
@@ -132,5 +133,7 @@
     "application_providedInterfaces_provideANewInterfaceDescription": "Create a new interface provide by application {{ name }}",
     "application_providedInterfaces_updateInterface": "Update interface {{name}}",
     "application_providedInterfaces_updateInterfaceDescription": "Update interface {{ interfaceName }} provide by application {{ name }}",
-    "application_providedInterfaces_addInterface": "Add interface"
+    "application_providedInterfaces_addInterface": "Add interface",
+    "application_providedInterfaces_dataObject": "Data object",
+    "application_providedInterfaces_itComponent": "It component"
 }

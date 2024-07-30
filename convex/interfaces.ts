@@ -5,6 +5,7 @@ import { checkIfStringIsNotOutOfLimits, checkUserIdsMatch } from "./validator.he
 import { DataModel, Id } from "./_generated/dataModel";
 import { APPLICATIONS_TABLE, INTERFACES_TABLE, TAGS_TABLE } from "./tableNames";
 import { GenericMutationCtx } from "convex/server";
+import { getAll } from "convex-helpers/server/relationships";
 
 export interface IInterface
 {
@@ -16,6 +17,12 @@ export interface IInterface
     direction: "outgoing" | "incoming" | "bi-directional",
     itComponentId?: Id<"tags">,
     dataObjectId?: Id<"tags">,
+    itComponentValue?: string,
+    dataObjectValue?: string,
+    itComponentColor?: string,
+    dataObjectColor?: string,
+    itComponentIcon?: string,
+    dataObjectIcon?: string,
     volumetry?: string,
     userId: string,
     applicationId: Id<"applications">,
@@ -30,8 +37,25 @@ export const list = query({
 
     // #010 SERVER Get interface only when current userId match with userId in Application Table
     const interfaces = await ctx.db.query(INTERFACES_TABLE).withIndex("byUserId", (q) => q.eq("userId", userId!)).collect();
+    const itComponentIds = interfaces.filter(x => x.itComponentId).map(x => x.itComponentId!);
+    const dataObjectIds = interfaces.filter(x => x.dataObjectId).map(x => x.dataObjectId!);
+    const itComponentTags = await getAll(ctx.db, itComponentIds);
+    const dataObjectTags = await getAll(ctx.db, dataObjectIds);
+    return interfaces
+    .map(x => {
+      const dataObjectTag = dataObjectTags.find(y => y?._id === x.dataObjectId);
+      const itComponentTag = itComponentTags.find(y => y?._id === x.itComponentId);
 
-    return interfaces.sort((a, b) => b.editionTime - a.editionTime);
+      return { 
+        ...x, 
+        dataObjectValue: dataObjectTag?.value,
+        itComponentValue: itComponentTag?.value,
+        dataObjectColor: dataObjectTag?.color,
+        itComponentColor: itComponentTag?.color,
+        dataObjectIcon: dataObjectTag?.icon,
+        itComponentIcon: itComponentTag?.icon,
+      } as IInterface})
+    .sort((a, b) => b.editionTime - a.editionTime);
   },
 });
 
@@ -111,7 +135,7 @@ export const patch = mutation({
   handler: async (ctx, { _id, name, description, direction, itComponentId, dataObjectId, volumetry, frequence }) => {    
     const userId = (await getUserId(ctx, true))!;
     const _interface = await ctx.db.get(_id);
-    await validateInterface( ctx, name, description, userId, _interface!.applicationId, itComponentId as Id<"tags">, dataObjectId as Id<"tags">);
+    await validateInterface( ctx, name, description, userId, _interface!.applicationId, itComponentId as Id<"tags">, dataObjectId as Id<"tags">, _id);
     await ctx.db.patch(_id, { name, description, direction, itComponentId: itComponentId as Id<"tags">, dataObjectId: dataObjectId as Id<"tags">, volumetry, frequence, userId, editionTime: Date.now() });
   },
 });
@@ -135,7 +159,8 @@ async function validateInterface(
     userId: Id<"users">, 
     applicationId: Id<"applications">, 
     itComponentId?: Id<"tags">, 
-    dataObjectId?: Id<"tags">) {
+    dataObjectId?: Id<"tags">,
+    interfaceId?: Id<"interfaces">) {
     // #040 CLIENT SERVER Interface name length should be between 3 and 50 characters 
     checkIfStringIsNotOutOfLimits(name, { min: 3, max: 50 });
 
@@ -149,6 +174,7 @@ async function validateInterface(
     // #050 CLIENT SERVER the combination Interface/ApplicationId/userId must be unique
     const existingInterface = await ctx.db.query(INTERFACES_TABLE)
     .withIndex("byNameApplicationId", (q) => q.eq("name", name).eq("applicationId", applicationId).eq("userId", userId!))
+    .filter(q => q.neq(q.field("_id"), interfaceId))
     .first();
     if (existingInterface) throw new Error("interfaces.insert - Name already used.");
 

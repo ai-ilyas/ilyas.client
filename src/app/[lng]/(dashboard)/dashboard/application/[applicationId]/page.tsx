@@ -80,9 +80,7 @@ export default function page({
             lng={lng}
             apps={applications!}></ChildrenApplications>
         </div>
-        <div className="grid gap-4 md:grid-cols-1 lg:grid-cols-2">
-          <ProvidedInterfaces app={app} interfaces={app!.interfaces!} lng={lng}></ProvidedInterfaces>
-        </div>
+        <ProvidedInterfaces app={app} interfaces={app!.interfaces!} lng={lng}></ProvidedInterfaces>
       </div>
     </ScrollArea>
   );

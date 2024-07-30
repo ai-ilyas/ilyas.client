@@ -4,7 +4,10 @@ import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
+  getSortedRowModel,
+  SortingState,
   useReactTable,
+  VisibilityState,
 } from "@tanstack/react-table"
 
 import {
@@ -15,23 +18,70 @@ import {
   TableHeader,
   TableRow,
 } from "@/src/components/ui/table"
+import { useState } from "react"
+import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "./dropdown-menu"
+import { Button } from "./button"
+import { useTranslation } from "@/src/app/i18n/client"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
-  data: TData[]
+  data: TData[],
+  lng: string
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  lng
 }: DataTableProps<TData, TValue>) {
+  const { t } = useTranslation(lng);
+  const [sorting, setSorting] = useState<SortingState>([])
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
+    onColumnVisibilityChange: setColumnVisibility,
+    state: {
+      sorting,
+      columnVisibility,
+    },
   })
 
   return (
+  <>
+    <div className="flex items-center py-4">
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="outline" className="ml-auto">
+            {t("common_columns")}
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          {table
+            .getAllColumns()
+            .filter(
+              (column) => column.getCanHide()
+            )
+            .map((column) => {
+              return (
+                <DropdownMenuCheckboxItem
+                  key={column.id}
+                  className="capitalize"
+                  checked={column.getIsVisible()}
+                  onCheckedChange={(value) =>
+                    column.toggleVisibility(!!value)
+                  }
+                >
+                  {column.id}
+                </DropdownMenuCheckboxItem>
+              )
+            })}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
     <div className="rounded-md border">
       <Table>
         <TableHeader>
@@ -76,5 +126,6 @@ export function DataTable<TData, TValue>({
         </TableBody>
       </Table>
     </div>
+  </>
   )
 }

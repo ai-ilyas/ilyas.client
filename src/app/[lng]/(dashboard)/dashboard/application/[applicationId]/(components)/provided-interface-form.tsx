@@ -31,14 +31,20 @@ const providedInterfaceForm: React.FC<ProvidedInterfaceFormProps> = ({ interface
     const { t } = useTranslation(lng);
     const insertInterface = useMutation(api.interfaces.insert);
     const patchInterface = useMutation(api.interfaces.patch);
-    const [selectValue, setSelectValue] = useState('');
+    const [selectDirectionValue, setSelectDirectionValue] = useState('');
+    const [selectFrequenceValue, setSelectFrequenceValue] = useState<string | undefined>();
+    const [selectDataObjectValue, setSelectDataObjectValue] = useState<Id<"tags">>();
+    const [selectItComponentValue, setSelectItComponentValue] = useState<Id<"tags">>();
     const [interfaceToUpdate, setInterfaceToUpdate] = useState<IInterface | undefined>();
     useEffect(() => {
       const i = interfaces.find(x => x.name == interfaceNameToUpdate);
       setInterfaceToUpdate(i);
       if (i) {
         form.reset({ ...defaultValues, ...i});
-        setSelectValue(i.direction);
+        setSelectDirectionValue(i.direction);
+        setSelectDataObjectValue(i.dataObjectId);
+        setSelectItComponentValue(i.itComponentId);
+        setSelectFrequenceValue(i.frequence);
       }
     }, [interfaceNameToUpdate]) 
     const formSchema = z.object({
@@ -59,7 +65,7 @@ const providedInterfaceForm: React.FC<ProvidedInterfaceFormProps> = ({ interface
   const defaultValues = { name: '', description: '', direction: '', itComponent: undefined, dataObject: undefined, volumetry: undefined, frequence: undefined };
   const form = useForm<formValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: interfaceToUpdate ? { ...defaultValues, ...interfaceToUpdate} : defaultValues
+    defaultValues: interfaceToUpdate ? { ...defaultValues, ...interfaceToUpdate } : defaultValues
   });
 
   const onSubmit = async (data: formValues) => {
@@ -73,8 +79,8 @@ const providedInterfaceForm: React.FC<ProvidedInterfaceFormProps> = ({ interface
             name: (data.name ?? '') === '' ? "interface_" + (interfaces.length + 1) : data.name!, 
             description: data.description, 
             direction: data.direction as 'incoming' | 'outgoing' | 'bi-directional',
-            itComponentId: data.itComponent, 
-            dataObjectId: data.dataObject, 
+            itComponentId: selectItComponentValue, 
+            dataObjectId: selectDataObjectValue, 
             volumetry: data.volumetry, 
             frequence: data.frequence });  
         }
@@ -86,8 +92,8 @@ const providedInterfaceForm: React.FC<ProvidedInterfaceFormProps> = ({ interface
             name: (data.name ?? '') === '' ? "interface_" + (interfaces.length + 1) : data.name!, 
             description: data.description, 
             direction: data.direction as 'incoming' | 'outgoing' | 'bi-directional',
-            itComponentId: data.itComponent, 
-            dataObjectId: data.dataObject, 
+            itComponentId: selectItComponentValue, 
+            dataObjectId: selectDataObjectValue, 
             volumetry: data.volumetry, 
             frequence: data.frequence });          
         }
@@ -174,10 +180,10 @@ const providedInterfaceForm: React.FC<ProvidedInterfaceFormProps> = ({ interface
                       <FormLabel><ArrowRightLeft strokeWidth={1} size={15} className="inline-block" /> {t('application_providedInterfaces_direction')}</FormLabel>
                       <Select onValueChange={(value: string) => {
                         if (value) {
-                          setSelectValue(value); 
+                          setSelectDirectionValue(value); 
                           field.onChange(value)
                         }}} 
-                        value={selectValue} defaultValue={field.value}>
+                        value={selectDirectionValue} defaultValue={field.value}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder={t("application_providedInterfaces_directionPlaceholder")} />
@@ -207,7 +213,11 @@ const providedInterfaceForm: React.FC<ProvidedInterfaceFormProps> = ({ interface
                   control={form.control}
                   name="dataObject"
                   render={({ field }) => (
-                    <CustomSelectTags className="my-3" lng={lng} type={2} field={field}></CustomSelectTags>
+                    <CustomSelectTags onValueChange={(value: any) => {
+                      if (value) {
+                        setSelectDataObjectValue(value); 
+                        field.onChange(value)
+                      }}} value={selectDataObjectValue} className="my-3" lng={lng} type={2} field={field}></CustomSelectTags>
                   )}
                 />
                 <FormField
@@ -215,7 +225,11 @@ const providedInterfaceForm: React.FC<ProvidedInterfaceFormProps> = ({ interface
                   control={form.control}
                   name="itComponent"
                   render={({ field }) => (
-                    <CustomSelectTags className="my-3" lng={lng} type={3} field={field}></CustomSelectTags>
+                    <CustomSelectTags onValueChange={(value: any) => {
+                      if (value) {
+                        setSelectItComponentValue(value); 
+                        field.onChange(value)
+                      }}} value={selectItComponentValue} className="my-3" lng={lng} type={3} field={field}></CustomSelectTags>
                   )}
                 />
                 <FormField
@@ -241,7 +255,12 @@ const providedInterfaceForm: React.FC<ProvidedInterfaceFormProps> = ({ interface
                   render={({ field }) => (
                     <FormItem className="my-3">
                       <FormLabel><CalendarClock strokeWidth={1} size={15} className="inline-block" /> {t('application_providedInterfaces_frequence')}</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select  onValueChange={(value: string) => {
+                        if (value) {
+                          setSelectFrequenceValue(value); 
+                          field.onChange(value)
+                        }}} 
+                        value={selectFrequenceValue} defaultValue={field.value}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder={t("application_providedInterfaces_frequencePlaceholder")} />

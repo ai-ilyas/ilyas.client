@@ -1,29 +1,10 @@
 'use client'
 
 import { useTranslation } from "@/src/app/i18n/client";
-import { Badge } from "./ui/badge";
-import { Button } from "./ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
-import { Input } from "./ui/input";
-import { useEffect, useState } from "react";
-import Circle from '@uiw/react-color-circle';
-import { z } from "zod";
-import { ControllerRenderProps, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "./ui/form";
-import { Separator } from "./ui/separator";
-import { Check, ChevronsUpDown, Loader2 } from "lucide-react";
-import { useMutation, useQuery } from "convex/react";
+import { ControllerRenderProps } from "react-hook-form";
+import { FormControl, FormItem, FormLabel, FormMessage } from "./ui/form";
+import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { Icons } from "./icons";
-import { toast } from "./ui/use-toast";
-import { ITag } from "@/convex/tags";
-import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "./ui/command";
-import { cn, isValidHtmlColor } from "../lib/utils";
-import { Id } from "@/convex/_generated/dataModel";
-import { Textarea } from "./ui/textarea";
-import { classNames } from "uploadthing/client";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "./ui/select";
 
 interface customSelectTagsProps {
@@ -31,9 +12,11 @@ interface customSelectTagsProps {
   type: number;
   field: ControllerRenderProps<any, any>;
   className?: string;
+  onValueChange?: (value: any) => void;
+  value: any;
 }
 
-export default function customSelectTags ({ lng, type, field, className }: customSelectTagsProps) {
+export default function customSelectTags ({ lng, type, field, className, onValueChange, value }: customSelectTagsProps) {
     const { t } = useTranslation(lng);
     const tags = useQuery(api.tags.list, { type });
 
@@ -61,10 +44,21 @@ export default function customSelectTags ({ lng, type, field, className }: custo
             singleLabelType = "Tag";
         }
     
+    const onChange = (value: any) => {
+        if (onValueChange)
+        {
+            onValueChange(value);
+        }
+        else
+        {
+            field.onChange(value);
+        }
+    }
+
     return <>
         <FormItem className={className}>
             <FormLabel>{t(`custom${labelType}`)}</FormLabel>
-            <Select onValueChange={field.onChange} defaultValue={field.value}>
+            <Select onValueChange={onChange} value={value} defaultValue={field.value}>
             <FormControl>
                 <SelectTrigger>
                     <SelectValue placeholder={t(`custom${labelType}_select`)} />

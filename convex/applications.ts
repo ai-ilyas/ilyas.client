@@ -54,7 +54,28 @@ export const findOne = query({
       .withIndex("byApplicationId", q => q.eq("applicationId", _id).eq("userId", userId!))
       .collect();
 
-    return { ...application, tags, interfaces } as IApplication;
+    const itComponentIds = interfaces.filter(x => x.itComponentId).map(x => x.itComponentId!);
+    const dataObjectIds = interfaces.filter(x => x.dataObjectId).map(x => x.dataObjectId!);
+    const itComponentTags = await getAll(ctx.db, itComponentIds);
+    const dataObjectTags = await getAll(ctx.db, dataObjectIds);
+
+    return { 
+      ...application, 
+      tags, 
+      interfaces: interfaces.map(x => {
+      const dataObjectTag = dataObjectTags.find(y => y?._id === x.dataObjectId);
+      const itComponentTag = itComponentTags.find(y => y?._id === x.itComponentId);
+
+      return { 
+          ...x, 
+          dataObjectValue: dataObjectTag?.value,
+          itComponentValue: itComponentTag?.value,
+          dataObjectColor: dataObjectTag?.color,
+          itComponentColor: itComponentTag?.color,
+          dataObjectIcon: dataObjectTag?.icon,
+          itComponentIcon: itComponentTag?.icon,
+        } as IInterface})
+      } as IApplication;
   },
 });
 
