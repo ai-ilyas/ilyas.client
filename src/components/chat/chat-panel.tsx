@@ -37,7 +37,7 @@ export function ChatPanel({
 }: ChatPanelProps) {
   const [aiState] = useAIState()
   const [messages, setMessages] = useUIState<typeof AI>()
-  const { submitUserMessage } = useActions()
+  const { submitUserMessageArchitect } = useActions()
   const [shareDialogOpen, setShareDialogOpen] = React.useState(false)
   const { retrieveAIState } = useActions()
   const [currentAIState, setcurrentAIState] = useState< Chat>();
@@ -49,9 +49,9 @@ export function ChatPanel({
       message: `What are the trending memecoins today?`
     },
     {
-      heading: 'What is the price of',
-      subheading: '$DOGE right now?',
-      message: 'What is the price of $DOGE right now?'
+      heading: 'Can you estimate the price of ',
+      subheading: 'a manufacturing order monitoring web app on Azure?',
+      message: 'Can you estimate the price of a manufacturing order monitoring web app on Azure?'
     },
     {
       heading: 'I would like to buy',
@@ -131,7 +131,7 @@ export function ChatPanel({
                     }
                   ])
 
-                  const responseMessage = await submitUserMessage(
+                  const responseMessage = await submitUserMessageArchitect(
                     example.message
                   )
 

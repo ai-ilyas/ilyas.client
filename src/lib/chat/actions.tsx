@@ -18,7 +18,6 @@ import {
   Stock,
   Purchase
 } from '@/src/components/stocks'
-
 import { z } from 'zod'
 import { EventsSkeleton } from '@/src/components/stocks/events-skeleton'
 import { Events } from '@/src/components/stocks/events'
@@ -35,6 +34,8 @@ import { saveChat } from '@/src/app/[lng]/(dashboard)/dashboard/chat/actions'
 import { SpinnerMessage, UserMessage } from '@/src/components/stocks/message'
 import { Chat, Message } from '@/src/components/chat/types'
 import { auth } from '@/src/auth'
+import { Description } from '@radix-ui/react-dialog'
+import { Prices } from '@/src/components/stocks/prices'
 
 async function confirmPurchase(symbol: string, price: number, amount: number) {
   'use server'
@@ -484,6 +485,146 @@ async function submitUserMessage(content: string) {
   }
 }
 
+
+async function submitUserMessageArchitect(content: string) {
+  'use server'
+
+  const aiState = getMutableAIState<typeof AI>()
+
+  aiState.update({
+    ...aiState.get(),
+    messages: [
+      ...aiState.get().messages,
+      {
+        id: nanoid(),
+        role: 'user',
+        content
+      }
+    ]
+  })
+
+  let textStream: undefined | ReturnType<typeof createStreamableValue<string>>
+  let textNode: undefined | React.ReactNode
+
+  const result = await streamUI({
+    model: openai('gpt-4o'),
+    initial: <SpinnerMessage />,
+    system: `\
+    You are an IT & Cloud architecture assistant, and you can help user design IT applications and software, step by step.
+    You and the user can discuss design choices, pros and cons, cost estimations, IT strategy and the user can run cost estimate and adjust it.
+      If you want to estime cost, call \`estimatePrice\`.
+
+    Besides that, you can also chat with users and do some calculations if needed.`,
+    
+    messages: [
+      ...aiState.get().messages.map((message: any) => ({
+        role: message.role,
+        content: message.content,
+        name: message.name
+      }))
+    ],
+   
+    text: ({ content, done, delta }) => {
+      if (!textStream) {
+        textStream = createStreamableValue('')
+        textNode = <BotMessage content={textStream.value} />
+      }
+
+      if (done) {
+        textStream.done()
+        aiState.done({
+          ...aiState.get(),
+          messages: [
+            ...aiState.get().messages,
+            {
+              id: nanoid(),
+              role: 'assistant',
+              content
+            }
+          ]
+        })
+      } else {
+        textStream.update(delta)
+      }
+
+      return textNode
+    },
+    tools: 
+    {
+      estimatePrice: {
+      description: 'Estimate price for a given scenario.',
+      parameters: 
+      z.object({
+        prices: z.array(
+        z.object({
+        service_name: z.string().describe('Service name.'),
+        service_type: z.string().describe('Service type.'),
+        description: z.string().describe('Description'),
+        price_per_unit:  z.string().describe('Price in USD per unit'),
+        unit: z.number().describe('Unit detail'),
+        quantity:  z.number().describe('Quantity'),
+        monthly_cost:  z.number().describe('Monthly cost in USD.'),
+    })).describe('cost estimate sheet tab')}),
+      generate: async function* ({ prices }) {
+        yield (
+          <BotCard>
+            <StocksSkeleton />
+          </BotCard>
+        )
+
+        await sleep(1000)
+
+        const toolCallId = nanoid()
+
+        aiState.done({
+          ...aiState.get(),
+          messages: [
+            ...aiState.get().messages,
+            {
+              id: nanoid(),
+              role: 'assistant',
+              content: [
+                {
+                  type: 'tool-call',
+                  toolName: 'estimatePrice',
+                  toolCallId,
+                  args: { prices }
+                }
+              ]
+            },
+            {
+              id: nanoid(),
+              role: 'tool',
+              content: [
+                {
+                  type: 'tool-result',
+                  toolName: 'estimatePrice',
+                  toolCallId,
+                  result: prices
+                }
+              ]
+            }
+          ]
+        })
+
+        return (
+          <BotCard>
+            <Prices props={prices} />
+          </BotCard>
+        )
+      }
+    }}
+
+
+  })
+
+  return {
+    id: nanoid(),
+    display: result.value
+  }
+}
+
+
 async function retrieveAIState(params: string) : Promise<Chat> {
   'use server'
   const aiState = getAIState() as Chat
@@ -503,7 +644,8 @@ export const AI = createAI<AIState, UIState>({
   actions: {
     submitUserMessage,
     confirmPurchase,
-    retrieveAIState
+    retrieveAIState,
+    submitUserMessageArchitect
   },
   initialUIState: [],
   initialAIState: { chatId: nanoid(), messages: [] },
