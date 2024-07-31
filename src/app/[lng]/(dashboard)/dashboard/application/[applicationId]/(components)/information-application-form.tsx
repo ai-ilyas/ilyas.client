@@ -63,7 +63,7 @@ const informationApplicationForm: React.FC<UpdateApplicationFormProps> = ({
             </div>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-3">
               <div className="grid gap-3">
                 <FormField
                   control={form.control}

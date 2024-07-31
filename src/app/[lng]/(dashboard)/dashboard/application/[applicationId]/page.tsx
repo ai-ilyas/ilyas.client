@@ -11,6 +11,8 @@ import BusinessCapabilities from './(components)/business-capabilities';
 import ParentApplication from './(components)/parent-application';
 import ChildrenApplications from './(components)/children-applications';
 import ProvidedInterfaces from './(components)/provided-interfaces';
+import HierarchyComponent from './(components)/hierarchy-component';
+
 
 
 export default function page({
@@ -69,16 +71,10 @@ export default function page({
           <BusinessCapabilities
             app={app!}
             lng={lng}></BusinessCapabilities>
-        </div>
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          <ParentApplication
+          <HierarchyComponent 
             app={app!}
             lng={lng}
-            apps={applications!}></ParentApplication>
-          <ChildrenApplications
-            app={app!}
-            lng={lng}
-            apps={applications!}></ChildrenApplications>
+            apps={applications!}></HierarchyComponent>
         </div>
         <ProvidedInterfaces app={app} interfaces={app!.interfaces!} lng={lng}></ProvidedInterfaces>
       </div>

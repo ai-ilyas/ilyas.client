@@ -142,9 +142,14 @@ export const updateParentApplication = mutation({
   },
   handler: async (ctx, { _id, parentApplicationId, name, description, }) => {
     // #080 CLIENT SERVER Application cannot be its own parent application
-    if (_id === parentApplicationId) throw new Error("applications.updateParentApplication - Application cannot be its own parent application.")
+    if (_id === parentApplicationId) throw new Error("applications.updateParentApplication - 80 Application cannot be its own parent application.")
     
-      const userId = (await getUserId(ctx, true))!;
+    // #090 CLIENT SERVER Application cannot be parent and child for another application
+    const parentApplication = await ctx.db.get(parentApplicationId as Id<"applications">);
+    if (_id === parentApplication?.parentApplicationId) throw new Error("applications.updateParentApplication - 90 Application cannot be its own parent application.")
+
+
+    const userId = (await getUserId(ctx, true))!;
     const applicationToUpdate = await ctx.db.get(_id);
     // #020 SERVER Insert or Update application only when current userId match with userId in Application Table
     if (userId !== applicationToUpdate?.userId) throw new Error("applications.updateParentApplication - Method not allowed.")
@@ -197,12 +202,14 @@ export const addChildrenApplications = mutation({
   handler: async (ctx, { parentApplicationId, childrenApplicationsIds, name, description, }) => {
     const userId = (await getUserId(ctx, true))!;
     const parentApplication = await ctx.db.get(parentApplicationId);
+    
     // #020 SERVER Insert or Update application only when current userId match with userId in Application Table
     if (userId !== parentApplication?.userId) throw new Error("applications.addChildrenApplications - Method not allowed.")
 
     if (childrenApplicationsIds){
       // #080 CLIENT SERVER Application cannot be its own parent application
-      if (childrenApplicationsIds.some(x => parentApplicationId === x as Id<"applications">)) throw new Error("applications.updateParentApplication - Application cannot be its own parent application.")
+      // #090 CLIENT SERVER Application cannot be parent and child for another application
+      if (childrenApplicationsIds.some(x => parentApplicationId === x as Id<"applications"> || parentApplication.parentApplicationId === x)) throw new Error("applications.updateParentApplication - Application cannot be its own parent application.")
     
       const applicationsToUpdate = await getAll(ctx.db, childrenApplicationsIds.map(x => x as Id<"applications">));
       // #020 SERVER Insert or Update application only when current userId match with userId in Application Table

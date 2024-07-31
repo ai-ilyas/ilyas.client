@@ -38,10 +38,14 @@
     "application_page_newProject": "New Project",
     "application_toast_errorOccuredDuringUpdatingProcess": "Error during the updating process.",
     "application_toast_applicationHasBeenUpdated": "Application has been updated",
+
+    "application_hierarchy_hierarchy": "Hiérarchy",    
+    "application_hierarchy_parentApplication": "Parent application",
+    "application_hierarchy_hierarchyDescription": "Define Parent/Children relation between applications.",
+    "application_hierarchy_childrenApplication": "Children application",
     
     "application_parentApplication_parentApplication": "Parent application",
     "application_parentApplication_addParentApplication": "Add parent application",
-    "application_parentApplication_selectAnotherParentApplication": "Select another parent application",
     "application_parentApplication_selectExistingParentApplication": "Select an existing parent application",
     "application_parentApplication_createANewParentApplication": "Or create a new application",
     "application_parentApplication_areYouSureYouWantToRemoveTheParentApplication": "Are you sure you want to remove the parent application ?",

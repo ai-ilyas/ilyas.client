@@ -17,3 +17,5 @@
 #070 CLIENT SERVER Fields length for Technical Owner, Business Owner and NumberOfUsers should be 50 characters maximum
 
 #080 CLIENT SERVER Application cannot be its own parent application
+
+#090 CLIENT SERVER Application cannot be parent and child for another application

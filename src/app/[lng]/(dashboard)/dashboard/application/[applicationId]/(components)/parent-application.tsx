@@ -1,12 +1,11 @@
 'use client';
 import { IApplication } from '@/convex/applications';
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card';
 import { useTranslation } from '@/src/app/i18n/client';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/src/components/ui/form';
 import { z } from 'zod';
 import { Popover, PopoverContent, PopoverTrigger } from '@/src/components/ui/popover';
 import { Button } from '@/src/components/ui/button';
-import { Check, ChevronsUpDown, Loader2 } from 'lucide-react';
+import { Check, ChevronsUpDown, Loader2, Trash } from 'lucide-react';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/src/components/ui/command';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -14,14 +13,14 @@ import { cn } from '@/src/lib/utils';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/src/components/ui/dialog';
 import { Separator } from '@/src/components/ui/separator';
 import { useState } from 'react';
-import { Icons } from '@/src/components/icons';
 import { toast } from '@/src/components/ui/use-toast';
 import { applicationDescriptionDefinition, applicationNameDefinition } from '@/src/lib/helpers/application-fields-definition';
 import { Input } from '@/src/components/ui/input';
 import { Textarea } from '@/src/components/ui/textarea';
 import { useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
-import { Label } from '@/src/components/ui/label';
+import { PlusCircledIcon } from '@radix-ui/react-icons';
+import Link from 'next/link';
 
 interface ParentApplicationFormProps {
   app: IApplication;
@@ -36,14 +35,12 @@ const parentApplication: React.FC<ParentApplicationFormProps> = ({
 }) => {
   const { t } = useTranslation(lng);
   const [open, setOpen] = useState(false);
-  const IconAdd = Icons['add'];
   const [loading, setLoading] = useState(false);
   const [openPopover, setOpenPopover] = useState(false);
   const [isDescriptionDisabled, setIsDescriptionDisabled] = useState(true);
   const updateParentApplication = useMutation(api.applications.updateParentApplication);
   const removeParentApplication = useMutation(api.applications.removeParentApplication);
   const [openRemove, setOpenRemove] = useState(false);
-  const IconClose = Icons['close'];
   const formSchema = z.object({
     parentApplicationId: z.string().optional(),
     name: applicationNameDefinition(t, apps).optional().or(z.literal('')),
@@ -109,25 +106,15 @@ const parentApplication: React.FC<ParentApplicationFormProps> = ({
   };
 
   return (
-    form && <Form {...form}>
-    <form
-      className="space-y-8"
-    >
-      <Card>
-          <CardHeader>
-          <div className="flex items-start">
-              <CardTitle>{t('application_parentApplication_parentApplication')}</CardTitle>
-          </div>
-          </CardHeader>
-          <CardContent>
-
+    form && <>
           { 
             app.parentApplicationId && 
-              <div className="db font-extrabold my-2 text-3xl">
-                { apps.find(x => x._id === app.parentApplicationId)?.name }
+              <div className="font-extrabold flex justify-between">
+                <div><Link href={"/dashboard/application/" + app.parentApplicationId}>{ apps.find(x => x._id === app.parentApplicationId)?.name }</Link></div>
+                <div>
                 <Dialog open={openRemove} onOpenChange={setOpenRemove}>
                     <DialogTrigger asChild>
-                      <IconClose className="inline-table align-text-top cursor-pointer ml-2 h-3 w-3" />
+                      <Button variant={'destructive'} className="shrink-0"><Trash className='w-4 h-4' /></Button>
                     </DialogTrigger>
                     <DialogContent>
                         <DialogHeader>
@@ -142,16 +129,18 @@ const parentApplication: React.FC<ParentApplicationFormProps> = ({
                         </DialogFooter>
                     </DialogContent>
                 </Dialog>
+                </div>
               </div>
           }
-
-          <div>
           <Dialog modal={true} open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
             { 
-              app.parentApplicationId 
-              ? <Button className="block" variant="link"><IconAdd className="h-4 w-4 inline-block"></IconAdd>{t(`application_parentApplication_selectAnotherParentApplication`)}</Button>
-              : <Button className="block" variant="link"><IconAdd className="h-4 w-4 inline-block"></IconAdd>{t(`application_parentApplication_addParentApplication`)}</Button>
+              !app.parentApplicationId && <div className="ml-auto mr-4">
+                                            <Button>
+                                              <PlusCircledIcon className="mr-2 h-4 w-4" />
+                                              {t('common_add')}
+                                            </Button>
+                                          </div>
             }                
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
@@ -198,7 +187,8 @@ const parentApplication: React.FC<ParentApplicationFormProps> = ({
                                                   <CommandGroup>
                                                       {
                                                         // #080 CLIENT SERVER Application cannot be its own parent application
-                                                        apps.filter(x => x._id !== app.parentApplicationId && x._id !== app._id)
+                                                          // #090 CLIENT SERVER Application cannot be parent and child for another application
+                                                        apps.filter(x => x._id !== app.parentApplicationId && x._id !== app._id && x.parentApplicationId !== app._id)
                                                           .map((popoverApp) => (
                                                         <CommandItem
                                                           value={popoverApp.name}
@@ -279,11 +269,11 @@ const parentApplication: React.FC<ParentApplicationFormProps> = ({
                                 )}
                                 /> 
                         </div>
-                        <DialogFooter>                            
-                            <Button variant="secondary" type="button" className="mt-4" onClick={() => { setOpen(false); form.reset();}}>
+                        <DialogFooter className="mt-8">                            
+                            <Button variant="secondary" type="button" onClick={() => { setOpen(false); form.reset();}}>
                                 {t("common_cancel")}
                             </Button>
-                            <Button className="mt-4" disabled={loading} type="submit">
+                            <Button disabled={loading} type="submit">
                                 { loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                                 {t("common_add")}
                             </Button>
@@ -291,13 +281,8 @@ const parentApplication: React.FC<ParentApplicationFormProps> = ({
                     </form>
                 </Form>
             </DialogContent>
-        </Dialog>        
-          
-          </div>
-          </CardContent>
-      </Card>
-      </form>
-    </Form>
+          </Dialog>
+    </>
   );
 };
 

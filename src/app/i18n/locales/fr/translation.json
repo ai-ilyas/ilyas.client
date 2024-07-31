@@ -39,9 +39,13 @@
     "application_toast_errorOccuredDuringUpdatingProcess": "Erreur durant le processus de mise à jour.",
     "application_toast_applicationHasBeenUpdated": "L'application a été mise à jour",
 
+    "application_hierarchy_hierarchy": "Hiérarchie",
+    "application_hierarchy_parentApplication": "Application parente",
+    "application_hierarchy_hierarchyDescription": "Definissez les relations Parents/Enfants entre les applications.",
+    "application_hierarchy_childrenApplication": "Applications enfants",
+
     "application_parentApplication_parentApplication": "Application parente",
     "application_parentApplication_addParentApplication": "Ajouter l'application parente",
-    "application_parentApplication_selectAnotherParentApplication": "Sélectionner une autre application parente",
     "application_parentApplication_createANewParentApplication": "Ou créer une nouvelle application",    
     "application_parentApplication_selectExistingParentApplication": "Sélectionner une application parente existante",
     "application_parentApplication_areYouSureYouWantToRemoveTheParentApplication": "Etes-vous sûr de vouloir supprimer l'application parente ?",
