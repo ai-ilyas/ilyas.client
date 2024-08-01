@@ -52,6 +52,7 @@
     "application_parentApplication_parentApplicationHasBeenRemoved": "Parent application has been removed.",
     "application_parentApplication_parentApplicationHasNotBeenRemoved": "Parent application hasn't been removed.",
     "application_parentApplication": "Remove parent application",
+    "application_providedInterfaces_addConsumer": "Add a consumer",
 
     "application_childrenApplication_childrenApplication": "Children application",
     "application_childrenApplication_addChildrenApplication": "Add children applications",

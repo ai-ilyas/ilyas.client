@@ -52,6 +52,7 @@
     "application_parentApplication_parentApplicationHasBeenRemoved": "L'application parent a bien été supprimée.",
     "application_parentApplication_parentApplicationHasNotBeenRemoved": "L'application parent n'a pas pu être supprimée.",
     "application_parentApplication_removeTheParentApplication": "Supprimer l'application parente",
+    "application_providedInterfaces_addConsumer": "Ajouter un consommateur",
 
     "application_childrenApplication_childrenApplication": "Applications enfants",
     "application_childrenApplication_addChildrenApplication": "Ajouter des applications enfants",
