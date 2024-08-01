@@ -1,0 +1,3 @@
+#010 When Interface direction is not Bi-Directional and consumer direction should be different then interface direction
+
+#020 SERVER Retrieve, Insert, Update and Remove interface consumer only when current userId match with userId link to the application

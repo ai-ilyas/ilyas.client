@@ -19,6 +19,7 @@ import type * as auth from "../auth.js";
 import type * as authAdapter from "../authAdapter.js";
 import type * as convexAdapter from "../convexAdapter.js";
 import type * as http from "../http.js";
+import type * as interfaceConsumers from "../interfaceConsumers.js";
 import type * as interfaces from "../interfaces.js";
 import type * as tableNames from "../tableNames.js";
 import type * as tags from "../tags.js";
@@ -37,6 +38,7 @@ declare const fullApi: ApiFromModules<{
   authAdapter: typeof authAdapter;
   convexAdapter: typeof convexAdapter;
   http: typeof http;
+  interfaceConsumers: typeof interfaceConsumers;
   interfaces: typeof interfaces;
   tableNames: typeof tableNames;
   tags: typeof tags;

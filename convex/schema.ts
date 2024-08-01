@@ -112,7 +112,7 @@ export default defineSchema({
     dataObjectId: v.optional(v.id(TAGS_TABLE)),
     volumetry: v.optional(v.string()),
     applicationId: v.id(APPLICATIONS_TABLE),
-    userId: v.id("users"),    
+    userId: v.id("users"),
     frequence: v.optional(v.union(
       v.literal("hourly"),
       v.literal("daily"),
@@ -133,7 +133,12 @@ export default defineSchema({
     interfaceId: v.id(INTERFACES_TABLE),
     applicationId: v.id(APPLICATIONS_TABLE),
     volumetry: v.optional(v.string()),
-    frequence: v.union(
+    direction: v.union(
+      v.literal("outgoing"),
+      v.literal("incoming"),
+      v.literal("bi-directional"),
+    ),
+    frequence: v.optional(v.union(
       v.literal("hourly"),
       v.literal("daily"),
       v.literal("weekly"),
@@ -141,7 +146,8 @@ export default defineSchema({
       v.literal("yearly"),
       v.literal("on demand"),
       v.literal("real-time"),
-    ),
+    )),
     editionTime: v.number(),
+    userId: v.id("users"),    
   }).index("byApplicationId", ["applicationId"])
 });
