@@ -87,24 +87,21 @@ export function ChatPanel({
         <span className="sr-only">Debug</span>
       </Button>
       </AlertDialogTrigger>
-      <AlertDialogContent className="sm:max-w-[480px]">
+      <AlertDialogContent className="sm:max-w-[480px]" >
         <AlertDialogHeader>
           <AlertDialogTitle>AI Message Trace</AlertDialogTitle>
         </AlertDialogHeader>
-        <AlertDialogDescription className="max-h-[300px] overflow-auto">
-          <div className="prose">
+        <AlertDialogDescription/>
+        <div className="max-h-[300px] overflow-auto prose">
           {currentAIState?.messages.map((message, index) => (
         <div key={message.id}>
            <h3>{message.role}</h3>
-            <p> 
-              {JSON.stringify( message.content, null, 2)}
-            </p>
+              <p className='text-sm text-muted-foreground'>{JSON.stringify( message.content, null, 2)}</p>
           {<Separator className="my-4" />}
         </div>
       ))}
             
-          </div>
-        </AlertDialogDescription>
+        </div>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
         </AlertDialogFooter>
