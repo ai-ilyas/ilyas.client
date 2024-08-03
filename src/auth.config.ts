@@ -1,36 +1,36 @@
 import { NextAuthConfig } from 'next-auth';
 import GithubProvider from 'next-auth/providers/github';
-import GoogleProvider from "next-auth/providers/google";
-import AzureAD from "next-auth/providers/microsoft-entra-id";
+import GoogleProvider from 'next-auth/providers/google';
+import AzureAD from 'next-auth/providers/microsoft-entra-id';
 import { ConvexAdapter } from '../convex/convexAdapter';
-import { importPKCS8, SignJWT } from "jose";
+import { importPKCS8, SignJWT } from 'jose';
 
 const CONVEX_SITE_URL = process.env.NEXT_PUBLIC_CONVEX_URL!.replace(
   /.cloud$/,
-  ".site",
+  '.site'
 );
 
 const authConfig = {
-  adapter: ConvexAdapter,  
+  adapter: ConvexAdapter,
   callbacks: {
     async session({ session, token }) {
       const privateKey = await importPKCS8(
         process.env.CONVEX_AUTH_PRIVATE_KEY!,
-        "RS256",
+        'RS256'
       );
       const convexToken = await new SignJWT({
-        sub: token.sub,
+        sub: token.sub
       })
-        .setProtectedHeader({ alg: "RS256" })
+        .setProtectedHeader({ alg: 'RS256' })
         .setIssuedAt()
         .setIssuer(CONVEX_SITE_URL)
-        .setAudience("convex")
-        .setExpirationTime("1h")
+        .setAudience('convex')
+        .setExpirationTime('1h')
         .sign(privateKey);
       return { ...session, convexToken };
-    },
+    }
   },
-  session: { strategy: "jwt" },
+  session: { strategy: 'jwt' },
   providers: [
     GithubProvider({
       clientId: process.env.GITHUB_ID ?? '',
@@ -45,16 +45,16 @@ const authConfig = {
       clientSecret: process.env.AZURE_AD_CLIENT_SECRET,
       tenantId: 'common',
       token: {
-        url: `https://login.microsoftonline.com/common/oauth2/v2.0/token`,
-    },
+        url: `https://login.microsoftonline.com/common/oauth2/v2.0/token`
+      },
       userinfo: {
-        url: "https://graph.microsoft.com/oidc/userinfo",
-    },
+        url: 'https://graph.microsoft.com/oidc/userinfo'
+      },
       authorization: {
-          url: `https://login.microsoftonline.com/common/oauth2/v2.0/authorize`,
-          params: {
-              scope: "openid profile email User.Read"
-          }
+        url: `https://login.microsoftonline.com/common/oauth2/v2.0/authorize`,
+        params: {
+          scope: 'openid profile email User.Read'
+        }
       },
       issuer: `https://login.microsoftonline.com/common/v2.0`
     })
@@ -65,7 +65,7 @@ const authConfig = {
   }
 } satisfies NextAuthConfig;
 
-declare module "next-auth" {
+declare module 'next-auth' {
   interface Session {
     convexToken: string;
   }

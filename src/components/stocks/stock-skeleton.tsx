@@ -18,5 +18,5 @@ export const StockSkeleton = () => {
         <div style={{ height: 146 }}></div>
       </div>
     </div>
-  )
-}
+  );
+};

@@ -1,11 +1,7 @@
 {
   "compilerOptions": {
     "target": "ESNext",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -25,9 +21,7 @@
       }
     ],
     "paths": {
-      "@/*": [
-        "./*"
-      ]
+      "@/*": ["./*"]
     },
     "incremental": true
   },
@@ -36,9 +30,10 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts"
-, "src/app/i18n/settings.ts", "src/app/i18n/client.ts", "src/app/i18n/index.js"  ],
-  "exclude": [
-    "packages/excalidraw/types"
-  ]
+    ".next/types/**/*.ts",
+    "src/app/i18n/settings.ts",
+    "src/app/i18n/client.ts",
+    "src/app/i18n/index.js"
+  ],
+  "exclude": ["packages/excalidraw/types"]
 }

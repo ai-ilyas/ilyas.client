@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import CreateApplicationForm from './create-application-form';
 import { ApplicationCard } from './application-card';
 import SpinnerLoading from '@/src/components/spinner-loading';
@@ -9,27 +9,26 @@ interface ApplicationListWrapperProps {
   lng: string;
 }
 
-const dashboardContainer: React.FC<ApplicationListWrapperProps> = ({ lng}) => {  
+const dashboardContainer: React.FC<ApplicationListWrapperProps> = ({ lng }) => {
   const applications = useQuery(api.applications.list);
 
-  if (applications == undefined)
-  {
+  if (applications == undefined) {
     return (
       <div className="top-2/4">
-        <SpinnerLoading lng={lng}></SpinnerLoading>       
+        <SpinnerLoading lng={lng}></SpinnerLoading>
       </div>
-    );  
-  }
-  else
-  {
+    );
+  } else {
     return (
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">        
-          <CreateApplicationForm lng={lng} apps={ applications! }></CreateApplicationForm>
-          <ApplicationCard lng={lng} apps={ applications! }></ApplicationCard>         
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <CreateApplicationForm
+          lng={lng}
+          apps={applications!}
+        ></CreateApplicationForm>
+        <ApplicationCard lng={lng} apps={applications!}></ApplicationCard>
       </div>
-    );      
+    );
   }
-
-}
+};
 
 export default dashboardContainer;

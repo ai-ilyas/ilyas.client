@@ -4,11 +4,11 @@
 // We should remove this code after sometime when we are confident that
 // all users have migrated to Vite
 
-self.addEventListener("install", () => {
+self.addEventListener('install', () => {
   self.skipWaiting();
 });
 
-self.addEventListener("activate", () => {
+self.addEventListener('activate', () => {
   self.registration
     .unregister()
     .then(() => {

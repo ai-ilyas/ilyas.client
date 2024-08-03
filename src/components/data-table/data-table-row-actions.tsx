@@ -1,9 +1,9 @@
-"use client"
+'use client';
 
-import { DotsHorizontalIcon } from "@radix-ui/react-icons"
-import { Row } from "@tanstack/react-table"
+import { DotsHorizontalIcon } from '@radix-ui/react-icons';
+import { Row } from '@tanstack/react-table';
 
-import { Button } from "@/src/components/ui/button"
+import { Button } from '@/src/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,18 +15,16 @@ import {
   DropdownMenuSub,
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
-  DropdownMenuTrigger,
-} from "@/src/components/ui/dropdown-menu"
-
+  DropdownMenuTrigger
+} from '@/src/components/ui/dropdown-menu';
 
 interface DataTableRowActionsProps<TData> {
-  row: Row<TData>
+  row: Row<TData>;
 }
 
 export function DataTableRowActions<TData>({
-  row,
+  row
 }: DataTableRowActionsProps<TData>) {
-
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -62,5 +60,5 @@ export function DataTableRowActions<TData>({
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  )
+  );
 }

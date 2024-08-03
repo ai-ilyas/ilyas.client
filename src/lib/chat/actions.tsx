@@ -1,4 +1,4 @@
-'server-only'
+'server-only';
 
 import {
   createAI,
@@ -7,8 +7,8 @@ import {
   getAIState,
   streamUI,
   createStreamableValue
-} from 'ai/rsc'
-import { openai } from '@ai-sdk/openai'
+} from 'ai/rsc';
+import { openai } from '@ai-sdk/openai';
 
 import {
   spinner,
@@ -17,30 +17,30 @@ import {
   SystemMessage,
   Stock,
   Purchase
-} from '@/src/components/stocks'
-import { z } from 'zod'
-import { EventsSkeleton } from '@/src/components/stocks/events-skeleton'
-import { Events } from '@/src/components/stocks/events'
-import { StocksSkeleton } from '@/src/components/stocks/stocks-skeleton'
-import { Stocks } from '@/src/components/stocks/stocks'
-import { StockSkeleton } from '@/src/components/stocks/stock-skeleton'
+} from '@/src/components/stocks';
+import { z } from 'zod';
+import { EventsSkeleton } from '@/src/components/stocks/events-skeleton';
+import { Events } from '@/src/components/stocks/events';
+import { StocksSkeleton } from '@/src/components/stocks/stocks-skeleton';
+import { Stocks } from '@/src/components/stocks/stocks';
+import { StockSkeleton } from '@/src/components/stocks/stock-skeleton';
 import {
   formatNumber,
   runAsyncFnWithoutBlocking,
   sleep,
   nanoid
-} from '@/src/lib/utils'
-import { saveChat } from '@/src/app/[lng]/(dashboard)/dashboard/chat/actions'
-import { SpinnerMessage, UserMessage } from '@/src/components/stocks/message'
-import { Chat, Message } from '@/src/components/chat/types'
-import { auth } from '@/src/auth'
-import { Description } from '@radix-ui/react-dialog'
-import { Prices } from '@/src/components/stocks/prices'
+} from '@/src/lib/utils';
+import { saveChat } from '@/src/app/[lng]/(dashboard)/dashboard/chat/actions';
+import { SpinnerMessage, UserMessage } from '@/src/components/stocks/message';
+import { Chat, Message } from '@/src/components/chat/types';
+import { auth } from '@/src/auth';
+import { Description } from '@radix-ui/react-dialog';
+import { Prices } from '@/src/components/stocks/prices';
 
 async function confirmPurchase(symbol: string, price: number, amount: number) {
-  'use server'
+  'use server';
 
-  const aiState = getMutableAIState<typeof AI>()
+  const aiState = getMutableAIState<typeof AI>();
 
   const purchasing = createStreamableUI(
     <div className="inline-flex items-start gap-1 md:items-center">
@@ -49,12 +49,12 @@ async function confirmPurchase(symbol: string, price: number, amount: number) {
         Purchasing {amount} ${symbol}...
       </p>
     </div>
-  )
+  );
 
-  const systemMessage = createStreamableUI(null)
+  const systemMessage = createStreamableUI(null);
 
   runAsyncFnWithoutBlocking(async () => {
-    await sleep(1000)
+    await sleep(1000);
 
     purchasing.update(
       <div className="inline-flex items-start gap-1 md:items-center">
@@ -63,9 +63,9 @@ async function confirmPurchase(symbol: string, price: number, amount: number) {
           Purchasing {amount} ${symbol}... working on it...
         </p>
       </div>
-    )
+    );
 
-    await sleep(1000)
+    await sleep(1000);
 
     purchasing.done(
       <div>
@@ -74,14 +74,14 @@ async function confirmPurchase(symbol: string, price: number, amount: number) {
           {formatNumber(amount * price)}
         </p>
       </div>
-    )
+    );
 
     systemMessage.done(
       <SystemMessage>
         You have purchased {amount} shares of {symbol} at ${price}. Total cost ={' '}
         {formatNumber(amount * price)}.
       </SystemMessage>
-    )
+    );
 
     aiState.done({
       ...aiState.get(),
@@ -95,8 +95,8 @@ async function confirmPurchase(symbol: string, price: number, amount: number) {
           }]`
         }
       ]
-    })
-  })
+    });
+  });
 
   return {
     purchasingUI: purchasing.value,
@@ -104,13 +104,13 @@ async function confirmPurchase(symbol: string, price: number, amount: number) {
       id: nanoid(),
       display: systemMessage.value
     }
-  }
+  };
 }
 
 async function submitUserMessage(content: string) {
-  'use server'
+  'use server';
 
-  const aiState = getMutableAIState<typeof AI>()
+  const aiState = getMutableAIState<typeof AI>();
 
   aiState.update({
     ...aiState.get(),
@@ -122,10 +122,10 @@ async function submitUserMessage(content: string) {
         content
       }
     ]
-  })
+  });
 
-  let textStream: undefined | ReturnType<typeof createStreamableValue<string>>
-  let textNode: undefined | React.ReactNode
+  let textStream: undefined | ReturnType<typeof createStreamableValue<string>>;
+  let textNode: undefined | React.ReactNode;
 
   const result = await streamUI({
     model: openai('gpt-3.5-turbo'),
@@ -154,12 +154,12 @@ async function submitUserMessage(content: string) {
     ],
     text: ({ content, done, delta }) => {
       if (!textStream) {
-        textStream = createStreamableValue('')
-        textNode = <BotMessage content={textStream.value} />
+        textStream = createStreamableValue('');
+        textNode = <BotMessage content={textStream.value} />;
       }
 
       if (done) {
-        textStream.done()
+        textStream.done();
         aiState.done({
           ...aiState.get(),
           messages: [
@@ -170,12 +170,12 @@ async function submitUserMessage(content: string) {
               content
             }
           ]
-        })
+        });
       } else {
-        textStream.update(delta)
+        textStream.update(delta);
       }
 
-      return textNode
+      return textNode;
     },
     tools: {
       listStocks: {
@@ -194,11 +194,11 @@ async function submitUserMessage(content: string) {
             <BotCard>
               <StocksSkeleton />
             </BotCard>
-          )
+          );
 
-          await sleep(1000)
+          await sleep(1000);
 
-          const toolCallId = nanoid()
+          const toolCallId = nanoid();
 
           aiState.done({
             ...aiState.get(),
@@ -229,13 +229,13 @@ async function submitUserMessage(content: string) {
                 ]
               }
             ]
-          })
+          });
 
           return (
             <BotCard>
               <Stocks props={stocks} />
             </BotCard>
-          )
+          );
         }
       },
       showStockPrice: {
@@ -255,11 +255,11 @@ async function submitUserMessage(content: string) {
             <BotCard>
               <StockSkeleton />
             </BotCard>
-          )
+          );
 
-          await sleep(1000)
+          await sleep(1000);
 
-          const toolCallId = nanoid()
+          const toolCallId = nanoid();
 
           aiState.done({
             ...aiState.get(),
@@ -290,13 +290,13 @@ async function submitUserMessage(content: string) {
                 ]
               }
             ]
-          })
+          });
 
           return (
             <BotCard>
               <Stock props={{ symbol, price, delta }} />
             </BotCard>
-          )
+          );
         }
       },
       showStockPurchase: {
@@ -317,7 +317,7 @@ async function submitUserMessage(content: string) {
             )
         }),
         generate: async function* ({ symbol, price, numberOfShares = 100 }) {
-          const toolCallId = nanoid()
+          const toolCallId = nanoid();
 
           if (numberOfShares <= 0 || numberOfShares > 1000) {
             aiState.done({
@@ -359,9 +359,9 @@ async function submitUserMessage(content: string) {
                   content: `[User has selected an invalid amount]`
                 }
               ]
-            })
+            });
 
-            return <BotMessage content={'Invalid amount'} />
+            return <BotMessage content={'Invalid amount'} />;
           } else {
             aiState.done({
               ...aiState.get(),
@@ -396,7 +396,7 @@ async function submitUserMessage(content: string) {
                   ]
                 }
               ]
-            })
+            });
 
             return (
               <BotCard>
@@ -409,7 +409,7 @@ async function submitUserMessage(content: string) {
                   }}
                 />
               </BotCard>
-            )
+            );
           }
         }
       },
@@ -432,11 +432,11 @@ async function submitUserMessage(content: string) {
             <BotCard>
               <EventsSkeleton />
             </BotCard>
-          )
+          );
 
-          await sleep(1000)
+          await sleep(1000);
 
-          const toolCallId = nanoid()
+          const toolCallId = nanoid();
 
           aiState.done({
             ...aiState.get(),
@@ -467,29 +467,28 @@ async function submitUserMessage(content: string) {
                 ]
               }
             ]
-          })
+          });
 
           return (
             <BotCard>
               <Events props={events} />
             </BotCard>
-          )
+          );
         }
       }
     }
-  })
+  });
 
   return {
     id: nanoid(),
     display: result.value
-  }
+  };
 }
 
-
 async function submitUserMessageArchitect(content: string) {
-  'use server'
+  'use server';
 
-  const aiState = getMutableAIState<typeof AI>()
+  const aiState = getMutableAIState<typeof AI>();
 
   aiState.update({
     ...aiState.get(),
@@ -501,10 +500,10 @@ async function submitUserMessageArchitect(content: string) {
         content
       }
     ]
-  })
+  });
 
-  let textStream: undefined | ReturnType<typeof createStreamableValue<string>>
-  let textNode: undefined | React.ReactNode
+  let textStream: undefined | ReturnType<typeof createStreamableValue<string>>;
+  let textNode: undefined | React.ReactNode;
 
   const result = await streamUI({
     model: openai('gpt-4o'),
@@ -515,7 +514,7 @@ async function submitUserMessageArchitect(content: string) {
       If you want to estime cost, call \`estimatePrice\`.
 
     Besides that, you can also chat with users and do some calculations if needed.`,
-    
+
     messages: [
       ...aiState.get().messages.map((message: any) => ({
         role: message.role,
@@ -523,15 +522,15 @@ async function submitUserMessageArchitect(content: string) {
         name: message.name
       }))
     ],
-   
+
     text: ({ content, done, delta }) => {
       if (!textStream) {
-        textStream = createStreamableValue('')
-        textNode = <BotMessage content={textStream.value} />
+        textStream = createStreamableValue('');
+        textNode = <BotMessage content={textStream.value} />;
       }
 
       if (done) {
-        textStream.done()
+        textStream.done();
         aiState.done({
           ...aiState.get(),
           messages: [
@@ -542,103 +541,103 @@ async function submitUserMessageArchitect(content: string) {
               content
             }
           ]
-        })
+        });
       } else {
-        textStream.update(delta)
+        textStream.update(delta);
       }
 
-      return textNode
+      return textNode;
     },
-    tools: 
-    {
+    tools: {
       estimatePrice: {
-      description: 'Estimate price for a given scenario.',
-      parameters: 
-      z.object({
-        prices: z.array(
-        z.object({
-        service_name: z.string().describe('Service name.'),
-        service_type: z.string().describe('Service type.'),
-        description: z.string().describe('Description'),
-        price_per_unit:  z.string().describe('Price in USD per unit'),
-        unit: z.number().describe('Unit detail'),
-        quantity:  z.number().describe('Quantity'),
-        monthly_cost:  z.number().describe('Monthly cost in USD.'),
-    })).describe('cost estimate sheet tab')}),
-      generate: async function* ({ prices }) {
-        yield (
-          <BotCard>
-            <StocksSkeleton />
-          </BotCard>
-        )
+        description: 'Estimate price for a given scenario.',
+        parameters: z.object({
+          prices: z
+            .array(
+              z.object({
+                service_name: z.string().describe('Service name.'),
+                service_type: z.string().describe('Service type.'),
+                description: z.string().describe('Description'),
+                price_per_unit: z.string().describe('Price in USD per unit'),
+                unit: z.number().describe('Unit detail'),
+                quantity: z.number().describe('Quantity'),
+                monthly_cost: z.number().describe('Monthly cost in USD.')
+              })
+            )
+            .describe('cost estimate sheet tab')
+        }),
+        generate: async function* ({ prices }) {
+          yield (
+            <BotCard>
+              <StocksSkeleton />
+            </BotCard>
+          );
 
-        await sleep(1000)
+          await sleep(1000);
 
-        const toolCallId = nanoid()
+          const toolCallId = nanoid();
 
-        aiState.done({
-          ...aiState.get(),
-          messages: [
-            ...aiState.get().messages,
-            {
-              id: nanoid(),
-              role: 'assistant',
-              content: [
-                {
-                  type: 'tool-call',
-                  toolName: 'estimatePrice',
-                  toolCallId,
-                  args: { prices }
-                }
-              ]
-            },
-            {
-              id: nanoid(),
-              role: 'tool',
-              content: [
-                {
-                  type: 'tool-result',
-                  toolName: 'estimatePrice',
-                  toolCallId,
-                  result: prices
-                }
-              ]
-            }
-          ]
-        })
+          aiState.done({
+            ...aiState.get(),
+            messages: [
+              ...aiState.get().messages,
+              {
+                id: nanoid(),
+                role: 'assistant',
+                content: [
+                  {
+                    type: 'tool-call',
+                    toolName: 'estimatePrice',
+                    toolCallId,
+                    args: { prices }
+                  }
+                ]
+              },
+              {
+                id: nanoid(),
+                role: 'tool',
+                content: [
+                  {
+                    type: 'tool-result',
+                    toolName: 'estimatePrice',
+                    toolCallId,
+                    result: prices
+                  }
+                ]
+              }
+            ]
+          });
 
-        return (
-          <BotCard>
-            <Prices props={prices} />
-          </BotCard>
-        )
+          return (
+            <BotCard>
+              <Prices props={prices} />
+            </BotCard>
+          );
+        }
       }
-    }}
-
-
-  })
+    }
+  });
 
   return {
     id: nanoid(),
     display: result.value
-  }
+  };
 }
 
-
-async function retrieveAIState(params: string) : Promise<Chat> {
-  'use server'
-  const aiState = getAIState() as Chat
+async function retrieveAIState(params: string): Promise<Chat> {
+  'use server';
+  const aiState = getAIState() as Chat;
   return aiState;
 }
 export type AIState = {
-  chatId: string
-  messages: Message[]
-}
+  chatId: string;
+  messages: Message[];
+};
 
 export type UIState = {
-  id: string
-  display: React.ReactNode
-}[]
+  id: string;
+  display: React.ReactNode;
+}[];
 
 export const AI = createAI<AIState, UIState>({
   actions: {
@@ -650,35 +649,35 @@ export const AI = createAI<AIState, UIState>({
   initialUIState: [],
   initialAIState: { chatId: nanoid(), messages: [] },
   onGetUIState: async () => {
-    'use server'
+    'use server';
 
-    const session = await auth()
+    const session = await auth();
 
     if (session && session.user) {
-      const aiState = getAIState() as Chat
+      const aiState = getAIState() as Chat;
 
       if (aiState) {
-        const uiState = getUIStateFromAIState(aiState)
-        return uiState
+        const uiState = getUIStateFromAIState(aiState);
+        return uiState;
       }
     } else {
-      return
+      return;
     }
   },
   onSetAIState: async ({ state }) => {
-    'use server'
+    'use server';
 
-    const session = await auth()
+    const session = await auth();
 
     if (session && session.user) {
-      const { chatId, messages } = state
+      const { chatId, messages } = state;
 
-      const createdAt = new Date()
-      const userId = session.user.id as string
-      const path = `/chat/${chatId}`
+      const createdAt = new Date();
+      const userId = session.user.id as string;
+      const path = `/chat/${chatId}`;
 
-      const firstMessageContent = messages[0].content as string
-      const title = firstMessageContent.substring(0, 100)
+      const firstMessageContent = messages[0].content as string;
+      const title = firstMessageContent.substring(0, 100);
 
       const chat: Chat = {
         id: chatId,
@@ -687,23 +686,23 @@ export const AI = createAI<AIState, UIState>({
         createdAt,
         messages,
         path
-      }
+      };
 
-      await saveChat(chat)
+      await saveChat(chat);
     } else {
-      return
+      return;
     }
   }
-})
+});
 
 export const getUIStateFromAIState = (aiState: Chat) => {
   return aiState.messages
-    .filter(message => message.role !== 'system')
+    .filter((message) => message.role !== 'system')
     .map((message, index) => ({
       id: `${aiState.chatId}-${index}`,
       display:
         message.role === 'tool' ? (
-          message.content.map(tool => {
+          message.content.map((tool) => {
             return tool.toolName === 'listStocks' ? (
               <BotCard>
                 {/* TODO: Infer types based on the tool result*/}
@@ -725,7 +724,7 @@ export const getUIStateFromAIState = (aiState: Chat) => {
                 {/* @ts-expect-error */}
                 <Events props={tool.result} />
               </BotCard>
-            ) : null
+            ) : null;
           })
         ) : message.role === 'user' ? (
           <UserMessage>{message.content as string}</UserMessage>
@@ -733,5 +732,5 @@ export const getUIStateFromAIState = (aiState: Chat) => {
           typeof message.content === 'string' ? (
           <BotMessage content={message.content} />
         ) : null
-    }))
-}
+    }));
+};

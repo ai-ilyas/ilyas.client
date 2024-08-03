@@ -12,7 +12,9 @@ export default function Providers({
   return (
     <>
       <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-        <SessionProvider session={session} basePath="/en/api/auth">{children}</SessionProvider>
+        <SessionProvider session={session} basePath="/en/api/auth">
+          {children}
+        </SessionProvider>
       </ThemeProvider>
     </>
   );

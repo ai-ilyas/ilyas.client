@@ -1,8 +1,8 @@
-import { UseChatHelpers } from 'ai/react'
+import { UseChatHelpers } from 'ai/react';
 
-import { Button } from '@/src/components/ui/button'
-import { ExternalLink } from '@/src/components/chat/external-link'
-import { IconArrowRight } from '@/src/components/ui/icons'
+import { Button } from '@/src/components/ui/button';
+import { ExternalLink } from '@/src/components/chat/external-link';
+import { IconArrowRight } from '@/src/components/ui/icons';
 
 export function EmptyScreen() {
   return (
@@ -34,5 +34,5 @@ export function EmptyScreen() {
         </p>
       </div>
     </div>
-  )
+  );
 }

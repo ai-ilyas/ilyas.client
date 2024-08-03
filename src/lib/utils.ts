@@ -3,7 +3,7 @@ import { twMerge } from 'tailwind-merge';
 import { Active, DataRef, Over } from '@dnd-kit/core';
 import { ColumnDragData } from '@/src/components/kanban/board-column';
 import { TaskDragData } from '@/src/components/kanban/task-card';
-import { customAlphabet } from 'nanoid'
+import { customAlphabet } from 'nanoid';
 
 type DraggableData = ColumnDragData | TaskDragData;
 
@@ -39,26 +39,27 @@ export const isValidHtmlColor = (color: string): boolean => {
   // Définir une expression régulière pour les couleurs HTML valides
   const htmlColorRegex = /^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/;
   return htmlColorRegex.test(color);
-}
+};
 
 export const formatNumber = (value: number) =>
   new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD'
-  }).format(value)
+  }).format(value);
 
 export const runAsyncFnWithoutBlocking = (
   fn: (...args: any) => Promise<any>
 ) => {
-  fn()
-}
+  fn();
+};
 
 export const sleep = (ms: number) =>
-  new Promise(resolve => setTimeout(resolve, ms))
+  new Promise((resolve) => setTimeout(resolve, ms));
 
 export const nanoid = customAlphabet(
   '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
   7
-) // 7-character random string
+); // 7-character random string
 
-export const distinctFilter = (value: any, index: any, array: any[]) => array.indexOf(value) === index;
+export const distinctFilter = (value: any, index: any, array: any[]) =>
+  array.indexOf(value) === index;

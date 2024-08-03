@@ -1,7 +1,7 @@
-import React from 'react'
+import React from 'react';
 
-import { cn } from '@/src/lib/utils'
-import { ExternalLink } from '@/src/components/chat/external-link'
+import { cn } from '@/src/lib/utils';
+import { ExternalLink } from '@/src/components/chat/external-link';
 
 export function FooterText({ className, ...props }: React.ComponentProps<'p'>) {
   return (
@@ -19,5 +19,5 @@ export function FooterText({ className, ...props }: React.ComponentProps<'p'>) {
       </ExternalLink>
       .
     </p>
-  )
+  );
 }

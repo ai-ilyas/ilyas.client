@@ -1,6 +1,11 @@
 'use client';
 import { IApplication } from '@/convex/applications';
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle
+} from '@/src/components/ui/card';
 import CustomApplicationTags from '@/src/components/custom-application-tags';
 import { useTranslation } from '@/src/app/i18n/client';
 
@@ -16,22 +21,25 @@ const businessCapabilities: React.FC<BusinessCapabilitiesFormProps> = ({
   const { t } = useTranslation(lng);
   return (
     <Card>
-        <CardHeader>
+      <CardHeader>
         <div className="flex items-start">
-            <CardTitle>{t('application_businessCapabilities_businessCapabilities')}</CardTitle>
+          <CardTitle>
+            {t('application_businessCapabilities_businessCapabilities')}
+          </CardTitle>
         </div>
-        </CardHeader>
-        <CardContent>
+      </CardHeader>
+      <CardContent>
         <div>
-            <CustomApplicationTags 
+          <CustomApplicationTags
             applicationId={app!._id}
             tags={app!.tags!}
             type={1}
             // #100 CLIENT SERVER Maximum Application tag per application is 10
             maxNumber={10}
-            lng={lng}></CustomApplicationTags>
+            lng={lng}
+          ></CustomApplicationTags>
         </div>
-        </CardContent>
+      </CardContent>
     </Card>
   );
 };

@@ -6,7 +6,7 @@ import MicrosoftSignInButton from '../microsoft-auth-button';
 export default function UserAuthForm() {
   return (
     <>
-      <GoogleSignInButton/>
+      <GoogleSignInButton />
       <MicrosoftSignInButton />
       <GitHubSignInButton />
     </>

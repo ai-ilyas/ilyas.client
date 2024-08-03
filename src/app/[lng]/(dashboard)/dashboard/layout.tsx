@@ -19,9 +19,7 @@ export default function DashboardLayout({
       <div className="flex h-screen overflow-hidden">
         <Sidebar />
         <main className="w-full pt-16">
-          <StoreProvider>
-            {children}
-          </StoreProvider>
+          <StoreProvider>{children}</StoreProvider>
         </main>
       </div>
     </>

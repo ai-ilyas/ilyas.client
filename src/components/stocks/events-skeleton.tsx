@@ -5,12 +5,12 @@ const placeholderEvents = [
     description:
       'NVIDIA unveils the latest graphics card infused with AI capabilities, revolutionizing gaming and rendering experiences.'
   }
-]
+];
 
 export const EventsSkeleton = () => {
   return (
     <div className="-mt-2 flex w-full flex-col gap-2 py-4">
-      {placeholderEvents.map(event => (
+      {placeholderEvents.map((event) => (
         <div
           key={event.date}
           className="flex shrink-0 flex-col gap-1 rounded-lg bg-zinc-800 p-4"
@@ -27,5 +27,5 @@ export const EventsSkeleton = () => {
         </div>
       ))}
     </div>
-  )
-}
+  );
+};

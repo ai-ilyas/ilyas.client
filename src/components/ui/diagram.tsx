@@ -1,16 +1,16 @@
-
-import dynamic from "next/dynamic";
+import dynamic from 'next/dynamic';
 
 // Since client components get prerenderd on server as well hence importing the excalidraw stuff dynamically
 // with ssr false
 const Excalidraw = dynamic(
-  async () => (await import("@/src/components/wrappers/excalidraw-wrapper")).default,
+  async () =>
+    (await import('@/src/components/wrappers/excalidraw-wrapper')).default,
   {
-    ssr: false,
-  },
+    ssr: false
+  }
 );
 
-function Canvas (){
+function Canvas() {
   return <Excalidraw></Excalidraw>;
 }
 

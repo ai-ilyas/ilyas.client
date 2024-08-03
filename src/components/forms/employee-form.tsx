@@ -163,8 +163,7 @@ export const EmployeeForm: React.FC<ProductFormProps> = ({
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Images</FormLabel>
-                <FormControl>
-                </FormControl>
+                <FormControl></FormControl>
                 <FormMessage />
               </FormItem>
             )}

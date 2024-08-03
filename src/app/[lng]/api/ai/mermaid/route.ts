@@ -26,12 +26,13 @@ export async function POST(req: Request) {
     model: openai('gpt-4o'),
     prompt: buildMermaidDiagramPrompt(prompt),
     schema: z.object({
-      generateMermaidDiagram: 
-        z.object({ mermaidGraph: z.string().describe('mermaidGraph')
-        },
-      ),
-    }),
+      generateMermaidDiagram: z.object({
+        mermaidGraph: z.string().describe('mermaidGraph')
+      })
+    })
   });
-  
-    return Response.json(result.object.generateMermaidDiagram.mermaidGraph, { status: 200 });
+
+  return Response.json(result.object.generateMermaidDiagram.mermaidGraph, {
+    status: 200
+  });
 }

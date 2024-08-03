@@ -1,6 +1,6 @@
-"use client"
+'use client';
 
-import * as React from "react"
+import * as React from 'react';
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -14,8 +14,8 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
-  useReactTable,
-} from "@tanstack/react-table"
+  useReactTable
+} from '@tanstack/react-table';
 
 import {
   Table,
@@ -23,27 +23,29 @@ import {
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
-} from "@/src/components/ui/table"
+  TableRow
+} from '@/src/components/ui/table';
 
-import { DataTablePagination } from "./data-table-pagination"
-import { DataTableToolbar, FilterableColumnConfiguration } from "./data-table-toolbar"
+import { DataTablePagination } from './data-table-pagination';
+import {
+  DataTableToolbar,
+  FilterableColumnConfiguration
+} from './data-table-toolbar';
 
 interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[]
-  data: TData[]
-  filterableColumnConfigurations?: FilterableColumnConfiguration[],
-  filterPlaceholder: string,
-  filteredColumn: string
-  t: any
+  columns: ColumnDef<TData, TValue>[];
+  data: TData[];
+  filterableColumnConfigurations?: FilterableColumnConfiguration[];
+  filterPlaceholder: string;
+  filteredColumn: string;
+  t: any;
 }
 
 declare module '@tanstack/react-table' {
   interface ColumnMeta<TData extends RowData, TValue> {
-    columnLabel: string
+    columnLabel: string;
   }
 }
-
 
 export function DataTable<TData, TValue>({
   columns,
@@ -53,13 +55,13 @@ export function DataTable<TData, TValue>({
   filteredColumn,
   t
 }: DataTableProps<TData, TValue>) {
-  const [rowSelection, setRowSelection] = React.useState({})
+  const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({})
+    React.useState<VisibilityState>({});
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
-  )
-  const [sorting, setSorting] = React.useState<SortingState>([])
+  );
+  const [sorting, setSorting] = React.useState<SortingState>([]);
 
   const table = useReactTable({
     data,
@@ -68,7 +70,7 @@ export function DataTable<TData, TValue>({
       sorting,
       columnVisibility,
       rowSelection,
-      columnFilters,
+      columnFilters
     },
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
@@ -80,12 +82,18 @@ export function DataTable<TData, TValue>({
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFacetedRowModel: getFacetedRowModel(),
-    getFacetedUniqueValues: getFacetedUniqueValues(),
-  })
+    getFacetedUniqueValues: getFacetedUniqueValues()
+  });
 
   return (
     <div className="space-y-4">
-      <DataTableToolbar t={t} filterPlaceholder={filterPlaceholder} filteredColumn={filteredColumn} table={table} filterableColumnConfigurations={filterableColumnConfigurations} />
+      <DataTableToolbar
+        t={t}
+        filterPlaceholder={filterPlaceholder}
+        filteredColumn={filteredColumn}
+        table={table}
+        filterableColumnConfigurations={filterableColumnConfigurations}
+      />
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -101,7 +109,7 @@ export function DataTable<TData, TValue>({
                             header.getContext()
                           )}
                     </TableHead>
-                  )
+                  );
                 })}
               </TableRow>
             ))}
@@ -111,7 +119,7 @@ export function DataTable<TData, TValue>({
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
+                  data-state={row.getIsSelected() && 'selected'}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
@@ -129,7 +137,7 @@ export function DataTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  {t("common_noResults")}
+                  {t('common_noResults')}
                 </TableCell>
               </TableRow>
             )}
@@ -138,5 +146,5 @@ export function DataTable<TData, TValue>({
       </div>
       <DataTablePagination t={t} table={table} />
     </div>
-  )
+  );
 }

@@ -1,17 +1,17 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { RootState } from '../../index'
-import { IApplication } from '@/src/lib/domain/entities/application.interface'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { RootState } from '../../index';
+import { IApplication } from '@/src/lib/domain/entities/application.interface';
 
 const initialState = {
   applications: [] as IApplication[],
   status: 'initial',
   error: null as any
-}
+};
 
 const applicationSlice = createSlice({
   name: 'application',
   initialState,
-  reducers: {}  ,
+  reducers: {},
   extraReducers(builder) {
     builder
       .addCase(fetchApplications.pending, (state, action) => {
@@ -37,13 +37,15 @@ const applicationSlice = createSlice({
         state.status = 'failed adding';
         state.error = action.error.message;
       })
-            
+
       .addCase(updateApplication.pending, (state, action) => {
         state.status = 'updating';
       })
       .addCase(updateApplication.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        const appIndex = state.applications.findIndex((x: IApplication) => x._id === action.payload._id)
+        const appIndex = state.applications.findIndex(
+          (x: IApplication) => x._id === action.payload._id
+        );
         if (appIndex !== -1) {
           state.applications[appIndex] = {
             ...state.applications[appIndex],
@@ -66,42 +68,62 @@ const applicationSlice = createSlice({
       .addCase(getApplication.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message;
-      })
+      });
   }
-})
-
-const apiRoot = "/en/api/application";
-
-export const fetchApplications = createAsyncThunk('application/getAll', async () => {
-   return (await fetch(apiRoot)).json();
 });
 
-export const getApplication = createAsyncThunk('application/getApplication', async (id: string) => {
-  return (await fetch(`${apiRoot}/${id}`)).json();
-});
+const apiRoot = '/en/api/application';
 
-export const insertApplication = createAsyncThunk('application/insertApplication', async (applicationName: string) => {
-  return (await fetch(apiRoot + "/create", {
-    method: 'POST',
-    body: applicationName,
-  })).json();
-});
+export const fetchApplications = createAsyncThunk(
+  'application/getAll',
+  async () => {
+    return (await fetch(apiRoot)).json();
+  }
+);
 
-export const updateApplication = createAsyncThunk('application/updateApplication', async (application: Partial<IApplication>) => {
-  return (await fetch(apiRoot + "/update", {
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(application)
-  })).json();
-});
+export const getApplication = createAsyncThunk(
+  'application/getApplication',
+  async (id: string) => {
+    return (await fetch(`${apiRoot}/${id}`)).json();
+  }
+);
 
-export const selectAllApplications = (state: RootState) => state.applications.applications;
+export const insertApplication = createAsyncThunk(
+  'application/insertApplication',
+  async (applicationName: string) => {
+    return (
+      await fetch(apiRoot + '/create', {
+        method: 'POST',
+        body: applicationName
+      })
+    ).json();
+  }
+);
 
-export const selectApplicationStatus = (state: RootState) => state.applications.status;
+export const updateApplication = createAsyncThunk(
+  'application/updateApplication',
+  async (application: Partial<IApplication>) => {
+    return (
+      await fetch(apiRoot + '/update', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(application)
+      })
+    ).json();
+  }
+);
+
+export const selectAllApplications = (state: RootState) =>
+  state.applications.applications;
+
+export const selectApplicationStatus = (state: RootState) =>
+  state.applications.status;
 
 export const selectApplicationById = (state: RootState, applicationId: any) =>
-  state.applications.applications.find((x: IApplication) => x._id === applicationId)
+  state.applications.applications.find(
+    (x: IApplication) => x._id === applicationId
+  );
 
-export default applicationSlice.reducer
+export default applicationSlice.reducer;

@@ -13,7 +13,7 @@ import { TooltipProvider } from '@radix-ui/react-tooltip';
 const inter = Inter({ subsets: ['latin'] });
 
 export async function generateStaticParams() {
-  return languages.map((lng) => ({ lng }))
+  return languages.map((lng) => ({ lng }));
 }
 
 export const metadata: Metadata = {
@@ -23,14 +23,12 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({
   children,
-  params: {
-    lng
-  }
+  params: { lng }
 }: {
-  children: React.ReactNode,
+  children: React.ReactNode;
   params: {
-    lng: string
-  }
+    lng: string;
+  };
 }) {
   const session = await auth();
   return (
@@ -39,7 +37,6 @@ export default async function RootLayout({
         <ConvexClientProvider session={session}>
           <Toaster />
           <TooltipProvider>{children}</TooltipProvider>
-          
         </ConvexClientProvider>
       </body>
     </html>

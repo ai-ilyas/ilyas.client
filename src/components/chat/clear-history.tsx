@@ -1,11 +1,11 @@
-'use client'
+'use client';
 
-import * as React from 'react'
-import { useRouter } from 'next/navigation'
-import { toast } from 'sonner'
+import * as React from 'react';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 
-import { ServerActionResult } from '@/src/components/chat/types'
-import { Button } from '@/src/components/ui/button'
+import { ServerActionResult } from '@/src/components/chat/types';
+import { Button } from '@/src/components/ui/button';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -16,21 +16,21 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger
-} from '@/src/components/ui/alert-dialog'
-import { IconSpinner } from '@/src/components/ui/icons'
+} from '@/src/components/ui/alert-dialog';
+import { IconSpinner } from '@/src/components/ui/icons';
 
 interface ClearHistoryProps {
-  isEnabled: boolean
-  clearChats: () => ServerActionResult<void>
+  isEnabled: boolean;
+  clearChats: () => ServerActionResult<void>;
 }
 
 export function ClearHistory({
   isEnabled = false,
   clearChats
 }: ClearHistoryProps) {
-  const [open, setOpen] = React.useState(false)
-  const [isPending, startTransition] = React.useTransition()
-  const router = useRouter()
+  const [open, setOpen] = React.useState(false);
+  const [isPending, startTransition] = React.useTransition();
+  const router = useRouter();
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
@@ -52,17 +52,17 @@ export function ClearHistory({
           <AlertDialogCancel disabled={isPending}>Cancel</AlertDialogCancel>
           <AlertDialogAction
             disabled={isPending}
-            onClick={event => {
-              event.preventDefault()
+            onClick={(event) => {
+              event.preventDefault();
               startTransition(async () => {
-                const result = await clearChats()
+                const result = await clearChats();
                 if (result && 'error' in result) {
-                  toast.error(result.error)
-                  return
+                  toast.error(result.error);
+                  return;
                 }
 
-                setOpen(false)
-              })
+                setOpen(false);
+              });
             }}
           >
             {isPending && <IconSpinner className="mr-2 animate-spin" />}
@@ -71,5 +71,5 @@ export function ClearHistory({
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
-  )
+  );
 }

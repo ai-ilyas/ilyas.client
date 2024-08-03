@@ -1,14 +1,14 @@
-'use client'
+'use client';
 
-import * as React from 'react'
+import * as React from 'react';
 
-import { Button, type ButtonProps } from '@/src/components/ui/button'
-import { IconArrowDown } from '@/src/components/ui/icons'
-import { cn } from '@/src/lib/utils'
+import { Button, type ButtonProps } from '@/src/components/ui/button';
+import { IconArrowDown } from '@/src/components/ui/icons';
+import { cn } from '@/src/lib/utils';
 
 interface ButtonScrollToBottomProps extends ButtonProps {
-  isAtBottom: boolean
-  scrollToBottom: () => void
+  isAtBottom: boolean;
+  scrollToBottom: () => void;
 }
 
 export function ButtonScrollToBottom({
@@ -32,5 +32,5 @@ export function ButtonScrollToBottom({
       <IconArrowDown />
       <span className="sr-only">Scroll to bottom</span>
     </Button>
-  )
+  );
 }

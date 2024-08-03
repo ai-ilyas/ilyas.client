@@ -1,5 +1,4 @@
 export const buildMermaidDiagramPrompt = (input: string): string => {
-
   const JSON_SCHEMAS = `{
     "GenerateMermaidDiagram": { "mermaidGraph" : string }
   }`;
@@ -18,4 +17,4 @@ export const buildMermaidDiagramPrompt = (input: string): string => {
     Using the list created before of components and their respectives interactions, create a text-based diagram representation of the architecture in Mermaid format with correct mermaid syntax.
     Make sure to only generate mermaid text diagram and nothing else. Make sure it is not malformed mermaid format.
   `;
-}
+};

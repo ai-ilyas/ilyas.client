@@ -1,20 +1,23 @@
-import { clearChats, getChats } from '@/src/app/[lng]/(dashboard)/dashboard/chat/actions'
-import { ClearHistory } from '@/src/components/chat/clear-history'
-import { SidebarItems } from '@/src/components/chat/sidebar-items'
-import { ThemeToggle } from '@/src/components/chat/theme-toggle'
-import { cache } from 'react'
+import {
+  clearChats,
+  getChats
+} from '@/src/app/[lng]/(dashboard)/dashboard/chat/actions';
+import { ClearHistory } from '@/src/components/chat/clear-history';
+import { SidebarItems } from '@/src/components/chat/sidebar-items';
+import { ThemeToggle } from '@/src/components/chat/theme-toggle';
+import { cache } from 'react';
 
 interface SidebarListProps {
-  userId?: string
-  children?: React.ReactNode
+  userId?: string;
+  children?: React.ReactNode;
 }
 
 const loadChats = cache(async (userId?: string) => {
-  return await getChats(userId)
-})
+  return await getChats(userId);
+});
 
 export async function SidebarList({ userId }: SidebarListProps) {
-  const chats = await loadChats(userId)
+  const chats = await loadChats(userId);
 
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
@@ -34,5 +37,5 @@ export async function SidebarList({ userId }: SidebarListProps) {
         <ClearHistory clearChats={clearChats} isEnabled={chats?.length > 0} />
       </div>
     </div>
-  )
+  );
 }
