@@ -71,7 +71,6 @@ export function ChatPanel({
         isAtBottom={isAtBottom}
         scrollToBottom={scrollToBottom}
       />
-<div >
 
 <AlertDialog >
       <AlertDialogTrigger asChild>
@@ -87,32 +86,26 @@ export function ChatPanel({
         <span className="sr-only">Debug</span>
       </Button>
       </AlertDialogTrigger>
-      <AlertDialogContent className="sm:max-w-[480px]">
+      <AlertDialogContent className="sm:max-w-[480px]" >
         <AlertDialogHeader>
           <AlertDialogTitle>AI Message Trace</AlertDialogTitle>
         </AlertDialogHeader>
-        <AlertDialogDescription className="max-h-[300px] overflow-auto">
-          <div className="prose">
+        <AlertDialogDescription/>
+        <div className="max-h-[300px] overflow-auto prose">
           {currentAIState?.messages.map((message, index) => (
         <div key={message.id}>
            <h3>{message.role}</h3>
-            <p> 
-              {JSON.stringify( message.content, null, 2)}
-            </p>
+              <p className='text-sm text-muted-foreground'>{JSON.stringify( message.content, null, 2)}</p>
           {<Separator className="my-4" />}
         </div>
       ))}
             
-          </div>
-        </AlertDialogDescription>
+        </div>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
-
-
-      </div>
       <div className="mx-auto sm:max-w-2xl sm:px-4">
         <div className="mb-4 grid grid-cols-2 gap-2 px-4 sm:px-0">
           {messages.length === 0 &&
