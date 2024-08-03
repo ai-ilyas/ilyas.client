@@ -19,7 +19,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-interface ProvidedInterfaceFormProps {
+interface OwnedInterfaceFormProps {
     interfaces: IInterface[];
     app: IApplication;
     lng: string;
@@ -27,7 +27,7 @@ interface ProvidedInterfaceFormProps {
     interfaceNameToUpdate?: string | undefined;
   }
   
-const providedInterfaceForm: React.FC<ProvidedInterfaceFormProps> = ({ interfaces, app, lng, close, interfaceNameToUpdate }) => {
+const ownedInterfaceForm: React.FC<OwnedInterfaceFormProps> = ({ interfaces, app, lng, close, interfaceNameToUpdate }) => {
     const { t } = useTranslation(lng);
     const insertInterface = useMutation(api.interfaces.insert);
     const patchInterface = useMutation(api.interfaces.patch);
@@ -100,7 +100,7 @@ const providedInterfaceForm: React.FC<ProvidedInterfaceFormProps> = ({ interface
 
         closeForm();
         toast({
-            title: t(`application_providedInterfaces_interfaceHasBeenAdded`) ,
+            title: t(`application_ownedInterfaces_interfaceHasBeenAdded`) ,
             variant: 'default'
         });  
     }
@@ -108,7 +108,7 @@ const providedInterfaceForm: React.FC<ProvidedInterfaceFormProps> = ({ interface
     {
         console.log(error);
         toast({
-            title: t(`application_providedInterfaces_interfaceHasNotBeenAdded`) ,
+            title: t(`application_ownedInterfaces_interfaceHasNotBeenAdded`) ,
             variant: 'destructive'
         });  
         throw error;
@@ -124,14 +124,14 @@ const providedInterfaceForm: React.FC<ProvidedInterfaceFormProps> = ({ interface
               <CardHeader>
                 {
                   !interfaceToUpdate && <>
-                    <CardTitle>{t('application_providedInterfaces_provideANewInterface')}</CardTitle>
-                    <CardDescription>{t('application_providedInterfaces_provideANewInterfaceDescription', { name: app.name })}</CardDescription>
+                    <CardTitle>{t('application_ownedInterfaces_provideANewInterface')}</CardTitle>
+                    <CardDescription>{t('application_ownedInterfaces_provideANewInterfaceDescription', { name: app.name })}</CardDescription>
                   </>
                 }
                 {
                   interfaceToUpdate && <>
-                    <CardTitle>{t('application_providedInterfaces_updateInterface', {name: interfaceToUpdate.name})}</CardTitle>
-                    <CardDescription>{t('application_providedInterfaces_updateInterfaceDescription', { interfaceName: interfaceToUpdate.name, name: app.name })}</CardDescription>
+                    <CardTitle>{t('application_ownedInterfaces_updateInterface', {name: interfaceToUpdate.name})}</CardTitle>
+                    <CardDescription>{t('application_ownedInterfaces_updateInterfaceDescription', { interfaceName: interfaceToUpdate.name, name: app.name })}</CardDescription>
                   </>
                 }                  
               </CardHeader>
@@ -142,10 +142,10 @@ const providedInterfaceForm: React.FC<ProvidedInterfaceFormProps> = ({ interface
                   name="name"
                   render={({ field }) => (
                     <FormItem className="my-3">
-                        <FormLabel>{t(`application_providedInterfaces_name`)}</FormLabel>
+                        <FormLabel>{t(`application_ownedInterfaces_name`)}</FormLabel>
                         <FormControl>
                           <Input
-                            placeholder={t(`application_providedInterfaces_name`)}
+                            placeholder={t(`application_ownedInterfaces_name`)}
                             {...field} />
                         </FormControl>
                         <FormMessage />
@@ -158,7 +158,7 @@ const providedInterfaceForm: React.FC<ProvidedInterfaceFormProps> = ({ interface
                   name="description"
                   render={({ field }) => (
                     <FormItem className="my-3">
-                      <FormLabel>{t('application_providedInterfaces_description')}</FormLabel>
+                      <FormLabel>{t('application_ownedInterfaces_description')}</FormLabel>
                       <FormControl>
                           <Textarea {...field} />
                       </FormControl>
@@ -177,7 +177,7 @@ const providedInterfaceForm: React.FC<ProvidedInterfaceFormProps> = ({ interface
                   name="direction"
                   render={({ field }) => (
                     <FormItem className="my-3">
-                      <FormLabel><ArrowRightLeft strokeWidth={1} size={15} className="inline-block" /> {t('application_providedInterfaces_direction')}</FormLabel>
+                      <FormLabel><ArrowRightLeft strokeWidth={1} size={15} className="inline-block" /> {t('application_ownedInterfaces_direction')}</FormLabel>
                       <Select onValueChange={(value: string) => {
                         if (value) {
                           setSelectDirectionValue(value); 
@@ -186,23 +186,23 @@ const providedInterfaceForm: React.FC<ProvidedInterfaceFormProps> = ({ interface
                         value={selectDirectionValue} defaultValue={field.value}>
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue placeholder={t("application_providedInterfaces_directionPlaceholder")} />
+                            <SelectValue placeholder={t("application_ownedInterfaces_directionPlaceholder")} />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
                           <SelectGroup>
-                            <SelectLabel>{t("application_providedInterfaces_direction")}</SelectLabel>
-                            <SelectItem value="incoming"><ArrowRightToLine strokeWidth={1} size={15} className="inline-block" /> {t("application_providedInterfaces_incoming")}</SelectItem>
-                            <SelectItem value="outgoing"><ArrowRightFromLine strokeWidth={1} size={15} className="inline-block" /> {t("application_providedInterfaces_outgoing")}</SelectItem>
-                            <SelectItem value="bi-directional"><ArrowRightLeft strokeWidth={1} size={15} className="inline-block" /> {t("application_providedInterfaces_biDirectional")}</SelectItem>                        
+                            <SelectLabel>{t("application_ownedInterfaces_direction")}</SelectLabel>
+                            <SelectItem value="incoming"><ArrowRightToLine strokeWidth={1} size={15} className="inline-block" /> {t("application_ownedInterfaces_incoming")}</SelectItem>
+                            <SelectItem value="outgoing"><ArrowRightFromLine strokeWidth={1} size={15} className="inline-block" /> {t("application_ownedInterfaces_outgoing")}</SelectItem>
+                            <SelectItem value="bi-directional"><ArrowRightLeft strokeWidth={1} size={15} className="inline-block" /> {t("application_ownedInterfaces_biDirectional")}</SelectItem>                        
                           </SelectGroup>
                         </SelectContent>
                       </Select>
                       <FormMessage />
                       <FormDescription>
-                        <span><ArrowRightToLine strokeWidth={1} size={15} className="inline-block" /> <strong>{t("application_providedInterfaces_incoming")}</strong>: {t("application_providedInterfaces_directionIncomingDescription", { name: app.name })}</span><br />
-                        <span><ArrowRightFromLine strokeWidth={1} size={15} className="inline-block" /> <strong>{t("application_providedInterfaces_outgoing")}</strong>: {t("application_providedInterfaces_directionOutgoingDescription", { name: app.name })}</span><br />
-                        <span><ArrowRightLeft strokeWidth={1} size={15} className="inline-block" /> <strong>{t("application_providedInterfaces_biDirectional")}</strong>: {t("application_providedInterfaces_directionBiDirectionalDescription")}</span>
+                        <span><ArrowRightToLine strokeWidth={1} size={15} className="inline-block" /> <strong>{t("application_ownedInterfaces_incoming")}</strong>: {t("application_ownedInterfaces_directionIncomingDescription", { name: app.name })}</span><br />
+                        <span><ArrowRightFromLine strokeWidth={1} size={15} className="inline-block" /> <strong>{t("application_ownedInterfaces_outgoing")}</strong>: {t("application_ownedInterfaces_directionOutgoingDescription", { name: app.name })}</span><br />
+                        <span><ArrowRightLeft strokeWidth={1} size={15} className="inline-block" /> <strong>{t("application_ownedInterfaces_biDirectional")}</strong>: {t("application_ownedInterfaces_directionBiDirectionalDescription")}</span>
                       </FormDescription>
                     </FormItem>
                   )}
@@ -238,10 +238,10 @@ const providedInterfaceForm: React.FC<ProvidedInterfaceFormProps> = ({ interface
                   name="volumetry"
                   render={({ field }) => (
                     <FormItem className="my-3">
-                        <FormLabel>{t(`application_providedInterfaces_volumetry`)}</FormLabel>
+                        <FormLabel>{t(`application_ownedInterfaces_volumetry`)}</FormLabel>
                         <FormControl>
                           <Input
-                            placeholder={t(`application_providedInterfaces_volumetry`)}
+                            placeholder={t(`application_ownedInterfaces_volumetry`)}
                             {...field} />
                         </FormControl>
                         <FormMessage />
@@ -254,7 +254,7 @@ const providedInterfaceForm: React.FC<ProvidedInterfaceFormProps> = ({ interface
                   name="frequence"
                   render={({ field }) => (
                     <FormItem className="my-3">
-                      <FormLabel><CalendarClock strokeWidth={1} size={15} className="inline-block" /> {t('application_providedInterfaces_frequence')}</FormLabel>
+                      <FormLabel><CalendarClock strokeWidth={1} size={15} className="inline-block" /> {t('application_ownedInterfaces_frequence')}</FormLabel>
                       <Select  onValueChange={(value: string) => {
                         if (value) {
                           setSelectFrequenceValue(value); 
@@ -263,19 +263,19 @@ const providedInterfaceForm: React.FC<ProvidedInterfaceFormProps> = ({ interface
                         value={selectFrequenceValue} defaultValue={field.value}>
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue placeholder={t("application_providedInterfaces_frequencePlaceholder")} />
+                            <SelectValue placeholder={t("application_ownedInterfaces_frequencePlaceholder")} />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
                           <SelectGroup>
-                            <SelectLabel>{t("application_providedInterfaces_frequence")}</SelectLabel>
-                            <SelectItem value="hourly">{t("application_providedInterfaces_hourly")}</SelectItem>
-                            <SelectItem value="daily">{t("application_providedInterfaces_daily")}</SelectItem>
-                            <SelectItem value="weekly">{t("application_providedInterfaces_weekly")}</SelectItem>
-                            <SelectItem value="monthly">{t("application_providedInterfaces_monthly")}</SelectItem>
-                            <SelectItem value="yearly">{t("application_providedInterfaces_yearly")}</SelectItem>
-                            <SelectItem value="on demand">{t("application_providedInterfaces_onDemand")}</SelectItem>
-                            <SelectItem value="real-time">{t("application_providedInterfaces_realTime")}</SelectItem>
+                            <SelectLabel>{t("application_ownedInterfaces_frequence")}</SelectLabel>
+                            <SelectItem value="hourly">{t("application_ownedInterfaces_hourly")}</SelectItem>
+                            <SelectItem value="daily">{t("application_ownedInterfaces_daily")}</SelectItem>
+                            <SelectItem value="weekly">{t("application_ownedInterfaces_weekly")}</SelectItem>
+                            <SelectItem value="monthly">{t("application_ownedInterfaces_monthly")}</SelectItem>
+                            <SelectItem value="yearly">{t("application_ownedInterfaces_yearly")}</SelectItem>
+                            <SelectItem value="on demand">{t("application_ownedInterfaces_onDemand")}</SelectItem>
+                            <SelectItem value="real-time">{t("application_ownedInterfaces_realTime")}</SelectItem>
                           </SelectGroup>
                         </SelectContent>
                       </Select>
@@ -296,4 +296,4 @@ const providedInterfaceForm: React.FC<ProvidedInterfaceFormProps> = ({ interface
         </Form>
 }
 
-export default providedInterfaceForm;
+export default ownedInterfaceForm;

@@ -60,3 +60,5 @@ export const nanoid = customAlphabet(
   '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
   7
 ) // 7-character random string
+
+export const distinctFilter = (value: any, index: any, array: any[]) => array.indexOf(value) === index;

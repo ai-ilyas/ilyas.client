@@ -8,9 +8,7 @@ import { useQuery } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import CustomApplicationTags from '@/src/components/custom-application-tags';
 import BusinessCapabilities from './(components)/business-capabilities';
-import ParentApplication from './(components)/parent-application';
-import ChildrenApplications from './(components)/children-applications';
-import ProvidedInterfaces from './(components)/provided-interfaces';
+import OwnedInterfaces from './(components)/owned-interfaces';
 import HierarchyComponent from './(components)/hierarchy-component';
 
 
@@ -76,7 +74,7 @@ export default function page({
             lng={lng}
             apps={applications!}></HierarchyComponent>
         </div>
-        <ProvidedInterfaces app={app} interfaces={app!.interfaces!} lng={lng}></ProvidedInterfaces>
+        <OwnedInterfaces app={app} interfaces={app!.interfaces!} lng={lng}></OwnedInterfaces>
       </div>
     </ScrollArea>
   );
